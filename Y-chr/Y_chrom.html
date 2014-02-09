@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Trying to test whether chrY methylation is represented in female samples less than in male</title>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Trying to test whether chrY methylation is represented in female samples less than in male</h1>
+
+<h3>Alexander Favorov</h3>
+
+<h3>19 Dec 2013</h3>
+
+<p>We will test three measures: the coverage of methylation MACS peaks, their score (summed over chromosome) and their product.</p>
+
+<p>Here is coverage of Y-chromome of all the samples by the methylated peaks, the sum of all the scores and the product of length and scores for all the samples.</p>
+
+<pre><code>##    code DNAid tumor  male Peak length sum Peak score sum Product sum
+## 1     1 37941  TRUE  TRUE          413742         101598   207614610
+## 2     2 35667  TRUE FALSE          376294         102885   150700149
+## 3     3 25441  TRUE  TRUE          313265          52486   143475969
+## 4     4 35675  TRUE FALSE          413638         104126   147113371
+## 5     5  4931  TRUE  TRUE          651050         162215   220521307
+## 6     6 18732  TRUE  TRUE          564458         145679   230736378
+## 7     7 31124  TRUE  TRUE          403700          91285   121400575
+## 8     8 35663  TRUE  TRUE          413478         103125   132697472
+## 9     9 27281  TRUE  TRUE          467948         128386   192180775
+## 10   10 27279  TRUE  TRUE          430185          97185   107257870
+## 11  101 30553 FALSE  TRUE          304730          62312    98240747
+## 12  102 30596 FALSE  TRUE          763616         207376   366795930
+## 13  103 30577 FALSE  TRUE          462897         114264   164465789
+## 14  104 30580 FALSE  TRUE          518039         127544   187512987
+## 15  105 30018 FALSE FALSE          239088          35748    32169528
+## 16  106 32913 FALSE FALSE          392266          93407   155932321
+</code></pre>
+
+<p>Wilcoxon test of the methylation peaks coverage the Y-chromosome for males/females </p>
+
+<pre><code>## 
+##  Wilcoxon rank sum test
+## 
+## data:  Y.chrom.stats$&quot;Peak length sum&quot;[Y.chrom.stats$male] and Y.chrom.stats$&quot;Peak length sum&quot;[!Y.chrom.stats$male]
+## W = 40, p-value = 0.05824
+## alternative hypothesis: true location shift is not equal to 0
+</code></pre>
+
+<p>Wilcoxon test of the scores sum of Y-chromosome methylation peaks for males/females </p>
+
+<pre><code>## 
+##  Wilcoxon rank sum test
+## 
+## data:  Y.chrom.stats$&quot;Peak score sum&quot;[Y.chrom.stats$male] and Y.chrom.stats$&quot;Peak score sum&quot;[!Y.chrom.stats$male]
+## W = 34, p-value = 0.2615
+## alternative hypothesis: true location shift is not equal to 0
+</code></pre>
+
+<p>Wilcoxon test of the scores*length product sum Y-chromosome for males/females </p>
+
+<pre><code>## 
+##  Wilcoxon rank sum test
+## 
+## data:  Y.chrom.stats$&quot;Product sum&quot;[Y.chrom.stats$male] and Y.chrom.stats$&quot;Product sum&quot;[!Y.chrom.stats$male]
+## W = 33, p-value = 0.3165
+## alternative hypothesis: true location shift is not equal to 0
+</code></pre>
+
+<h3>The best is just to calculate lenghts.</h3>
+
+</body>
+
+</html>

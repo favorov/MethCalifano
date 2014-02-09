@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Which cytobands are differentially methylated in the 2013-11-25_RO1_Batch1_ClinicalData_DeID data?</title>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Which cytobands are differentially methylated in the 2013-11-25_RO1_Batch1_ClinicalData_DeID data?</h1>
+
+<h2>Alexander Favorov</h2>
+
+<h3>26 Dec 2013</h3>
+
+<p>We load the cytoband list (karyotype) from UCSC DAS server and we load our MACS from our /Clinical/2013-11-25_RO1_Batch1_ClinicalData_DeID.xls.csv file. </p>
+
+<p>Then, for each cytoband we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the cytoband in each of the samples.</p>
+
+<p>Thus, for each interval (cytodand) we have a methylated length (coverage) for each sample).
+Then, we calculate the Wicoxon p-value and anova test Pr(&gt;F) for each cytoband&#39;s tumor and normal DM coverages.</p>
+
+<p>And, finally, we make list of all the cytobands with one of the p-values that is &lt;=0.05 and output its coords, p-values and the samplewise methylated regions coverage. </p>
+
+<pre><code>## RangedData with 1 row and 3 value columns across 24 spaces
+##      space               ranges |       id wilcoxon.result anova.result
+##   &lt;factor&gt;            &lt;IRanges&gt; | &lt;factor&gt;       &lt;numeric&gt;    &lt;numeric&gt;
+## 1     chr3 [44100001, 44200000] |   p21.32         0.03311      0.03323
+</code></pre>
+
+<pre><code>## RangedData with 1 row and 17 value columns across 24 spaces
+##      space               ranges |       id    X37941    X35667    X25441    X35675     X4931    X18732    X31124    X35663    X27281    X27279    X30553    X30596    X30577    X30580    X30018    X32913
+##   &lt;factor&gt;            &lt;IRanges&gt; | &lt;factor&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+## 1     chr3 [44100001, 44200000] |   p21.32         0       241         0      1611       406         0       623       534       558         0       426       589      1055      1311      1610       893
+</code></pre>
+
+</body>
+
+</html>
