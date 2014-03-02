@@ -1,49 +1,18 @@
-Trying to test whether chrY methylation is represented in female samples less than in male
+Trying to test which measure feels better that chrY methylation is represented in female samples less than in male ones
 ========================================================
 
 ### Alexander Favorov 
-### 19 Dec 2013
+### 1 Mar 2014
 
 `r opts_chunk$set(echo=F,message=F,cache=T)`
 
 We will test three measures: the coverage of methylation MACS peaks, their score (summed over chromosome) and their product.
+To do this, we use an absurd comparison of methylation of Y-chromosome between males and females.
+
+We will make Wilcoxon test for the Y-chr methylation mesure levels and we will make a test of 1&#39;s for all males against 0&#39;s for all females to have a watermark (the last comparison).
 
 ```{r load_and_calculate} 
-library('rtracklayer')
-dataFolder<-'../../Data'
-
-clinFile <- paste0(dataFolder,'/Clinical/2013-11-25_RO1_Batch1_ClinicalData_DeID.xls.csv')
-Clinical <- read.csv(clinFile,stringsAsFactors=F)
-
-# fix up the column names to account for the fact that there are two header rows
-colnames(Clinical)[1:3] <- Clinical[1,1:3]
-Clinical <- Clinical[2:nrow(Clinical),]
-
-#remove all service rows
-
-Clinical<-Clinical[!is.na(as.integer(Clinical[,3])),]
-
-# determine which are tumor and which are normal samples
-tumors <- as.integer(Clinical$Code) < 99
-normals <- as.integer(Clinical$Code) > 99
-
-Y.chrom.stats<-data.frame(code=Clinical$Code,DNAid=Clinical$'Tissue DNA HAND ID',tumor=tumors,male=Clinical$Gender=='1',stringsAsFactors = FALSE)
-
-length.sum<-integer(0)
-score.sum<-numeric(0)
-ls.prod.sum<-numeric(0)
-
-for (DNAid in Y.chrom.stats$DNAid)
-{
-	bedfilename<-paste0(dataFolder,'/PeakCalls/bedfiles/',DNAid,'_enrich.combined.removeDuplicates_vs_',DNAid,'_total.combined.removeDuplicates.50_peaks.bed')
-	methylated.ranges<-as(import(bedfilename),"RangedData")
-	length.sum<-c(length.sum,sum(width(methylated.ranges['chrY'])))
-	score.sum<-c(score.sum,sum(methylated.ranges['chrY']$score))
-	ls.prod.sum<-c(ls.prod.sum,sum(width(methylated.ranges['chrY'])*methylated.ranges['chrY']$score))
-}
-
-Y.chrom.stats<-cbind(Y.chrom.stats,'Peak length sum'=length.sum,'Peak score sum'=score.sum,'Product sum'=ls.prod.sum)
-
+source("Y_chrom_stats.R")
 ```
 Here is coverage of Y-chromome of all the samples by the methylated peaks, the sum of all the scores and the product of length and scores for all the samples.
 
@@ -67,4 +36,13 @@ Wilcoxon test of the scores*length product sum Y-chromosome for males/females
 print(wilcox.test(Y.chrom.stats$'Product sum'[Y.chrom.stats$male],Y.chrom.stats$'Product sum'[!Y.chrom.stats$male]))
 ```
 
+The watermark test:  Wilcoxon for 1&#39;s for all males against 0&#39;s for all females.
+```{r_watermark_wilcoxon}
+one_m<-rep(1,sum(Y.chrom.stats$male))
+zero_f<-rep(0,sum(!Y.chrom.stats$male))
+#remove ties by adding noise
+one_m<-one_m+rnorm(length(one_m),0,0.00001)
+zero_f<-zero_f+rnorm(length(zero_f),0,0.00001)
+print(wilcox.test(one_m,zero_f))
+```
 ### The best is just to calculate lenghts.
