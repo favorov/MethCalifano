@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Trying to test whether chrY methylation is represented in female samples less than in male</title>
+<title>Trying to test which measure feels better that chrY methylation is represented in female samples less than in male ones</title>
 
 
 
@@ -148,33 +148,72 @@ hr {
 </head>
 
 <body>
-<h1>Trying to test whether chrY methylation is represented in female samples less than in male</h1>
+<h1>Trying to test which measure feels better that chrY methylation is represented in female samples less than in male ones</h1>
 
 <h3>Alexander Favorov</h3>
 
-<h3>19 Dec 2013</h3>
+<h3>1 Mar 2014</h3>
 
-<p>We will test three measures: the coverage of methylation MACS peaks, their score (summed over chromosome) and their product.</p>
+<p>We will test three measures: the coverage of methylation MACS peaks, their score (summed over chromosome) and their product.
+To do this, we use an absurd comparison of methylation of Y-chromosome between males and females.</p>
+
+<p>We will make Wilcoxon test for the Y-chr methylation mesure levels and we will make a test of 1&#39;s for all males against 0&#39;s for all females to have a watermark (the last comparison).</p>
 
 <p>Here is coverage of Y-chromome of all the samples by the methylated peaks, the sum of all the scores and the product of length and scores for all the samples.</p>
 
-<pre><code>##    code DNAid tumor  male Peak length sum Peak score sum Product sum
-## 1     1 37941  TRUE  TRUE          413742         101598   207614610
-## 2     2 35667  TRUE FALSE          376294         102885   150700149
-## 3     3 25441  TRUE  TRUE          313265          52486   143475969
-## 4     4 35675  TRUE FALSE          413638         104126   147113371
-## 5     5  4931  TRUE  TRUE          651050         162215   220521307
-## 6     6 18732  TRUE  TRUE          564458         145679   230736378
-## 7     7 31124  TRUE  TRUE          403700          91285   121400575
-## 8     8 35663  TRUE  TRUE          413478         103125   132697472
-## 9     9 27281  TRUE  TRUE          467948         128386   192180775
-## 10   10 27279  TRUE  TRUE          430185          97185   107257870
-## 11  101 30553 FALSE  TRUE          304730          62312    98240747
-## 12  102 30596 FALSE  TRUE          763616         207376   366795930
-## 13  103 30577 FALSE  TRUE          462897         114264   164465789
-## 14  104 30580 FALSE  TRUE          518039         127544   187512987
-## 15  105 30018 FALSE FALSE          239088          35748    32169528
-## 16  106 32913 FALSE FALSE          392266          93407   155932321
+<pre><code>##    code     DNAid tumor  male Peak.length.sum Peak.score.sum Product.sum
+## 1     1     37941  TRUE  TRUE          413742         101598   207614610
+## 2     2     35667  TRUE FALSE          376294         102885   150700149
+## 3     3     25441  TRUE  TRUE          313265          52486   143475969
+## 4     4     35675  TRUE FALSE          413638         104126   147113371
+## 5     5      4931  TRUE  TRUE          651050         162215   220521307
+## 6     6     18732  TRUE  TRUE          564458         145679   230736378
+## 7     7     31124  TRUE  TRUE          403700          91285   121400575
+## 8     8     35663  TRUE  TRUE          413478         103125   132697472
+## 9     9     27281  TRUE  TRUE          467948         128386   192180775
+## 10   10     27279  TRUE  TRUE          430185          97185   107257870
+## 11   11     37920  TRUE  TRUE          414190         105237   129432813
+## 12   12     39451  TRUE  TRUE          527631         151385   190243317
+## 13   14     27254  TRUE FALSE          505291         135354   184599984
+## 14   15      3366  TRUE  TRUE          486388         121827   157717673
+## 15   16 3680_TDNA  TRUE  TRUE          509937         140123   159298330
+## 16   17 2934_TDNA  TRUE  TRUE          547344         169368   197774550
+## 17   18     24366  TRUE  TRUE          448006         115736   112974761
+## 18   19     32085  TRUE  TRUE          421773         112762   125925824
+## 19   20     23896  TRUE  TRUE          403758          80055    86827917
+## 20   21     38667  TRUE  TRUE          533276         113744   111625263
+## 21   23     35639  TRUE  TRUE          794539         219144   283511321
+## 22   24     23749  TRUE  TRUE          542038         134365   161772583
+## 23   26     27239  TRUE  TRUE          535922         156848   176504492
+## 24   27     37960  TRUE FALSE          317636          86824   102754483
+## 25   28     30648  TRUE  TRUE          374560          88669   139099195
+## 26   30     23947  TRUE  TRUE          415222         107024   134675291
+## 27   31      5006  TRUE  TRUE          609799         186406   299441207
+## 28   32     38698  TRUE  TRUE          454850         126660   159065795
+## 29   33     24866  TRUE  TRUE          290144          64326    70576459
+## 30   34      1342  TRUE  TRUE          349875          84652   129851383
+## 31   35     39477  TRUE  TRUE          446071         137967   207801657
+## 32   36 2675_TDNA  TRUE  TRUE          365662          86045   113260940
+## 33  101     30553 FALSE  TRUE          304730          62312    98240747
+## 34  102     30596 FALSE  TRUE          763616         207376   366795930
+## 35  103     30577 FALSE  TRUE          462897         114264   164465789
+## 36  104     30580 FALSE  TRUE          518039         127544   187512987
+## 37  105     30018 FALSE FALSE          239088          35748    32169528
+## 38  106     32913 FALSE FALSE          392266          93407   155932321
+## 39  107     25116 FALSE  TRUE          495873         164327   200367330
+## 40  108     34432 FALSE FALSE          464563         130189   164965603
+## 41  109     27773 FALSE  TRUE          537632         158910   185754957
+## 42  110     27743 FALSE  TRUE          483551         147446   175526118
+## 43  111     34440 FALSE FALSE          535880         152500   158366699
+## 44  112     34471 FALSE  TRUE          409733          90571   117914505
+## 45  113     34448 FALSE FALSE          387877         106683   119708536
+## 46  114     30588 FALSE FALSE          325036          84087   126074278
+## 47  115     30593 FALSE FALSE          275500          68870    95235278
+## 48  116     30551 FALSE FALSE          306051          78078   135124306
+## 49  117     30555 FALSE FALSE          339737          86749   115337876
+## 50  118     30599 FALSE  TRUE          427455         108947   128314866
+## 51  119     30539 FALSE FALSE          269001          63927    98069357
+## 52  120     31415 FALSE  TRUE          359808          95688   148503276
 </code></pre>
 
 <p>Wilcoxon test of the methylation peaks coverage the Y-chromosome for males/females </p>
@@ -182,8 +221,8 @@ hr {
 <pre><code>## 
 ##  Wilcoxon rank sum test
 ## 
-## data:  Y.chrom.stats$&quot;Peak length sum&quot;[Y.chrom.stats$male] and Y.chrom.stats$&quot;Peak length sum&quot;[!Y.chrom.stats$male]
-## W = 40, p-value = 0.05824
+## data:  Y.chrom.stats$Peak.length.sum[Y.chrom.stats$male] and Y.chrom.stats$Peak.length.sum[!Y.chrom.stats$male]
+## W = 414, p-value = 0.001743
 ## alternative hypothesis: true location shift is not equal to 0
 </code></pre>
 
@@ -192,8 +231,8 @@ hr {
 <pre><code>## 
 ##  Wilcoxon rank sum test
 ## 
-## data:  Y.chrom.stats$&quot;Peak score sum&quot;[Y.chrom.stats$male] and Y.chrom.stats$&quot;Peak score sum&quot;[!Y.chrom.stats$male]
-## W = 34, p-value = 0.2615
+## data:  Y.chrom.stats$Peak.score.sum[Y.chrom.stats$male] and Y.chrom.stats$Peak.score.sum[!Y.chrom.stats$male]
+## W = 381, p-value = 0.01692
 ## alternative hypothesis: true location shift is not equal to 0
 </code></pre>
 
@@ -202,12 +241,22 @@ hr {
 <pre><code>## 
 ##  Wilcoxon rank sum test
 ## 
-## data:  Y.chrom.stats$&quot;Product sum&quot;[Y.chrom.stats$male] and Y.chrom.stats$&quot;Product sum&quot;[!Y.chrom.stats$male]
-## W = 33, p-value = 0.3165
+## data:  Y.chrom.stats$Product.sum[Y.chrom.stats$male] and Y.chrom.stats$Product.sum[!Y.chrom.stats$male]
+## W = 365, p-value = 0.04118
 ## alternative hypothesis: true location shift is not equal to 0
 </code></pre>
 
-<h3>The best is just to calculate lenghts.</h3>
+<p>The watermark test:  Wilcoxon for 1&#39;s for all males against 0&#39;s for all females.</p>
+
+<pre><code>## 
+##  Wilcoxon rank sum test
+## 
+## data:  one_m and zero_f
+## W = 532, p-value = 1.131e-12
+## alternative hypothesis: true location shift is not equal to 0
+</code></pre>
+
+<h3>The best measure is the coverage lenghts.</h3>
 
 </body>
 

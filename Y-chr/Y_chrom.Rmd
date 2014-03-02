@@ -23,17 +23,17 @@ print(Y.chrom.stats)
 Wilcoxon test of the methylation peaks coverage the Y-chromosome for males/females 
 
 ```{r wilcoxon_l} 
-print(wilcox.test(Y.chrom.stats$'Peak length sum'[Y.chrom.stats$male],Y.chrom.stats$'Peak length sum'[!Y.chrom.stats$male]))
+print(wilcox.test(Y.chrom.stats$Peak.length.sum[Y.chrom.stats$male],Y.chrom.stats$Peak.length.sum[!Y.chrom.stats$male]))
 ```
 Wilcoxon test of the scores sum of Y-chromosome methylation peaks for males/females 
 
 ```{r wilcoxon_s} 
-print(wilcox.test(Y.chrom.stats$'Peak score sum'[Y.chrom.stats$male],Y.chrom.stats$'Peak score sum'[!Y.chrom.stats$male]))
+print(wilcox.test(Y.chrom.stats$Peak.score.sum[Y.chrom.stats$male],Y.chrom.stats$Peak.score.sum[!Y.chrom.stats$male]))
 ```
 
 Wilcoxon test of the scores*length product sum Y-chromosome for males/females 
 ```{r wilcoxon_ls} 
-print(wilcox.test(Y.chrom.stats$'Product sum'[Y.chrom.stats$male],Y.chrom.stats$'Product sum'[!Y.chrom.stats$male]))
+print(wilcox.test(Y.chrom.stats$Product.sum[Y.chrom.stats$male],Y.chrom.stats$Product.sum[!Y.chrom.stats$male]))
 ```
 
 The watermark test:  Wilcoxon for 1&#39;s for all males against 0&#39;s for all females.
@@ -45,4 +45,4 @@ one_m<-one_m+rnorm(length(one_m),0,0.00001)
 zero_f<-zero_f+rnorm(length(zero_f),0,0.00001)
 print(wilcox.test(one_m,zero_f))
 ```
-### The best is just to calculate lenghts.
+### The best measure is the coverage lenghts.
