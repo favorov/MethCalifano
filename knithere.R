@@ -11,4 +11,6 @@ files.Rmd<-files[grep('.Rmd$',files)]
 for(rmdfile in files.Rmd)
 {
 	knit2html(rmdfile)
+	mdfile=paste0(substr(rmdfile,1,nchar(rmdfile)-3),'md')
+	unlink(mdfile)
 }
