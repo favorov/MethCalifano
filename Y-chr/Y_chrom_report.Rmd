@@ -12,7 +12,7 @@ To do this, we use an absurd comparison of methylation of Y-chromosome between m
 We will make Wilcoxon test for the Y-chr methylation mesure levels and we will make a test of 1&#39;s for all males against 0&#39;s for all females to have a watermark (the last comparison).
 
 ```{r load_and_calculate} 
-source("Y_chrom_stats.R")
+source("Y_chrom_methylation.R")
 ```
 Here is coverage of Y-chromome of all the samples by the methylated peaks, the sum of all the scores and the product of length and scores for all the samples.
 

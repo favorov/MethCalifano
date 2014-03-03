@@ -1,4 +1,4 @@
-source("Y_chrom_stats.R")
+source("Y_chrom_methylation.R")
 print(Y.chrom.stats)
 
 print(wilcox.test(Y.chrom.stats$Peak.length.sum[Y.chrom.stats$male],Y.chrom.stats$Peak.length.sum[!Y.chrom.stats$male]))
