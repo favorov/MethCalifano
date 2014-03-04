@@ -102,7 +102,7 @@ if (!data.loaded)
 		karyotype.with.methylation[[DNAid]]=methylcoverage
 		bed_available<-c(bed_available,TRUE)
 	}
-	save('karyotype.with.methylation.Rda',c('karyotype.with.methylation','Clinical','bed_available','tumors','normals','DNAids'))
+	save(file='karyotype.with.methylation.Rda',list=c('karyotype.with.methylation','Clinical','bed_available','tumors','normals','DNAids'))
 }
 
 wilcoxon.result<-numeric(0)
