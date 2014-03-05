@@ -14,8 +14,8 @@ data.loaded<-FALSE
 # we can the whole thing to karyotype.with.methylation.Rda
 if(file.exists('karyotype.with.methylation.Rda'))
 	if ('karyotype.with.methylation' %in% load('karyotype.with.methylation.Rda'))
-		if (class('karyotype.with.methylation')=='data.frame')
-			data.loaded==TRUE
+		if (class(karyotype.with.methylation)=='data.frame')
+			data.loaded<-TRUE
 
 if (!data.loaded)
 {
@@ -105,18 +105,22 @@ if (!data.loaded)
 	save(file='karyotype.with.methylation.Rda',list=c('karyotype.with.methylation','Clinical','bed_available','tumors','normals','DNAids'))
 }
 
-wilcoxon.result<-numeric(0)
-#anova.result<-numeric(0)
+wilcoxon.p.values<-numeric(0)
+normals.are.less.methylated<-logical(0)
 
-for (rown in 1:dim(karyotype.with.methylation)[1])
+expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
+
+tests.number<-dim(karyotype.with.methylation)[1]
+
+for (rown in 1:tests.number)
 {
-	meth.values<-as.numeric(karyotype.with.methylation[DNAids[bed_available]])
-	wilcoxon.result<-c(wilcoxon.result,wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])$p.value)
+	meth.values<-as.numeric(karyotype.with.methylation[rown,][DNAids[bed_available]])
+	w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
+	wilcoxon.p.values<-c(wilcoxon.p.values,w$p.value)
+	normals.are.less.methylated<-c(normals.are.less.methylated,(w[['statistic']]<expected.w.statistic))
 	#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
 }
 
-karyotype$wilcoxon.result<-wilcoxon.result
-#karyotype$anova.result<-anova.result
-
-DM.intervals<-which(karyotype$wilcoxon.result<=0.05)
+DM.cytobands<-which(wilcoxon.p.values<=0.05)
+DM.cytobands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
 
