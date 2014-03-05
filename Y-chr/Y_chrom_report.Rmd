@@ -1,7 +1,9 @@
 Trying to test which measure feels better that chrY methylation is represented in female samples less than in male ones
 ========================================================
 
-### Alexander Favorov 
+Alexander Favorov 
+-------------------------------------------------------
+
 ### 1 Mar 2014
 
 `r opts_chunk$set(echo=F,message=F,cache=T)`
