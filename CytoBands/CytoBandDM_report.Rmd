@@ -9,7 +9,7 @@ Alexander Favorov
 `r opts_chunk$set(echo=F,message=F,cache=F,warning=F)`
 <!-- cache is off, we save all the neccessary things in Rda -->
 
-We load the cytoband list (karyotype) from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\..\..\..\Data\Clinical\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. 
+We load the cytoband list (karyotype) from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.html>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. 
 
 Then, for each cytoband we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the cytoband in each of the samples.
 
