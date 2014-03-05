@@ -1,6 +1,8 @@
 **/cache/**
 .Rdata
 .Rhistory
+*.rda
+*.Rda
 *~
 *.swp
 .*
