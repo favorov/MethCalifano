@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Which cytobands are differentially methylated in the 2014-02-06_RO1_Batch1-4_ClinicalData_DeID data?</title>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Which cytobands are differentially methylated in the 2014-02-06_RO1_Batch1-4_ClinicalData_DeID data?</h1>
+
+<h2>Alexander Favorov  </h2>
+
+<h3>March 5 2014</h3>
+
+<!-- cache is off, we save all the neccessary things in Rda -->
+
+<p>We load the cytoband list (karyotype) from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.html>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. </p>
+
+<p>Then, for each cytoband we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the cytoband in each of the samples.</p>
+
+<p>Thus, for each interval (cytodand) we have a methylated length (coverage) for each sample).
+Then, we calculate the Wilcoxon p-value for each cytoband&#39;s tumor and normal DM coverages.
+iWe think that a cytobands is differentyally methylated if the p-value is &lt;=0.05. </p>
+
+<h3>Here is the list of all differentially methylated cytobands, no multiple test correction</h3>
+
+<pre><code>##         id space     start       end wilcoxon.p.value is.hyper
+## 32     p12  chr1 117800001 120600000        1.659e-03     TRUE
+## 38   q21.2  chr1 147000001 150300000        6.555e-03     TRUE
+## 177 q24.21 chr12 114300001 116800000        2.487e-02     TRUE
+## 203 q21.31 chr13  62300001  65700000        4.050e-02    FALSE
+## 204 q21.32 chr13  65700001  68600000        4.445e-02    FALSE
+## 228  q13.3 chr14  36600001  37800000        2.672e-05     TRUE
+## 272 q22.33 chr15  67300001  67500000        4.445e-02     TRUE
+## 345 q21.31 chr18  53800001  56200000        2.616e-02     TRUE
+## 363 q13.13 chr19  38300001  38700000        2.750e-02     TRUE
+## 416  q31.1  chr2 169700001 178000000        2.890e-02     TRUE
+## 438 p11.22 chr20  21300001  22300000        3.275e-03     TRUE
+## 496 p21.33  chr3  43700001  44100000        1.486e-02     TRUE
+## 527  q22.3  chr3 135700001 138700000        4.814e-03     TRUE
+## 529    q24  chr3 142800001 148900000        8.325e-03     TRUE
+## 533 q25.32  chr3 157000001 159000000        6.963e-03     TRUE
+## 536  q26.2  chr3 167600001 170900000        1.112e-02     TRUE
+## 537 q26.31  chr3 170900001 175700000        3.685e-02     TRUE
+## 538 q26.32  chr3 175700001 179000000        4.050e-02     TRUE
+## 539 q26.33  chr3 179000001 182700000        1.176e-02     TRUE
+## 540  q27.1  chr3 182700001 184500000        2.890e-02     TRUE
+## 541  q27.2  chr3 184500001 186000000        2.245e-02     TRUE
+## 542  q27.3  chr3 186000001 187900000        1.727e-02     TRUE
+## 543    q28  chr3 187900001 192300000        3.348e-02     TRUE
+## 544    q29  chr3 192300001 198022430        1.551e-02     TRUE
+## 628  q31.3  chr5 139500001 144500000        1.921e-02     TRUE
+## 646  p22.1  chr6  27000001  30400000        2.364e-02     TRUE
+## 692  p15.2  chr7  25500001  28000000        2.616e-02     TRUE
+## 769  p24.3  chr9         1   2200000        1.315e-02     TRUE
+## 827  p11.1  chrX  58100001  60600000        1.546e-03    FALSE
+</code></pre>
+
+<h3>Here is the same list with Bonferroni correction</h3>
+
+<pre><code>##        id space    start      end wilcoxon.p.value is.hyper
+## 228 q13.3 chr14 36600001 37800000        2.672e-05     TRUE
+</code></pre>
+
+</body>
+
+</html>

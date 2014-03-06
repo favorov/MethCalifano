@@ -1,0 +1,36 @@
+Which cytobands are differentially methylated in the 2014-02-06_RO1_Batch1-4_ClinicalData_DeID data?
+========================================================
+
+Alexander Favorov  
+-----------------------------------------------
+
+### March 5 2014
+
+`r opts_chunk$set(echo=F,message=F,cache=F,warning=F)`
+<!-- cache is off, we save all the neccessary things in Rda -->
+
+We load the cytoband list (karyotype) from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.html>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. 
+
+Then, for each cytoband we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the cytoband in each of the samples.
+
+```{r load and calculate}
+source('CytoBandDM.R')
+columns<-c('id','space','start','end')
+karyotype.stat<-cbind(karyotype.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
+```
+
+Thus, for each interval (cytodand) we have a methylated length (coverage) for each sample).
+Then, we calculate the Wilcoxon p-value for each cytoband's tumor and normal DM coverages.
+iWe think that a cytobands is differentyally methylated if the p-value is <=0.05. 
+
+### Here is the list of all differentially methylated cytobands, no multiple test correction
+
+```{r print, no Bonferroni} 
+print(karyotype.stat[DM.cytobands,])
+```
+
+### Here is the same list with Bonferroni correction
+```{r print, with Bonferroni} 
+print(karyotype.stat[DM.cytobands.Bonferroni,])
+```
+

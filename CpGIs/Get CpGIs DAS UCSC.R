@@ -24,5 +24,4 @@ cpgis<-RangedData(
 	),
 	id=cpgi_data$id
 )
-#now, we want to know how much cpgis each cytoband covers
 print(cpgis)
