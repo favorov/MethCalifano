@@ -1,1 +1,1 @@
-Rscript CytoBandDM.R
+R --vanilla < CytoBandDM.R
