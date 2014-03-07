@@ -1,4 +1,4 @@
-`r opts_chunk$set(echo=F,message=F,cache=T)`
+`r opts_chunk$set(echo=F,message=F,cache=F)`
 
 ```{r load_and_calculate}
 options(width=100)
