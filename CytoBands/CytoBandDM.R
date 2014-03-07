@@ -21,7 +21,7 @@ if (!karyotype.with.methylation.loaded)
 {
 	dataFolder<-'../../Data'
 
-	clinFile <- paste0(dataFolder,'/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv')
+	clinFile <- paste0(dataFolder,'/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv')
 	Clinical <- read.csv(clinFile,stringsAsFactors=F)
 
 	#fix up the column names to account for the fact that there are two header rows
@@ -55,11 +55,18 @@ if (!karyotype.with.methylation.loaded)
 	karyotype.with.methylation<-as(karyotype,"data.frame")
 
 	bed_available<-logical(0)
+	bed_used<-rep(FALSE,length(beds))
 
 	for (DNAid in DNAids)
 	{
-		DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') #remove _ from key
+		DNAidKey<-strsplit(DNAid,',')[[1]][1]	#remove all after ,	
 		match<-grep(DNAidKey,beds)
+		if (!length(match)) 
+		{
+			DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') 
+			#remove _ from key; sometimes, it help
+			match<-grep(DNAidKey,beds)
+		}
 		if (!length(match)) 
 		{
 			bed_available<-c(bed_available,FALSE)
@@ -81,9 +88,10 @@ if (!karyotype.with.methylation.loaded)
 			#we need dual cycle because of the findOverlap return structure
 		}
 		karyotype.with.methylation[[DNAid]]=methylcoverage
+		bed_used[match[1]]<-TRUE
 		bed_available<-c(bed_available,TRUE)
 	}
-	save(file='karyotype.with.methylation.Rda',list=c('karyotype.with.methylation','Clinical','bed_available','tumors','normals','DNAids'))
+	save(file='karyotype.with.methylation.Rda',list=c('karyotype.with.methylation','Clinical','bed_available','bed_used','tumors','normals','DNAids'))
 }
 
 wilcoxon.p.values<-numeric(0)
