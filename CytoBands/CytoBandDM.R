@@ -91,7 +91,7 @@ if (!karyotype.with.methylation.loaded)
 		bed_used[match[1]]<-TRUE
 		bed_available<-c(bed_available,TRUE)
 	}
-	save(file='karyotype.with.methylation.Rda',list=c('karyotype.with.methylation','Clinical','clinFile','bed_available','bed_used','tumors','normals','DNAids'))
+	save(file='karyotype.with.methylation.Rda',list=c('karyotype.with.methylation','Clinical','clinFile','beds','bed_available','bed_used','tumors','normals','DNAids'))
 }
 
 wilcoxon.p.values<-numeric(0)
