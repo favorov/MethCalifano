@@ -34,3 +34,27 @@ print(karyotype.stat[DM.cytobands,])
 print(karyotype.stat[DM.cytobands.Bonferroni,])
 ```
 
+
+Technical info
+-------------------------------
+Clinical data file: `r clinFile`.
+
+Its size and modification time: 
+```{r file.info}
+file.info(clinFile)[,c('size','mtime')] 
+```
+Number of records is `r nrow(Clinical)`
+
+Bed files:
+```{r bed files}
+beds
+```
+DNAIds not in beds:
+```{r not in beds}
+DNAids[!bed_available]
+```
+Beds no in DNAids:
+```{r not in DNAids}
+beds[!bed_used]
+```
+
