@@ -11,10 +11,10 @@ if (!require('DASiR'))
 }
 
 data.loaded<-FALSE
-# we can the whole thing to karyotype.with.methylation.Rda
-if(file.exists('karyotype.with.methylation.Rda'))
-	if ('karyotype.with.methylation' %in% load('karyotype.with.methylation.Rda'))
-		if (class(karyotype.with.methylation)=='data.frame')
+# we can the whole thing to cpgis.with.methylation.Rda
+if(file.exists('cpgis.with.methylation.Rda'))
+	if ('cpgis.with.methylation' %in% load('cpgis.with.methylation.Rda'))
+		if (class(cpgis.with.methylation)=='data.frame')
 			data.loaded<-TRUE
 
 if (!data.loaded)
@@ -47,7 +47,7 @@ if (!data.loaded)
 
 	beds<-list.files(peakbedsfolder)
 
-	#reading karyotype
+	#reading cpgis 
 	setDasServer(server="http://genome.cse.ucsc.edu/cgi-bin/das/")
 	source = "hg19"
 	chrom.ranges<-getDasEntries(source,as.GRanges=TRUE)
