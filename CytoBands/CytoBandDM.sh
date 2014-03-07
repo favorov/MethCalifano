@@ -1,1 +1,2 @@
-R --vanilla < CytoBandDM.R
+#!/bin/bash
+Rscript CytoBandDM.R
