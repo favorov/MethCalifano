@@ -4,7 +4,7 @@ dataFolder<-'../../Data'
 
 #the file to be read
 #clinFile <- paste0(dataFolder,'/Clinical/2013-11-25_RO1_Batch1_ClinicalData_DeID.xls.csv')
-clinFile <- paste0(dataFolder,'/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv')
+clinFile <- paste0(dataFolder,'/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv')
 Clinical <- read.csv(clinFile,stringsAsFactors=F)
 
 #fix up the column names to account for the fact that there are two header rows
@@ -35,16 +35,25 @@ beds<-list.files(peakbedsfolder)
 
 bed_available<-logical(0)
 
+bed_used<-rep(FALSE,length(beds))
+
 for (DNAid in DNAids)
 {
-		DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') #remove _ from key
+		DNAidKey<-strsplit(DNAid,',')[[1]][1]		
 		match<-grep(DNAidKey,beds)
+		if (!length(match)) 
+		{
+			DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') 
+			#remove _ from key; sometimes, it help
+			match<-grep(DNAidKey,beds)
+		}
 		if (!length(match)) 
 		{
 			bed_available<-c(bed_available,FALSE)
 			next
 		}
 		if (length(match)>1) stop(paste0("More than one match of DNAid ",DNAid," amonng the bed file names.\n"));
+		bed_used[match[1]]<-TRUE
 		bedfilename<-paste0(peakbedsfolder,beds[match[1]]);
 		methylated.ranges<-as(import(bedfilename),"RangedData")
 		length.sum<-c(length.sum,sum(width(methylated.ranges['chrY'])))

@@ -1,3 +1,10 @@
+`r opts_chunk$set(echo=F,message=F,cache=T)`
+
+```{r load_and_calculate}
+options(width=100)
+source("Y_chrom_methylation.R")
+```
+
 Trying to test which measure feels better that chrY methylation is represented in female samples less than in male ones
 ========================================================
 
@@ -6,16 +13,12 @@ Alexander Favorov
 
 ### 1 Mar 2014
 
-`r opts_chunk$set(echo=F,message=F,cache=T)`
 
 We will test three measures: the coverage of methylation MACS peaks, their score (summed over chromosome) and their product.
 To do this, we use an absurd comparison of methylation of Y-chromosome between males and females.
 
 We will make Wilcoxon test for the Y-chr methylation mesure levels and we will make a test of 1&#39;s for all males against 0&#39;s for all females to have a watermark (the last comparison).
 
-```{r load_and_calculate} 
-source("Y_chrom_methylation.R")
-```
 Here is coverage of Y-chromome of all the samples by the methylated peaks, the sum of all the scores and the product of length and scores for all the samples.
 
 ```{r print_stats} 
@@ -48,3 +51,27 @@ zero_f<-zero_f+rnorm(length(zero_f),0,0.00001)
 print(wilcox.test(one_m,zero_f))
 ```
 ### The best measure is the coverage lenghts.
+
+
+Technical info
+-------------------------------
+Clinical data file: `r clinFile`.
+
+Its size and modification time: 
+```{r file.info}
+file.info(clinFile)[,c('size','mtime')] 
+```
+Number of records is `r nrow(Clinical)`
+
+Bed files:
+```{r bed files}
+beds
+```
+DNAIds not in beds:
+```{r not in beds}
+DNAids[!bed_available]
+```
+Beds no in DNAids:
+```{r not in DNAids}
+beds[!bed_used]
+```

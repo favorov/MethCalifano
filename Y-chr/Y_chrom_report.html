@@ -161,59 +161,120 @@ To do this, we use an absurd comparison of methylation of Y-chromosome between m
 
 <p>Here is coverage of Y-chromome of all the samples by the methylated peaks, the sum of all the scores and the product of length and scores for all the samples.</p>
 
-<pre><code>##    code     DNAid tumor  male Peak.length.sum Peak.score.sum Product.sum
-## 1     1     37941  TRUE  TRUE          413742         101598   207614610
-## 2     2     35667  TRUE FALSE          376294         102885   150700149
-## 3     3     25441  TRUE  TRUE          313265          52486   143475969
-## 4     4     35675  TRUE FALSE          413638         104126   147113371
-## 5     5      4931  TRUE  TRUE          651050         162215   220521307
-## 6     6     18732  TRUE  TRUE          564458         145679   230736378
-## 7     7     31124  TRUE  TRUE          403700          91285   121400575
-## 8     8     35663  TRUE  TRUE          413478         103125   132697472
-## 9     9     27281  TRUE  TRUE          467948         128386   192180775
-## 10   10     27279  TRUE  TRUE          430185          97185   107257870
-## 11   11     37920  TRUE  TRUE          414190         105237   129432813
-## 12   12     39451  TRUE  TRUE          527631         151385   190243317
-## 13   14     27254  TRUE FALSE          505291         135354   184599984
-## 14   15      3366  TRUE  TRUE          486388         121827   157717673
-## 15   16 3680_TDNA  TRUE  TRUE          509937         140123   159298330
-## 16   17 2934_TDNA  TRUE  TRUE          547344         169368   197774550
-## 17   18     24366  TRUE  TRUE          448006         115736   112974761
-## 18   19     32085  TRUE  TRUE          421773         112762   125925824
-## 19   20     23896  TRUE  TRUE          403758          80055    86827917
-## 20   21     38667  TRUE  TRUE          533276         113744   111625263
-## 21   23     35639  TRUE  TRUE          794539         219144   283511321
-## 22   24     23749  TRUE  TRUE          542038         134365   161772583
-## 23   26     27239  TRUE  TRUE          535922         156848   176504492
-## 24   27     37960  TRUE FALSE          317636          86824   102754483
-## 25   28     30648  TRUE  TRUE          374560          88669   139099195
-## 26   30     23947  TRUE  TRUE          415222         107024   134675291
-## 27   31      5006  TRUE  TRUE          609799         186406   299441207
-## 28   32     38698  TRUE  TRUE          454850         126660   159065795
-## 29   33     24866  TRUE  TRUE          290144          64326    70576459
-## 30   34      1342  TRUE  TRUE          349875          84652   129851383
-## 31   35     39477  TRUE  TRUE          446071         137967   207801657
-## 32   36 2675_TDNA  TRUE  TRUE          365662          86045   113260940
-## 33  101     30553 FALSE  TRUE          304730          62312    98240747
-## 34  102     30596 FALSE  TRUE          763616         207376   366795930
-## 35  103     30577 FALSE  TRUE          462897         114264   164465789
-## 36  104     30580 FALSE  TRUE          518039         127544   187512987
-## 37  105     30018 FALSE FALSE          239088          35748    32169528
-## 38  106     32913 FALSE FALSE          392266          93407   155932321
-## 39  107     25116 FALSE  TRUE          495873         164327   200367330
-## 40  108     34432 FALSE FALSE          464563         130189   164965603
-## 41  109     27773 FALSE  TRUE          537632         158910   185754957
-## 42  110     27743 FALSE  TRUE          483551         147446   175526118
-## 43  111     34440 FALSE FALSE          535880         152500   158366699
-## 44  112     34471 FALSE  TRUE          409733          90571   117914505
-## 45  113     34448 FALSE FALSE          387877         106683   119708536
-## 46  114     30588 FALSE FALSE          325036          84087   126074278
-## 47  115     30593 FALSE FALSE          275500          68870    95235278
-## 48  116     30551 FALSE FALSE          306051          78078   135124306
-## 49  117     30555 FALSE FALSE          339737          86749   115337876
-## 50  118     30599 FALSE  TRUE          427455         108947   128314866
-## 51  119     30539 FALSE FALSE          269001          63927    98069357
-## 52  120     31415 FALSE  TRUE          359808          95688   148503276
+<pre><code>##    code        DNAid tumor  male Peak.length.sum Peak.score.sum
+## 1     1        37941  TRUE  TRUE          413742         101598
+## 2     2        35667  TRUE FALSE          376294         102885
+## 3     3        25441  TRUE  TRUE          313265          52486
+## 4     4        35675  TRUE FALSE          413638         104126
+## 5     5         4931  TRUE  TRUE          651050         162215
+## 6     6        18732  TRUE  TRUE          564458         145679
+## 7     7        31124  TRUE  TRUE          403700          91285
+## 8     8        35663  TRUE  TRUE          413478         103125
+## 9     9        27281  TRUE  TRUE          467948         128386
+## 10   10        27279  TRUE  TRUE          430185          97185
+## 11   11        37920  TRUE  TRUE          414190         105237
+## 12   12        39451  TRUE  TRUE          527631         151385
+## 13   13 34346, 37901  TRUE  TRUE          546384         154165
+## 14   14        27254  TRUE FALSE          505291         135354
+## 15   15         3366  TRUE  TRUE          486388         121827
+## 16   16    3680_TDNA  TRUE  TRUE          509937         140123
+## 17   17    2934_TDNA  TRUE  TRUE          547344         169368
+## 18   18        24366  TRUE  TRUE          448006         115736
+## 19   19        32085  TRUE  TRUE          421773         112762
+## 20   20        23896  TRUE  TRUE          403758          80055
+## 21   21        38667  TRUE  TRUE          533276         113744
+## 22   22        38623  TRUE  TRUE          310553          87294
+## 23   23        35639  TRUE  TRUE          794539         219144
+## 24   24        23749  TRUE  TRUE          542038         134365
+## 25   25        38676  TRUE  TRUE          534061         167045
+## 26   26        27239  TRUE  TRUE          535922         156848
+## 27   27        37960  TRUE FALSE          317636          86824
+## 28   28        30648  TRUE  TRUE          374560          88669
+## 29   29    3669_TDNA  TRUE  TRUE          436423         136703
+## 30   30        23947  TRUE  TRUE          415222         107024
+## 31   31         5006  TRUE  TRUE          609799         186406
+## 32   32        38698  TRUE  TRUE          454850         126660
+## 33   33        24866  TRUE  TRUE          290144          64326
+## 34   34         1342  TRUE  TRUE          349875          84652
+## 35   35        39477  TRUE  TRUE          446071         137967
+## 36   36    2675_TDNA  TRUE  TRUE          365662          86045
+## 37  101        30553 FALSE  TRUE          304730          62312
+## 38  102        30596 FALSE  TRUE          763616         207376
+## 39  103        30577 FALSE  TRUE          462897         114264
+## 40  104        30580 FALSE  TRUE          518039         127544
+## 41  105        30018 FALSE FALSE          239088          35748
+## 42  106        32913 FALSE FALSE          392266          93407
+## 43  107        25116 FALSE  TRUE          495873         164327
+## 44  108        34432 FALSE FALSE          464563         130189
+## 45  109        27773 FALSE  TRUE          537632         158910
+## 46  110        27743 FALSE  TRUE          483551         147446
+## 47  111        34440 FALSE FALSE          535880         152500
+## 48  112        34471 FALSE  TRUE          409733          90571
+## 49  113        34448 FALSE FALSE          387877         106683
+## 50  114        30588 FALSE FALSE          325036          84087
+## 51  115        30593 FALSE FALSE          275500          68870
+## 52  116        30551 FALSE FALSE          306051          78078
+## 53  117        30555 FALSE FALSE          339737          86749
+## 54  118        30599 FALSE  TRUE          427455         108947
+## 55  119        30539 FALSE FALSE          269001          63927
+## 56  120        31415 FALSE  TRUE          359808          95688
+##    Product.sum
+## 1    207614610
+## 2    150700149
+## 3    143475969
+## 4    147113371
+## 5    220521307
+## 6    230736378
+## 7    121400575
+## 8    132697472
+## 9    192180775
+## 10   107257870
+## 11   129432813
+## 12   190243317
+## 13   206414713
+## 14   184599984
+## 15   157717673
+## 16   159298330
+## 17   197774550
+## 18   112974761
+## 19   125925824
+## 20    86827917
+## 21   111625263
+## 22   118577144
+## 23   283511321
+## 24   161772583
+## 25   203484652
+## 26   176504492
+## 27   102754483
+## 28   139099195
+## 29   177671564
+## 30   134675291
+## 31   299441207
+## 32   159065795
+## 33    70576459
+## 34   129851383
+## 35   207801657
+## 36   113260940
+## 37    98240747
+## 38   366795930
+## 39   164465789
+## 40   187512987
+## 41    32169528
+## 42   155932321
+## 43   200367330
+## 44   164965603
+## 45   185754957
+## 46   175526118
+## 47   158366699
+## 48   117914505
+## 49   119708536
+## 50   126074278
+## 51    95235278
+## 52   135124306
+## 53   115337876
+## 54   128314866
+## 55    98069357
+## 56   148503276
 </code></pre>
 
 <p>Wilcoxon test of the methylation peaks coverage the Y-chromosome for males/females </p>
@@ -222,7 +283,7 @@ To do this, we use an absurd comparison of methylation of Y-chromosome between m
 ##  Wilcoxon rank sum test
 ## 
 ## data:  Y.chrom.stats$Peak.length.sum[Y.chrom.stats$male] and Y.chrom.stats$Peak.length.sum[!Y.chrom.stats$male]
-## W = 414, p-value = 0.001743
+## W = 456, p-value = 0.001667
 ## alternative hypothesis: true location shift is not equal to 0
 </code></pre>
 
@@ -232,7 +293,7 @@ To do this, we use an absurd comparison of methylation of Y-chromosome between m
 ##  Wilcoxon rank sum test
 ## 
 ## data:  Y.chrom.stats$Peak.score.sum[Y.chrom.stats$male] and Y.chrom.stats$Peak.score.sum[!Y.chrom.stats$male]
-## W = 381, p-value = 0.01692
+## W = 429, p-value = 0.00979
 ## alternative hypothesis: true location shift is not equal to 0
 </code></pre>
 
@@ -242,7 +303,7 @@ To do this, we use an absurd comparison of methylation of Y-chromosome between m
 ##  Wilcoxon rank sum test
 ## 
 ## data:  Y.chrom.stats$Product.sum[Y.chrom.stats$male] and Y.chrom.stats$Product.sum[!Y.chrom.stats$male]
-## W = 365, p-value = 0.04118
+## W = 411, p-value = 0.02631
 ## alternative hypothesis: true location shift is not equal to 0
 </code></pre>
 
@@ -252,11 +313,95 @@ To do this, we use an absurd comparison of methylation of Y-chromosome between m
 ##  Wilcoxon rank sum test
 ## 
 ## data:  one_m and zero_f
-## W = 532, p-value = 1.131e-12
+## W = 588, p-value = 3.445e-13
 ## alternative hypothesis: true location shift is not equal to 0
 </code></pre>
 
 <h3>The best measure is the coverage lenghts.</h3>
+
+<h2>Technical info</h2>
+
+<p>Clinical data file: ../../Data/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv.</p>
+
+<p>Its size and modification time: </p>
+
+<pre><code>##                                                                    size
+## ../../Data/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv 11197
+##                                                                                 mtime
+## ../../Data/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv 2014-03-06 11:52:36
+</code></pre>
+
+<p>Number of records is 56</p>
+
+<p>Bed files:</p>
+
+<pre><code>##  [1] &quot;002_38623_Enrich_hg19.combined_vs_001_38623_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [2] &quot;004_38676_Enrich_hg19.combined_vs_003_38676_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [3] &quot;005_31415_Enrich_hg19.combined_vs_016_31415_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [4] &quot;006_34440_Enrich_hg19.combined_vs_017_34440_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [5] &quot;008_27743_Enrich_hg19.combined_vs_014_27743_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [6] &quot;009_39477_enrich_hg19.combined_vs_001_39477_total_hg19.combined.50_peaks.bed&quot;                       
+##  [7] &quot;010_34432_enrich_hg19.combined_vs_003_34432_total_hg19.combined.50_peaks.bed&quot;                       
+##  [8] &quot;011_3669_TDNA_enrich_hg19.combined_vs_002_3669_TDNA_total_hg19.combined.50_peaks.bed&quot;               
+##  [9] &quot;012_39451_enrich_hg19.combined_vs_004_39451_total_hg19.combined.50_peaks.bed&quot;                       
+## [10] &quot;013_25116_enrich_hg19.combined_vs_005_25116_total_hg19.combined.50_peaks.bed&quot;                       
+## [11] &quot;014_5006_enrich_hg19.combined_vs_006_5006_total_hg19.combined.50_peaks.bed&quot;                         
+## [12] &quot;015_27254_Enrich_hg19.combined_vs_013_27254_Total_hg19.combined.50_peaks.bed&quot;                       
+## [13] &quot;015_27773_enrich_hg19.combined_vs_007_27773_total_hg19.combined.50_peaks.bed&quot;                       
+## [14] &quot;016_34346_enrich_hg19.combined_vs_008_34346_total_hg19.combined.50_peaks.bed&quot;                       
+## [15] &quot;021_37960_Enrich_hg19.combined_vs_007_37960_Total_hg19.combined.50_peaks.bed&quot;                       
+## [16] &quot;024_38698_Enrich_hg19.combined_vs_023_38698_Total_hg19.combined.50_peaks.bed&quot;                       
+## [17] &quot;025_3366_Enrich_hg19.combined_vs_009_3366_Total_hg19.combined.50_peaks.bed&quot;                         
+## [18] &quot;026_23749_Enrich_hg19.combined_vs_010_23749_Total_hg19.combined.50_peaks.bed&quot;                       
+## [19] &quot;027_23896_Enrich_hg19.combined_vs_011_23896_Total_hg19.combined.50_peaks.bed&quot;                       
+## [20] &quot;028_23947_Enrich_hg19.combined_vs_012_23947_Total_hg19.combined.50_peaks.bed&quot;                       
+## [21] &quot;029_34448_Enrich_hg19_vs_018_34448_Total_hg19.combined.50_peaks.bed&quot;                                
+## [22] &quot;030_35639_Enrich_hg19.combined_vs_020_35639_Total_hg19.combined.50_peaks.bed&quot;                       
+## [23] &quot;031_38667_Enrich_hg19.combined_vs_022_38667_Total_hg19.combined.50_peaks.bed&quot;                       
+## [24] &quot;032_34471_Enrich_hg19.combined_vs_019_34471_Total_hg19.combined.50_peaks.bed&quot;                       
+## [25] &quot;18732_enrich.combined.removeDuplicates_vs_18732_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [26] &quot;25441_enrich.combined.removeDuplicates_vs_25441_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [27] &quot;27279_enrich.combined.removeDuplicates_vs_27279_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [28] &quot;27281_enrich.combined.removeDuplicates_vs_27281_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [29] &quot;30018_enrich.combined.removeDuplicates_vs_30018_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [30] &quot;30553_enrich.combined.removeDuplicates_vs_30553_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [31] &quot;30577_enrich.combined.removeDuplicates_vs_30577_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [32] &quot;30580_enrich.combined.removeDuplicates_vs_30580_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [33] &quot;30596_enrich.combined.removeDuplicates_vs_30596_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [34] &quot;31124_enrich.combined.removeDuplicates_vs_31124_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [35] &quot;32913_enrich.combined.removeDuplicates_vs_32913_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [36] &quot;35663_enrich.combined.removeDuplicates_vs_35663_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [37] &quot;35667_enrich.combined.removeDuplicates_vs_35667_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [38] &quot;35675_enrich.combined.removeDuplicates_vs_35675_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [39] &quot;37941_enrich.combined.removeDuplicates_vs_37941_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [40] &quot;4931_enrich.combined.removeDuplicates_vs_4931_total.combined.removeDuplicates.50_peaks.bed&quot;         
+## [41] &quot;JHUJC01002_001_37920_enrich_hg19.combined_vs_JHUJC01002_002_37920_total.combined.50_peaks.bed&quot;      
+## [42] &quot;JHUJC01002_003_3680TDNA_enrich_hg19.combined_vs_JHUJC01002_004_3680TDNA_total.combined.50_peaks.bed&quot;
+## [43] &quot;JHUJC01002_005_24366_enrich.combined_vs_JHUJC01002_006_24366_total.combined.50_peaks.bed&quot;           
+## [44] &quot;JHUJC01002_007_2934TDNA_enrich.combined_vs_JHUJC01002_008_2934TDNA_total.combined.50_peaks.bed&quot;     
+## [45] &quot;JHUJC01002_009_32085_enrich.combined_vs_JHUJC01002_010_32085_total.combined.50_peaks.bed&quot;           
+## [46] &quot;JHUJC01002_011_27239_enrich.combined_vs_JHUJC01002_012_27239_total.combined.50_peaks.bed&quot;           
+## [47] &quot;JHUJC01002_013_24866_enrich.combined_vs_JHUJC01002_014_24866_total.combined.50_peaks.bed&quot;           
+## [48] &quot;JHUJC01002_015_30599_enrich.combined_vs_JHUJC01002_016_30599_total.combined.50_peaks.bed&quot;           
+## [49] &quot;JHUJC01002_017_30593_enrich.combined.bam.JHUJC01002_018_30593_total.combined.bam_peaks.bed&quot;         
+## [50] &quot;JHUJC01002_019_1342_enrich.combined.bam.JHUJC01002_020_1342_total.combined.bam_peaks.bed&quot;           
+## [51] &quot;JHUJC01002_021_30588_enrich.combined.bam.JHUJC01002_022_30588_total.combined.bam_peaks.bed&quot;         
+## [52] &quot;JHUJC01002_023_30551_enrich.combined.bam.JHUJC01002_024_30551_total.combined.bam_peaks.bed&quot;         
+## [53] &quot;JHUJC01002_025_30555_enrich.combined.bam.JHUJC01002_026_30555_total.combined.bam_peaks.bed&quot;         
+## [54] &quot;JHUJC01002_027_30539_enrich.combined.bam.JHUJC01002_028_30539_total.combined.bam_peaks.bed&quot;         
+## [55] &quot;JHUJC01002_029_30648_enrich.combined.bam.JHUJC01002_030_30648_total.combined.bam_peaks.bed&quot;         
+## [56] &quot;JHUJC01002_031_2675TDNA_enrich.combined.bam.JHUJC01002_032_2675TDNA_total.combined.bam_peaks.bed&quot;
+</code></pre>
+
+<p>DNAIds not in beds:</p>
+
+<pre><code>## character(0)
+</code></pre>
+
+<p>Beds no in DNAids:</p>
+
+<pre><code>## character(0)
+</code></pre>
 
 </body>
 
