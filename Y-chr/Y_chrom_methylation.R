@@ -34,12 +34,11 @@ peakbedsfolder<-paste0(dataFolder,'/PeakCalls/bedfiles/')
 beds<-list.files(peakbedsfolder)
 
 bed_available<-logical(0)
-
 bed_used<-rep(FALSE,length(beds))
 
 for (DNAid in DNAids)
 {
-		DNAidKey<-strsplit(DNAid,',')[[1]][1]		
+		DNAidKey<-strsplit(DNAid,',')[[1]][1]		#remove all after ,	
 		match<-grep(DNAidKey,beds)
 		if (!length(match)) 
 		{
@@ -53,12 +52,12 @@ for (DNAid in DNAids)
 			next
 		}
 		if (length(match)>1) stop(paste0("More than one match of DNAid ",DNAid," amonng the bed file names.\n"));
-		bed_used[match[1]]<-TRUE
 		bedfilename<-paste0(peakbedsfolder,beds[match[1]]);
 		methylated.ranges<-as(import(bedfilename),"RangedData")
 		length.sum<-c(length.sum,sum(width(methylated.ranges['chrY'])))
 		score.sum<-c(score.sum,sum(methylated.ranges['chrY']$score))
 		ls.prod.sum<-c(ls.prod.sum,sum(width(methylated.ranges['chrY'])*methylated.ranges['chrY']$score))
+		bed_used[match[1]]<-TRUE
 		bed_available<-c(bed_available,TRUE)
 }
 
