@@ -10,16 +10,17 @@ if (!require('DASiR'))
 	biocLite("DASiR")
 }
 
-karyotype.loaded<-FALSE
+CpGIs.loaded<-FALSE
 # we can the whole thing to karyotype.with.methylation.Rda
 
-if(file.exists('karyotype.Rda'))
-	if ('karyotype' %in% load('karyotype.Rda'))
-		if (class(karyotype)=='RangedData')
-			karyotype.loaded<-TRUE
+if(file.exists('CpGIs.Rda'))
+	if ('CpGIs' %in% load('CpGIs.Rda'))
+		if (class(CpGIs)=='RangedData')
+			CpGIs.loaded<-TRUE
 
-if(!karyotype.loaded)
+if(!CpGIs.loaded)
 {
+
 	setDasServer(server="http://genome.cse.ucsc.edu/cgi-bin/das/")
 	source = "hg19"
 	chrom.ranges<-getDasEntries(source,as.GRanges=TRUE)
@@ -27,20 +28,20 @@ if(!karyotype.loaded)
 	#remove all pseudochromosomes: they have long names and remove MT
 	#result is: chrom.ranges is all the chromosomes 1..22,X,Y with their length
 	#print(chrom.ranges)
-	karyotype_data<-getDasFeature(source,chrom.ranges,'cytoBand')
-	#karyotype is a DataFrame with all the chromosome karyotype bands enumerated
-	chrs<-as.character(seqnames(chrom.ranges))[karyotype_data$segment.range]
-	#segment.range in return is not the chrom name; it is index of the chr's record in chrom.range
-	karyotype<-RangedData(
+	CpGI_data<-getDasFeature(source,chrom.ranges,'cpgIslandExt')
+	#CpGI_data is a DataFrame with all the CpGIs bands enumerated
+	chrs<-as.character(seqnames(chrom.ranges))[CpGI_data$segment.range]
+	#the same trick
+	CpGIs<-RangedData(
 		space=paste0('chr',chrs), 
 		ranges=IRanges
 		(
-			start=as.numeric(as.character(karyotype_data$start)),
-			end=as.numeric(as.character(karyotype_data$end))
+			start=as.numeric(as.character(CpGI_data$start)),
+			end=as.numeric(as.character(CpGI_data$end))
 		),
-		id=karyotype_data$label
+		id=CpGI_data$id
 	)
-	save(file='karyotype.Rda',list=c('karyotype'))
+	save(file='CpGIs.Rda',list=c('CpGIs'))
 }
-#print(karyotype)
+print(CpGIs)
 
