@@ -1,4 +1,4 @@
-Which cytobands are differentially methylated in the 2014-02-06_RO1_Batch1-4_ClinicalData_DeID data?
+Which CpG islands are differentially methylated in the 2014-02-06_RO1_Batch1-4_ClinicalData_DeID data?
 ========================================================
 
 Alexander Favorov  
@@ -9,28 +9,52 @@ Alexander Favorov
 `r opts_chunk$set(echo=F,message=F,cache=F,warning=F)`
 <!-- cache is off, we save all the neccessary things in Rda -->
 
-We load the cytoband list (karyotype) from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.html>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. 
+We load the CpG islands list from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.html>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. 
 
 Then, for each cytoband we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the cytoband in each of the samples.
 
 ```{r load and calculate}
-source('CytoBandDM.R')
+source('CpGIsDM.R')
 columns<-c('id','space','start','end')
-karyotype.stat<-cbind(karyotype.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
+CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
 ```
 
-Thus, for each interval (cytodand) we have a methylated length (coverage) for each sample).
+Thus, for each island we have a methylated length (coverage) for each sample).
 Then, we calculate the Wilcoxon p-value for each cytoband's tumor and normal DM coverages.
-iWe think that a cytobands is differentyally methylated if the p-value is <=0.05. 
+We think that am island is differentyally methylated if the p-value is <=0.05. 
 
-### Here is the list of all differentially methylated cytobands, no multiple test correction
+### Here is the list of all differentially methylated CpG, no multiple test correction
 
 ```{r print, no Bonferroni} 
-print(karyotype.stat[DM.cytobands,])
+print(CpGIs.stat[DM.islands,])
 ```
 
 ### Here is the same list with Bonferroni correction
 ```{r print, with Bonferroni} 
-print(karyotype.stat[DM.cytobands.Bonferroni,])
+print(CpGIS.stat[DM.islands.Bonferroni,])
+```
+
+
+Technical info
+-------------------------------
+Clinical data file: `r clinFile`.
+
+Its size and modification time: 
+```{r file.info}
+file.info(clinFile)[,c('size','mtime')] 
+```
+Number of records is `r nrow(Clinical)`
+
+Bed files:
+```{r bed files}
+beds
+```
+DNAIds not in beds:
+```{r not in beds}
+DNAids[!bed_available]
+```
+Beds no in DNAids:
+```{r not in DNAids}
+beds[!bed_used]
 ```
 

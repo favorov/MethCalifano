@@ -10,18 +10,18 @@ if (!require('DASiR'))
 	biocLite("DASiR")
 }
 
-data.loaded<-FALSE
-# we can the whole thing to cpgis.with.methylation.Rda
-if(file.exists('cpgis.with.methylation.Rda'))
-	if ('cpgis.with.methylation' %in% load('cpgis.with.methylation.Rda'))
-		if (class(cpgis.with.methylation)=='data.frame')
-			data.loaded<-TRUE
+CpGIs.with.methylation.loaded<-FALSE
+# we can the whole thing to CpGIs.with.methylation.Rda
+if(file.exists('CpGIs.with.methylation.Rda'))
+	if ('CpGIs.with.methylation' %in% load('CpGIs.with.methylation.Rda'))
+		if (class(CpGIs.with.methylation)=='data.frame')
+			CpGIs.with.methylation.loaded-TRUE
 
-if (!data.loaded)
+if (!CpGIs.with.methylation.loaded)
 {
 	dataFolder<-'../../Data'
 
-	clinFile <- paste0(dataFolder,'/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv')
+	clinFile <- paste0(dataFolder,'/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv')
 	Clinical <- read.csv(clinFile,stringsAsFactors=F)
 
 	#fix up the column names to account for the fact that there are two header rows
@@ -47,38 +47,25 @@ if (!data.loaded)
 
 	beds<-list.files(peakbedsfolder)
 
-	#reading cpgis 
-	setDasServer(server="http://genome.cse.ucsc.edu/cgi-bin/das/")
-	source = "hg19"
-	chrom.ranges<-getDasEntries(source,as.GRanges=TRUE)
-	chrom.ranges<-chrom.ranges[nchar(as.character(seqnames(chrom.ranges))) < 3 & (as.character(seqnames(chrom.ranges))) != 'M']
-	#remove all pseudochromosomes: they have long names and remove MT
-	#result is: chrom.ranges is all the chromosomes 1..22,X,Y with their length
-	#print(chrom.ranges)
-	karyotype_data<-getDasFeature(source,chrom.ranges,'cytoBand')
-	#karyotype is a DataFrame with all the chromosome karyotype bands enumerated
-	chrs<-as.character(seqnames(chrom.ranges))[karyotype_data$segment.range]
-	#segment.range in return is not the chrom name; it is index of the chr's record in chrom.range
-	karyotype<-RangedData(
-		space=paste0('chr',chrs), 
-		ranges=IRanges
-		(
-			start=as.numeric(as.character(karyotype_data$start)),
-			end=as.numeric(as.character(karyotype_data$end))
-		),
-		id=karyotype_data$label
-	)
-
-	#print(karyotype)
-	#karyotype read
-	karyotype.with.methylation<-as(karyotype,"data.frame")
+	#reading islands 
+	# we can the whole thing to CpGIs.with.methylation.Rda
+	source('load_or_read_and_save_CpGIs.R')
+	#islands are read fro DAS or loaded
+	CpGIs.with.methylation<-as(CpGIs,"data.frame")
 
 	bed_available<-logical(0)
+	bed_used<-rep(FALSE,length(beds))
 
 	for (DNAid in DNAids)
 	{
-		DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') #remove _ from key
+		DNAidKey<-strsplit(DNAid,',')[[1]][1]	#remove all after ,	
 		match<-grep(DNAidKey,beds)
+		if (!length(match)) 
+		{
+			DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') 
+			#remove _ from key; sometimes, it help
+			match<-grep(DNAidKey,beds)
+		}
 		if (!length(match)) 
 		{
 			bed_available<-c(bed_available,FALSE)
@@ -87,22 +74,23 @@ if (!data.loaded)
 		if (length(match)>1) stop(paste0("More than one match of DNAid ",DNAid," amonng the bed file names.\n"));
 		bedfilename<-paste0(peakbedsfolder,beds[match[1]]);
 		methylated.ranges<-as(import(bedfilename),"RangedData")
-		overlaps<-findOverlaps(karyotype,methylated.ranges)
+		overlaps<-findOverlaps(CpGIs,methylated.ranges)
 		methylcoverage=integer(0)
-		for(chr in names(karyotype))
+		for(chr in names(CpGIs))
 		#cycle by chromosome
 		{
-			methylcoverage.this.chr<-sapply(1:length(karyotype[chr][[1]]),function(band){
+			methylcoverage.this.chr<-sapply(1:length(CpGIs[chr][[1]]),function(band){
 				sum(width(methylated.ranges[chr][as.list(overlaps[[chr]])[[band]],]))
-			})#list of methylated coverage per cytoband
+			})#list of methylated coverage per isaland 
 			methylcoverage<-c(methylcoverage,methylcoverage.this.chr)
 			#add to main list
 			#we need dual cycle because of the findOverlap return structure
 		}
-		karyotype.with.methylation[[DNAid]]=methylcoverage
+		CpGIs.with.methylation[[DNAid]]=methylcoverage
+		bed_used[match[1]]<-TRUE
 		bed_available<-c(bed_available,TRUE)
 	}
-	save(file='karyotype.with.methylation.Rda',list=c('karyotype.with.methylation','Clinical','bed_available','tumors','normals','DNAids'))
+	save(file='CpGIs.with.methylation.Rda',list=c('CpGIs.with.methylation','Clinical','clinFile','beds','bed_available','bed_used','tumors','normals','DNAids'))
 }
 
 wilcoxon.p.values<-numeric(0)
@@ -110,17 +98,17 @@ normals.are.less.methylated<-logical(0)
 
 expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
 
-tests.number<-dim(karyotype.with.methylation)[1]
+tests.number<-dim(CpGIs.with.methylation)[1]
 
 for (rown in 1:tests.number)
 {
-	meth.values<-as.numeric(karyotype.with.methylation[rown,][DNAids[bed_available]])
+	meth.values<-as.numeric(CpGIs.with.methylation[rown,][DNAids[bed_available]])
 	w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
 	wilcoxon.p.values<-c(wilcoxon.p.values,w$p.value)
 	normals.are.less.methylated<-c(normals.are.less.methylated,(w[['statistic']]<expected.w.statistic))
 	#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
 }
 
-DM.cytobands<-which(wilcoxon.p.values<=0.05)
-DM.cytobands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
+DM.islands<-which(wilcoxon.p.values<=0.05)
+DM.islands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
 
