@@ -21,7 +21,7 @@ karyotype.stat<-cbind(karyotype.with.methylation[,columns],'wilcoxon.p.value'=wi
 
 Thus, for each interval (cytodand) we have a methylated length (coverage) for each sample).
 Then, we calculate the Wilcoxon p-value for each cytoband's tumor and normal DM coverages.
-iWe think that a cytobands is differentyally methylated if the p-value is <=0.05. 
+We think that a cytoband is differentyally methylated if the p-value is <=0.05. 
 
 ### Here is the list of all differentially methylated cytobands, no multiple test correction
 
