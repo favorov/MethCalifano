@@ -11,7 +11,7 @@ Alexander Favorov
 
 We load the CpG islands list from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.html>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. 
 
-Then, for each cytoband we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the cytoband in each of the samples.
+Then, for each island we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the island in each of the samples.
 
 ```{r load and calculate}
 source('CpGIsDM.R')
@@ -20,7 +20,7 @@ CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p
 ```
 
 Thus, for each island we have a methylated length (coverage) for each sample).
-Then, we calculate the Wilcoxon p-value for each cytoband's tumor and normal DM coverages.
+Then, we calculate the Wilcoxon p-value for each island's tumor and normal DM coverages.
 We think that am island is differentyally methylated if the p-value is <=0.05. 
 
 ### Here is the list of all differentially methylated CpG, no multiple test correction
