@@ -14,6 +14,7 @@ We load the cytoband list (karyotype) from <a href=http://genome.ucsc.edu/>UCSC<
 Then, for each cytoband we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the cytoband in each of the samples.
 
 ```{r load and calculate}
+options(width=100)
 source('CytoBandDM.R')
 columns<-c('id','space','start','end')
 karyotype.stat<-cbind(karyotype.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
