@@ -43,5 +43,5 @@ if(!CpGIs.loaded)
 	)
 	save(file='CpGIs.Rda',list=c('CpGIs'))
 }
-print(CpGIs)
+#print(CpGIs)
 
