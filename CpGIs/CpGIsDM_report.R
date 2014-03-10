@@ -1,8 +1,6 @@
-source('CpCIsDM.R')
+source('CpGIsDM.R')
 columns<-c('id','space','start','end')
-karyotype.stat<-cbind(CpGIs.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
-print('No correction')
-print(karyotype.stat[DM.CpGIslands,])
-print('Bonferroni')
-print(karyotype.stat[DM.CpGIslands.Bonferroni,])
+CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
+print('Differential methylation (0.05) with Bonferroni')
+print(CpGIs.stat[DM.CpGIslands.Bonferroni,])
 

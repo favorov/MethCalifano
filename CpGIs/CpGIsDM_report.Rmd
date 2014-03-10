@@ -14,6 +14,7 @@ We load the CpG islands list from <a href=http://genome.ucsc.edu/>UCSC</a> DAS s
 Then, for each island we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the island in each of the samples.
 
 ```{r load and calculate}
+options(width=100)
 source('CpGIsDM.R')
 columns<-c('id','space','start','end')
 CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
@@ -23,15 +24,9 @@ Thus, for each island we have a methylated length (coverage) for each sample).
 Then, we calculate the Wilcoxon p-value for each island's tumor and normal DM coverages.
 We think that am island is differentyally methylated if the p-value is <=0.05. 
 
-### Here is the list of all differentially methylated CpG, no multiple test correction
-
-```{r print, no Bonferroni} 
-print(CpGIs.stat[DM.islands,])
-```
-
-### Here is the same list with Bonferroni correction
+### Here is the list of all differentially methylated (p<=0.05) CpG with Bonferroni correction
 ```{r print, with Bonferroni} 
-print(CpGIS.stat[DM.islands.Bonferroni,])
+print(CpGIs.stat[DM.CpGIslands.Bonferroni,])
 ```
 
 

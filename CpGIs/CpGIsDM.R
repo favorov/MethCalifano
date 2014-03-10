@@ -15,7 +15,7 @@ CpGIs.with.methylation.loaded<-FALSE
 if(file.exists('CpGIs.with.methylation.Rda'))
 	if ('CpGIs.with.methylation' %in% load('CpGIs.with.methylation.Rda'))
 		if (class(CpGIs.with.methylation)=='data.frame')
-			CpGIs.with.methylation.loaded-TRUE
+			CpGIs.with.methylation.loaded<-TRUE
 
 if (!CpGIs.with.methylation.loaded)
 {
@@ -93,22 +93,30 @@ if (!CpGIs.with.methylation.loaded)
 	save(file='CpGIs.with.methylation.Rda',list=c('CpGIs.with.methylation','Clinical','clinFile','beds','bed_available','bed_used','tumors','normals','DNAids'))
 }
 
-wilcoxon.p.values<-numeric(0)
-normals.are.less.methylated<-logical(0)
-
-expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
-
-tests.number<-dim(CpGIs.with.methylation)[1]
-
-for (rown in 1:tests.number)
+CpGIs.wilcoxon.data.loaded<-FALSE
+# we can the whole thing to CpGIs.with.methylation.Rda
+if(file.exists('CpGIs.wilcoxon.data.Rda'))
+	if ('DM.CpGIslands.Bonferroni' %in% load('CpGIs.wilcoxon.data.Rda'))
+			CpGIs.wilcoxon.data.loaded<-TRUE
+if(!CpGIs.wilcoxon.data.loaded)
 {
-	meth.values<-as.numeric(CpGIs.with.methylation[rown,][DNAids[bed_available]])
-	w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
-	wilcoxon.p.values<-c(wilcoxon.p.values,w$p.value)
-	normals.are.less.methylated<-c(normals.are.less.methylated,(w[['statistic']]<expected.w.statistic))
-	#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
+	wilcoxon.p.values<-numeric(0)
+	normals.are.less.methylated<-logical(0)
+
+	expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
+
+	tests.number<-dim(CpGIs.with.methylation)[1]
+
+	for (rown in 1:tests.number)
+	{
+		meth.values<-as.numeric(CpGIs.with.methylation[rown,][DNAids[bed_available]])
+		w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
+		wilcoxon.p.values<-c(wilcoxon.p.values,w$p.value)
+		normals.are.less.methylated<-c(normals.are.less.methylated,(w[['statistic']]<expected.w.statistic))
+		#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
+	}
+
+	DM.CpGIslands<-which(wilcoxon.p.values<=0.05)
+	DM.CpGIslands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
+	save(file='CpGIs.wilcoxon.data.Rda',list=c('wilcoxon.p.values','normals.are.less.methylated','tests.number','DM.CpGIslands','DM.CpGIslands.Bonferroni'))
 }
-
-DM.islands<-which(wilcoxon.p.values<=0.05)
-DM.islands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
-
