@@ -33,6 +33,7 @@ print(karyotype.stat[DM.cytobands,])
 ### Here is the same list with Benjamini-Hoochberg correction
 ```{r print, with FDR} 
 print(karyotype.stat[DM.cytobands.fdr,c(columns,'p.value','fdr','is.hyper')])
+```
 
 ### And, here is the same list with Bonferroni correction
 ```{r print, with Bonferroni} 
