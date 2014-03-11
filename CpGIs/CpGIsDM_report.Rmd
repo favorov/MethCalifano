@@ -16,8 +16,6 @@ Then, for each island we calculate the net length of methylated regions (we read
 ```{r load and calculate}
 options(width=100)
 source('CpGIsDM.R')
-columns<-c('id','space','start','end')
-CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
 ```
 
 Thus, for each island we have a methylated length (coverage) for each sample).
@@ -26,7 +24,7 @@ We think that am island is differentyally methylated if the p-value is <=0.05.
 
 ### Here is the list of all differentially methylated (p<=0.05) CpG with Bonferroni correction
 ```{r print, with Bonferroni} 
-print(CpGIs.stat[DM.CpGIslands.Bonferroni,])
+print(DM.CpGIs.stat)
 ```
 
 

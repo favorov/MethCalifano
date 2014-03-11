@@ -79,9 +79,12 @@ if (!CpGIs.with.methylation.loaded)
 		for(chr in names(CpGIs))
 		#cycle by chromosome
 		{
-			methylcoverage.this.chr<-sapply(1:length(CpGIs[chr][[1]]),function(band){
+				methylcoverage.this.chr<-sapply(1:length(CpGIs[chr][[1]]),function(band){
 				sum(width(methylated.ranges[chr][as.list(overlaps[[chr]])[[band]],]))
-			})#list of methylated coverage per isaland 
+			})
+			#list of methylated coverage per island
+			#the main idead is that as.list(hitsobject) convert is to list of vectors, 
+			#list is addressd by query oblects and give ref object lists (possibly, empty)
 			methylcoverage<-c(methylcoverage,methylcoverage.this.chr)
 			#add to main list
 			#we need dual cycle because of the findOverlap return structure
@@ -120,3 +123,30 @@ if(!CpGIs.wilcoxon.data.loaded)
 	DM.CpGIslands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
 	save(file='CpGIs.wilcoxon.data.Rda',list=c('wilcoxon.p.values','normals.are.less.methylated','tests.number','DM.CpGIslands','DM.CpGIslands.Bonferroni'))
 }
+
+#here, we form output statictics
+columns<-c('id','space','start','end')
+CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
+DM.CpGIs.stat<-CpGIs.stat[DM.CpGIslands.Bonferroni,]
+
+#we want to put each diffmet CpGi to a cytoband
+source('load_or_read_and_save_karyotype.R')
+DM.CpGIs.Ranges<-as(DM.CpGIs.stat[,columns],'RangedData')
+CpGIs.to.karyotype<-findOverlaps(DM.CpGIs.Ranges,karyotype,type="within")
+cytobands.of.DM.cpgis=character(0)
+for (chr in names(CpGIs.to.karyotype))
+{
+  #chromosome cycle
+	len<-length(DM.CpGIs.Ranges[chr][[1]])
+	if (len==0) next
+	#we did not do it in 'big' cycles over
+	#overlaps, because their queries were like cytobands, etc - no empty chromosomes
+	cytoband.numbers.this.chr<-sapply(1:len,function(island_no){
+		my_cytoz<-as.list(CpGIs.to.karyotype[[chr]])[[island_no]]
+		if (!length(my_cytoz)) {NA} else {my_cytoz[1]}
+	})
+	cytobands.of.DM.cpgis<-c(cytobands.of.DM.cpgis,as.character(karyotype[chr][[1]][cytoband.numbers.this.chr]))
+}
+
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis)
+
