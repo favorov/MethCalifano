@@ -110,6 +110,10 @@ for (rown in 1:tests.number)
 	#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
 }
 
+wilcoxon.p.values.bonferroni<-p.adjust(wilcoxon.p.values,'bonferroni')
+wilcoxon.p.values.fdr<-p.adjust(wilcoxon.p.values,'fdr')
+
 DM.cytobands<-which(wilcoxon.p.values<=0.05)
-DM.cytobands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
+DM.cytobands.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
+DM.cytobands.fdr<-which(wilcoxon.p.values.fdr<=0.05)
 

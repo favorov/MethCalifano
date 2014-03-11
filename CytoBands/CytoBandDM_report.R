@@ -1,8 +1,10 @@
 source('CytoBandDM.R')
 columns<-c('id','space','start','end')
-karyotype.stat<-cbind(karyotype.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
+karyotype.stat<-cbind(karyotype.with.methylation[,columns],'p.value'=wilcoxon.p.values,'bonferroni'=wilcoxon.p.values.bonferroni,'fdr'=wilcoxon.p.values.fdr,'is.hyper'=normals.are.less.methylated)
 print('No correction')
-print(karyotype.stat[DM.cytobands,])
+print(karyotype.stat[DM.cytobands,c(columns,'p.value','is.hyper')])
+print('Benjamini-Hoochberg')
+print(karyotype.stat[DM.cytobands.fdr,c(columns,'p.value','fdr','is.hyper')])
 print('Bonferroni')
-print(karyotype.stat[DM.cytobands.Bonferroni,])
+print(karyotype.stat[DM.cytobands.bonferroni,c(columns,'p.value','bonferroni','is.hyper')])
 
