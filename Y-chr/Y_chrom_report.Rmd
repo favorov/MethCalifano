@@ -40,7 +40,7 @@ print(wilcox.test(Y.chrom.stats$Product.sum[Y.chrom.stats$male],Y.chrom.stats$Pr
 
 The watermark test:  Wilcoxon for 1&#39;s for all males against 0&#39;s for all females.
 ```{r wilcoxon_watermark} 
-print(wilcox.test(one_m,zero_f))
+print(wilcox.test(one_m_j,zero_f_j))
 ```
 ### The best measure is the coverage lenghts.
 
