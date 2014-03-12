@@ -1,9 +1,5 @@
 `r opts_chunk$set(echo=F,message=F,cache=F)`
 
-```{r load_and_calculate}
-options(width=100)
-source("Y_chrom_methylation.R")
-```
 
 Trying to test which measure feels better that chrY methylation is represented in female samples less than in male ones
 ========================================================
@@ -21,8 +17,9 @@ We will make Wilcoxon test for the Y-chr methylation mesure levels and we will m
 
 Here is coverage of Y-chromome of all the samples by the methylated peaks, the sum of all the scores and the product of length and scores for all the samples.
 
-```{r print_stats} 
-print(Y.chrom.stats)
+```{r load_and_calculate}
+options(width=100)
+source("Y_chrom_methylation.R")
 ```
 
 Wilcoxon test of the methylation peaks coverage the Y-chromosome for males/females 
@@ -42,12 +39,7 @@ print(wilcox.test(Y.chrom.stats$Product.sum[Y.chrom.stats$male],Y.chrom.stats$Pr
 ```
 
 The watermark test:  Wilcoxon for 1&#39;s for all males against 0&#39;s for all females.
-```{r_watermark_wilcoxon}
-one_m<-rep(1,sum(Y.chrom.stats$male))
-zero_f<-rep(0,sum(!Y.chrom.stats$male))
-#remove ties by adding noise
-one_m<-one_m+rnorm(length(one_m),0,0.00001)
-zero_f<-zero_f+rnorm(length(zero_f),0,0.00001)
+```{r wilcoxon_watermark} 
 print(wilcox.test(one_m,zero_f))
 ```
 ### The best measure is the coverage lenghts.

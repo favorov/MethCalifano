@@ -86,3 +86,16 @@ if (!Y.chrom.stats.loaded)
 	save(file='Y.chrom.stats.Rda',list=c('Y.chrom.stats','clinFile','Clinical','beds','bed_available','bed_used','DNAids'))
 
 }
+
+print(Y.chrom.stats)
+
+#to compare with pure 1's and 0's: 
+one_m<-rep(1,sum(Y.chrom.stats$male))
+one_m_j<-jitter(one_m)
+zero_f<-rep(0,sum(!Y.chrom.stats$male))
+zero_f_j<-jitter(zero_f)
+
+Y.chrom.stats$Peak.length.sum<-jitter(Y.chrom.stats$Peak.length.sum)
+Y.chrom.stats$Peak.score.sum<-jitter(Y.chrom.stats$Peak.score.sum)
+Y.chrom.stats$Product.sum<-jitter(Y.chrom.stats$Product.sum)
+
