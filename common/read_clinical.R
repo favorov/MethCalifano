@@ -21,4 +21,4 @@ tumors <- as.integer(Clinical$Code) < 99
 normals <- as.integer(Clinical$Code) > 99
 
 DNAids<-Clinical$'Tissue DNA HAND ID'
-
+#clinical prepared
