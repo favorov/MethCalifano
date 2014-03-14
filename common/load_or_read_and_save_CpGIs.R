@@ -13,8 +13,8 @@ if (!require('DASiR'))
 CpGIs.loaded<-FALSE
 # we can the whole thing to karyotype.with.methylation.Rda
 
-if(file.exists('CpGIs.Rda'))
-	if ('CpGIs' %in% load('CpGIs.Rda'))
+if(file.exists('../common/CpGIs.Rda'))
+	if ('CpGIs' %in% load('../common/CpGIs.Rda'))
 		if (class(CpGIs)=='RangedData')
 			CpGIs.loaded<-TRUE
 
@@ -41,7 +41,7 @@ if(!CpGIs.loaded)
 		),
 		id=CpGI_data$id
 	)
-	save(file='CpGIs.Rda',list=c('CpGIs'))
+	save(file='../common/CpGIs.Rda',list=c('CpGIs'))
 }
 #print(CpGIs)
 
