@@ -29,7 +29,7 @@ if (!CpGIs.with.methylation.loaded)
 
 	#reading islands 
 	# we can the whole thing to CpGIs.with.methylation.Rda
-	source('load_or_read_and_save_CpGIs.R')
+	source('../common/load_or_read_and_save_CpGIs.R')
 	#islands are read fro DAS or loaded
 	CpGIs.with.methylation<-as(CpGIs,"data.frame")
 
@@ -84,6 +84,7 @@ if(file.exists('CpGIs.wilcoxon.data.Rda'))
 if(!CpGIs.wilcoxon.data.loaded)
 {
 	wilcoxon.p.values<-numeric(0)
+
 	normals.are.less.methylated<-logical(0)
 
 	expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
