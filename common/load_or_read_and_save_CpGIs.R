@@ -1,3 +1,7 @@
+#fetches known CpGIs from UCSC DAS server
+#saves the information to ../common/CpGIs.Rda
+#if the file exists, read it after some checks
+
 if (!require('rtracklayer'))
 {
 	source("http://bioconductor.org/biocLite.R")
