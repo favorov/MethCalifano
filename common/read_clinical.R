@@ -1,3 +1,5 @@
+#reads clinical file for Joe Califano's projects
+
 dataFolder<-'../../Data'
 
 #the file to be read
