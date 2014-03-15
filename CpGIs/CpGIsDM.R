@@ -111,7 +111,7 @@ CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p
 DM.CpGIs.stat<-CpGIs.stat[DM.CpGIslands.Bonferroni,]
 
 #we want to put each diffmet CpGi to a cytoband
-source('load_or_read_and_save_karyotype.R')
+source('../common/load_or_read_and_save_karyotype.R')
 DM.CpGIs.Ranges<-as(DM.CpGIs.stat[,columns],'RangedData')
 CpGIs.to.karyotype<-findOverlaps(DM.CpGIs.Ranges,karyotype,type="within")
 cytobands.of.DM.cpgis=character(0)
