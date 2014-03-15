@@ -93,7 +93,7 @@ if(!CpGIs.wilcoxon.data.loaded)
 
 	for (rown in 1:tests.number)
 	{
-		meth.values<-as.numeric(CpGIs.with.methylation[rown,][DNAids[bed_available]])
+		meth.values<-jitter(as.numeric(CpGIs.with.methylation[rown,][DNAids[bed_available]]))
 		w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
 		wilcoxon.p.values<-c(wilcoxon.p.values,w$p.value)
 		normals.are.less.methylated<-c(normals.are.less.methylated,(w[['statistic']]<expected.w.statistic))
