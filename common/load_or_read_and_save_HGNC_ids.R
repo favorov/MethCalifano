@@ -1,4 +1,4 @@
-#fetches known CpGIs from UCSC DAS server
+#fetches HGNC ids  from HGNC server
 #saves the information to ../common/CpGIs.Rda
 #if the file exists, read it after some checks
 
