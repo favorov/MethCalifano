@@ -4,7 +4,7 @@ Which cytobands are differentially methylated in the 2014-02-06_RO1_Batch1-4_Cli
 Alexander Favorov  
 -----------------------------------------------
 
-### March 5 2014
+### `r format(Sys.Date(), "%d %b %Y")` 
 
 `r opts_chunk$set(echo=F,message=F,cache=F,warning=F)`
 <!-- cache is off, we save all the neccessary things in Rda -->
