@@ -1,10 +1,10 @@
-if (!require('rtracklayer'))
+if (!suppressWarnings(require('rtracklayer')))
 {
 	source("http://bioconductor.org/biocLite.R")
 	biocLite("rtracklayer")
 }
 
-if (!require('DASiR'))
+if (!suppressWarnings(require('DASiR')))
 {
 	source("http://bioconductor.org/biocLite.R")
 	biocLite("DASiR")
