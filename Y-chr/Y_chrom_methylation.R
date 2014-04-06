@@ -1,4 +1,4 @@
-if (!require('rtracklayer'))
+if (!suppressWarnings(require('rtracklayer')))
 {
 	source("http://bioconductor.org/biocLite.R")
 	biocLite("rtracklayer")

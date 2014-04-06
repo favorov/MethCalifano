@@ -7,7 +7,7 @@ Trying to test which measure feels better that chrY methylation is represented i
 Alexander Favorov 
 -------------------------------------------------------
 
-### 1 Mar 2014
+### `r format(Sys.Date(), "%d %b %Y")` 
 
 
 We will test three measures: the coverage of methylation MACS peaks, their score (summed over chromosome) and their product.
