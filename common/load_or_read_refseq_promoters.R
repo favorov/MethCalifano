@@ -54,7 +54,7 @@ if(!refseqPromoters.loaded)
 
 	refseqTSS<-RangedData.from.df.refseq(refseqTSSdf)
 
-	save(file='refseqPromoters.rda',list=c('refseqPromoters','refseqGenes.35','refseqGenes.53','refseqTSS'))
+	save(file='../common/refseqPromoters.rda',list=c('refseqPromoters','refseqGenes.35','refseqGenes.53','refseqTSS'))
 }
 
 
