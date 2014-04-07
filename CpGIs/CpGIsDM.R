@@ -1,10 +1,10 @@
-if (!require('rtracklayer'))
+if (!suppressWarnings(require('rtracklayer')))
 {
 	source("http://bioconductor.org/biocLite.R")
 	biocLite("rtracklayer")
 }
 
-if (!require('DASiR'))
+if (!suppressWarnings(require('DASiR')))
 {
 	source("http://bioconductor.org/biocLite.R")
 	biocLite("DASiR")
@@ -29,16 +29,18 @@ if (!CpGIs.with.methylation.loaded)
 
 	#reading islands 
 	# we can the whole thing to CpGIs.with.methylation.Rda
-	source('../common/load_or_read_and_save_CpGIs.R')
+	source('../common/load_or_read_CpGIs.R')
 	#islands are read fro DAS or loaded
+
 	CpGIs.with.methylation<-as(CpGIs,"data.frame")
 
 	bed_available<-logical(0)
 	bed_used<-rep(FALSE,length(beds))
 
 	for (DNAid in DNAids)
-	{
+	{ 
 		DNAidKey<-strsplit(DNAid,',')[[1]][1]	#remove all after ,	
+		message(DNAidKey)
 		match<-grep(DNAidKey,beds)
 		if (!length(match)) 
 		{
@@ -59,11 +61,13 @@ if (!CpGIs.with.methylation.loaded)
 		for(chr in names(CpGIs))
 		#cycle by chromosome
 		{
-				methylcoverage.this.chr<-sapply(1:length(CpGIs[chr][[1]]),function(band){
-				sum(width(methylated.ranges[chr][as.list(overlaps[[chr]])[[band]],]))
-			})
+				list.of.ovelaps.in.this.chr<-as.list(overlaps[[chr]])
+				width.of.meth.ranges.in.this.chr<-width(methylated.ranges[chr])
+				methylcoverage.this.chr<-sapply(1:length(CpGIs[chr][[1]]),function(island_no){
+					sum(width.of.meth.ranges.in.this.chr[list.of.ovelaps.in.this.chr[[island_no]]])
+				})#list of methylated coverage per cytoband
 			#list of methylated coverage per island
-			#the main idead is that as.list(hitsobject) convert is to list of vectors, 
+			#the main idea is that as.list(hitsobject) convert is to list of vectors, 
 			#list is addressd by query oblects and give ref object lists (possibly, empty)
 			methylcoverage<-c(methylcoverage,methylcoverage.this.chr)
 			#add to main list
@@ -72,7 +76,9 @@ if (!CpGIs.with.methylation.loaded)
 		CpGIs.with.methylation[[DNAid]]=methylcoverage
 		bed_used[match[1]]<-TRUE
 		bed_available<-c(bed_available,TRUE)
+		message('done\n')
 	}
+	message('Saving...\n')
 	save(file='CpGIs.with.methylation.Rda',list=c('CpGIs.with.methylation','Clinical','clinFile','beds','bed_available','bed_used','tumors','normals','DNAids'))
 }
 
@@ -83,6 +89,7 @@ if(file.exists('CpGIs.wilcoxon.data.Rda'))
 			CpGIs.wilcoxon.data.loaded<-TRUE
 if(!CpGIs.wilcoxon.data.loaded)
 {
+	message('Wilcoxon\n')
 	wilcoxon.p.values<-numeric(0)
 
 	normals.are.less.methylated<-logical(0)
@@ -102,6 +109,8 @@ if(!CpGIs.wilcoxon.data.loaded)
 
 	DM.CpGIslands<-which(wilcoxon.p.values<=0.05)
 	DM.CpGIslands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
+	message('done\n')
+	message('Saving...\n')
 	save(file='CpGIs.wilcoxon.data.Rda',list=c('wilcoxon.p.values','normals.are.less.methylated','tests.number','DM.CpGIslands','DM.CpGIslands.Bonferroni'))
 }
 
@@ -111,8 +120,9 @@ CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p
 DM.CpGIs.stat<-CpGIs.stat[DM.CpGIslands.Bonferroni,]
 
 #we want to put each diffmet CpGi to a cytoband
-source('../common/load_or_read_and_save_karyotype.R')
+source('../common/load_or_read_karyotype.R')
 DM.CpGIs.Ranges<-as(DM.CpGIs.stat[,columns],'RangedData')
+message('Mapping to karyotype...\n')
 CpGIs.to.karyotype<-findOverlaps(DM.CpGIs.Ranges,karyotype,type="within")
 cytobands.of.DM.cpgis=character(0)
 for (chr in names(CpGIs.to.karyotype))
@@ -130,4 +140,5 @@ for (chr in names(CpGIs.to.karyotype))
 }
 
 DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis)
+message('done\n')
 
