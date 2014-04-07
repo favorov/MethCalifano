@@ -29,7 +29,7 @@ if (!karyotype.with.methylation.loaded)
 
 	#reading karyotype
 	# we can the whole thing to karyotype.with.methylation.Rda
-	source('../common/load_or_read_and_save_karyotype.R')
+	source('../common/load_or_read_karyotype.R')
 	#print(karyotype)
 	#karyotype read fro DAS or loaded
 	karyotype.with.methylation<-as(karyotype,"data.frame")
@@ -52,6 +52,7 @@ if (!karyotype.with.methylation.loaded)
 			bed_available<-c(bed_available,FALSE)
 			next
 		}
+		message(DNAidKey)
 		if (length(match)>1) stop(paste0("More than one match of DNAid ",DNAid," amonng the bed file names.\n"));
 		bedfilename<-paste0(peakbedsfolder,beds[match[1]]);
 		methylated.ranges<-as(import(bedfilename),"RangedData")
@@ -60,17 +61,21 @@ if (!karyotype.with.methylation.loaded)
 		for(chr in names(karyotype))
 		#cycle by chromosome
 		{
+			list.of.ovelaps.in.this.chr<-as.list(overlaps[[chr]])
+			width.of.meth.ranges.in.this.chr<-width(methylated.ranges[chr])
 			methylcoverage.this.chr<-sapply(1:length(karyotype[chr][[1]]),function(band){
-				sum(width(methylated.ranges[chr][as.list(overlaps[[chr]])[[band]],]))
+				sum(width.of.meth.ranges.in.this.chr[list.of.ovelaps.in.this.chr[[band]]])
 			})#list of methylated coverage per cytoband
 			methylcoverage<-c(methylcoverage,methylcoverage.this.chr)
 			#add to main list
 			#we need dual cycle because of the findOverlap return structure
 		}
+		message('done\n')
 		karyotype.with.methylation[[DNAid]]=methylcoverage
 		bed_used[match[1]]<-TRUE
 		bed_available<-c(bed_available,TRUE)
 	}
+	message('Saving...')
 	save(file='karyotype.with.methylation.Rda',list=c('karyotype.with.methylation','Clinical','clinFile','beds','bed_available','bed_used','tumors','normals','DNAids'))
 }
 
