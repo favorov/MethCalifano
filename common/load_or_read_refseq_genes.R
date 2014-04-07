@@ -20,11 +20,25 @@ if (!require('DASiR'))
 	biocLite("DASiR")
 }
 
+RangedData.from.df.refseq<-function(df){
+	RangedData(
+		space=df$space, 
+		ranges=IRanges
+		(
+			start=as.numeric(df$start),
+			end=as.numeric(df$end)
+		),
+		id=df$id,
+		label=df$label,
+		orientation=df$orientation
+	)
+}
+
 refseqGenes.loaded<-FALSE
 # we can the whole thing to refseqGenes.with.methylation.Rda
 
-if(file.exists('../common/refseqGenes.Rda'))
-	if ('refseqGenes' %in% load('../common/refseqGenes.Rda'))
+if(file.exists('../common/refseqGenes.rda'))
+	if ('refseqGenes' %in% load('../common/refseqGenes.rda'))
 		if (class(refseqGenes)=='RangedData')
 			refseqGenes.loaded<-TRUE
 
