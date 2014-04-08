@@ -24,7 +24,7 @@ We think that am island is differentyally methylated if the p-value is <=0.05.
 
 ### Here is the list of all differentially methylated (p<=0.05) CpG with Bonferroni correction
 ```{r print, with Bonferroni} 
-print(DM.CpGIs.stat)
+print.data.frame(DM.CpGIs.stat,row.names=FALSE)
 ```
 
 

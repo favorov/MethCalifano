@@ -27,17 +27,17 @@ We think that a cytoband is differentyally methylated if the p-value is <=0.05.
 ### Here is the list of all differentially methylated cytobands, no multiple test correction
 
 ```{r print, no Bonferroni} 
-print(karyotype.stat[DM.cytobands,])
+print.data.frame(karyotype.stat[DM.cytobands,],row.names=FALSE)
 ```
 
 ### Here is the same list with Benjamini-Hoochberg correction
 ```{r print, with FDR} 
-print(karyotype.stat[DM.cytobands.fdr,c(columns,'p.value','fdr','is.hyper')])
+print.data.frame(karyotype.stat[DM.cytobands.fdr,c(columns,'p.value','fdr','is.hyper')],row.names=FALSE)
 ```
 
 ### And, here is the same list with Bonferroni correction
 ```{r print, with Bonferroni} 
-print(karyotype.stat[DM.cytobands.bonferroni,c(columns,'p.value','bonferroni','is.hyper')])
+print.data.frame(karyotype.stat[DM.cytobands.bonferroni,c(columns,'p.value','bonferroni','is.hyper')],row.names=FALSE)
 ```
 As far as only one cytoband pass the correction, FDR and Bonferroni are the same. The fdr for the second one is `r wilcoxon.p.values.fdr[order(wilcoxon.p.values.fdr)[2]]` and it is too high. 
 

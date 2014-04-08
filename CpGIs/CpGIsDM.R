@@ -116,7 +116,7 @@ if(!CpGIs.wilcoxon.data.loaded)
 
 #here, we form output statictics
 columns<-c('id','space','start','end')
-CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'wilcoxon.p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
+CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
 DM.CpGIs.stat<-CpGIs.stat[DM.CpGIslands.Bonferroni,]
 
 #we want to put each diffmet CpGi to a cytoband
