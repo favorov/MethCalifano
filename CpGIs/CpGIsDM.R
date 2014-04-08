@@ -162,14 +162,14 @@ message('done\n')
 message('Mapping RefSeq to HGNC name')
 source('../common/load_or_read_HGNC_ids.R')
 
-HGNC_id_list<-sapply(nearestTSS,
+HGNC_coord_list<-as.integer(sapply(nearestTSS,
 				function(RSid)
 				{
 					coord<-which(hgnc.ids$RefSeq.IDs==RSid)
-					id<-hgnc.ids$HGNC.ID[coord[1]]
-					id
-				}
-			)
+					#id<-hgnc.ids$HGNC.ID[coord[1]]
+					coord
+				},USE.NAMES=FALSE
+			))
 
 message('done\n')
-DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'adjacentTSS'=nearestTSS,'pos'=position,'strand'=strand,'HGNC'=HGNC_id_list)
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'adjacentTSS'=nearestTSS,'pos'=position,'strand'=strand,'HGNC'=hgnc.ids$HGNC.ID[HGNC_coord_list],'Gene name'=hgnc.ids$Approved.Symbol[HGNC_coord_list])
