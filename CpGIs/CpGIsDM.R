@@ -173,3 +173,5 @@ HGNC_coord_list<-as.integer(sapply(nearestTSS,
 
 message('done\n')
 DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'adjacentTSS'=nearestTSS,'pos'=position,'strand'=strand,'HGNC'=hgnc.ids$HGNC.ID[HGNC_coord_list],'Gene name'=hgnc.ids$Approved.Symbol[HGNC_coord_list])
+
+DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'
