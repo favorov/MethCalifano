@@ -19,6 +19,8 @@ if(!HGNC.ids.loaded)
           'col=gd_pub_chrom_map&',
           'col=gd_pub_refseq_ids&',
           'col=md_ucsc_id&',
+		  'col=gd_app_sym&',
+		  'col=gd_app_name&',
           'status=Approved&',
           'status=Entry%20Withdrawn&',
           'status_opt=2&',
