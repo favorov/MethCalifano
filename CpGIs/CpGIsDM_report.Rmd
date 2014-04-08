@@ -14,7 +14,7 @@ We load the CpG islands list from <a href=http://genome.ucsc.edu/>UCSC</a> DAS s
 Then, for each island we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the island in each of the samples.
 
 ```{r load and calculate}
-options(width=100)
+options(width=140)
 source('CpGIsDM.R')
 ```
 

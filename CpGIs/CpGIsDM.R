@@ -142,3 +142,34 @@ for (chr in names(CpGIs.to.karyotype))
 DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis)
 message('done\n')
 
+
+message('Looking for closest gene')
+
+source('../common/load_or_read_refseq_promoters.R')
+
+nearestTSS<-character(0)
+strand<-character(0)
+position<-integer(0)
+
+for (chr in names(DM.CpGIs.Ranges))
+{
+	nearestTSS.indices<-nearest(DM.CpGIs.Ranges[chr]$ranges,refseqTSS[chr]$ranges)
+	nearestTSS<-c(nearestTSS,as.character(refseqTSS[chr]$label)[nearestTSS.indices])
+	strand<-c(strand,as.character(refseqTSS[chr]$orientation)[nearestTSS.indices])
+	position<-c(position,start(refseqTSS[chr]$ranges[nearestTSS.indices]))
+}
+message('done\n')
+message('Mapping RefSeq to HGNC name')
+source('../common/load_or_read_HGNC_ids.R')
+
+HGNC_id_list<-sapply(nearestTSS,
+				function(RSid)
+				{
+					coord<-which(hgnc.ids$RefSeq.IDs==RSid)
+					id<-hgnc.ids$HGNC.ID[coord[1]]
+					id
+				}
+			)
+
+message('done\n')
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'adjacentTSS'=nearestTSS,'pos'=position,'strand'=strand,'HGNC'=HGNC_id_list)
