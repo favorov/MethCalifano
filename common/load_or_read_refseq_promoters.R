@@ -49,12 +49,23 @@ if(!refseqPromoters.loaded)
 
 	refseqPromoters<-RangedData.from.df.refseq(promoterdf)
 
-	refseqTSSdf<-refseqGenesdf
-	refseqTSSdf$end<-refseqTSSdf$start
+	refseqTSSdf<-data.frame(
+		t(apply(refseqGenesdf,1,
+				function(x)
+				{
+					if(x['orientation']=='+')
+						x['end']=x['start']
+					else
+						x['start']=x['end']
+					x['width']=NA
+					x
+				}
+			))
+	,stringsAsFactors=FALSE)
 
 	refseqTSS<-RangedData.from.df.refseq(refseqTSSdf)
 
-	save(file='../common/refseqPromoters.rda',list=c('refseqPromoters','refseqGenes.35','refseqGenes.53','refseqTSS'))
+	save(file='../common/refseqPromoters.rda',list=c('refseqPromoters','refseqGenes.35','refseqGenes.53','refseqTSS','promoter.after.start','promoter.before.start'))
 }
 
 
