@@ -1,0 +1,10 @@
+source('vistaEnhancersDM.R')
+columns<-c('id','space','start','end','score')
+vistaEnhancers.stat<-cbind(vistaEnhancers.with.methylation[,columns],'p.value'=wilcoxon.p.values,'bonferroni'=wilcoxon.p.values.bonferroni,'fdr'=wilcoxon.p.values.fdr,'is.hyper'=normals.are.less.methylated)
+print('No correction')
+print(vistaEnhancers.stat[DM.enhancers,c(columns,'p.value','is.hyper')])
+print('Benjamini-Hoochberg')
+print(vistaEnhancers.stat[DM.enhancers.fdr,c(columns,'p.value','fdr','is.hyper')])
+print('Bonferroni')
+print(vistaEnhancers.stat[DM.enhancers.bonferroni,c(columns,'p.value','bonferroni','is.hyper')])
+
