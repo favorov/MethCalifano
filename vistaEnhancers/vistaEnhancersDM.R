@@ -96,9 +96,13 @@ for (rown in 1:tests.number)
 }
 
 wilcoxon.p.values.bonferroni<-p.adjust(wilcoxon.p.values,'bonferroni')
-wilcoxon.p.values.fdr<-p.adjust(wilcoxon.p.values,'fdr')
+#wilcoxon.p.values.fdr<-p.adjust(wilcoxon.p.values,'fdr')
 
 DM.enhancers<-which(wilcoxon.p.values<=0.05)
 DM.enhancers.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
-DM.enhancers.fdr<-which(wilcoxon.p.values.fdr<=0.05)
+#DM.enhancers.fdr<-which(wilcoxon.p.values.fdr<=0.05)
+#here, we form output statictics
+columns<-c('space','start','end','id','score')
+vistaEnhancers.stat<-cbind(vistaEnhancers.with.methylation[,columns],'p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
+DM.vistaEnhancers.stat<-vistaEnhancers.stat[DM.enhancers.bonferroni,]
 
