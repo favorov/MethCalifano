@@ -105,4 +105,43 @@ DM.enhancers.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
 columns<-c('space','start','end','id','score')
 vistaEnhancers.stat<-cbind(vistaEnhancers.with.methylation[,columns],'p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
 DM.vistaEnhancers.stat<-vistaEnhancers.stat[DM.enhancers.bonferroni,]
+message('Looking for closest genes')
+
+source('../common/load_or_read_refseq_genes.R')
+
+DM.vistaEnhancers.Ranges<-as(DM.vistaEnhancers.stat[,columns],'RangedData')
+
+downstream<-character(0)
+upstream<-character(0)
+
+for (chr in names(DM.vistaEnhancers.Ranges))
+{
+	upstream.indices<-precede(DM.vistaEnhancers.Ranges[chr]$ranges,refseqGenes[chr]$ranges)
+	downstream.indices<-follow(DM.vistaEnhancers.Ranges[chr]$ranges,refseqGenes[chr]$ranges)
+	upstream<-c(upstream,as.character(refseqGenes[chr]$label)[upstream.indices])
+	downstream<-c(downstream,as.character(refseqGenes[chr]$label)[downstream.indices])
+}
+message('done\n')
+message('Mapping RefSeq to HGNC name')
+source('../common/load_or_read_HGNC_ids.R')
+
+HGNC_u_coord_list<-as.integer(sapply(upstream,
+				function(RSid)
+				{
+					coord<-which(hgnc.ids$RefSeq.IDs==RSid)
+					#id<-hgnc.ids$HGNC.ID[coord[1]]
+					coord
+				},USE.NAMES=FALSE
+			))
+
+HGNC_d_coord_list<-as.integer(sapply(downstream,
+				function(RSid)
+				{
+					coord<-which(hgnc.ids$RefSeq.IDs==RSid)
+					#id<-hgnc.ids$HGNC.ID[coord[1]]
+					coord
+				},USE.NAMES=FALSE
+			))
+message('done\n')
+DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,'upsream'=upstream,'HGNC'=hgnc.ids$HGNC.ID[HGNC_u_coord_list],'name'=hgnc.ids$Approved.Symbol[HGNC_u_coord_list],'downstream'=downstream,'HGNC'=hgnc.ids$HGNC.ID[HGNC_d_coord_list],'name'=hgnc.ids$Approved.Symbol[HGNC_d_coord_list])
 

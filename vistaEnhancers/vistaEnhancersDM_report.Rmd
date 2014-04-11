@@ -14,7 +14,7 @@ We load the list of Vista enhancers from <a href=http://genome.ucsc.edu/>UCSC</a
 Then, for each Vista enhancer we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the enhancer in each of the samples.
 
 ```{r load and calculate}
-options(width=100)
+options(width=140)
 source('vistaEnhancersDM.R')
 ```
 
