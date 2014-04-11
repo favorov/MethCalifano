@@ -1,4 +1,4 @@
-Which cytobands are differentially methylated in the 2014-02-06_RO1_Batch1-4_ClinicalData_DeID data?
+Which Vista enhancers are differentially methylated in the 2014-02-06_RO1_Batch1-4_ClinicalData_DeID data?
 ========================================================
 
 Alexander Favorov  
@@ -9,37 +9,24 @@ Alexander Favorov
 `r opts_chunk$set(echo=F,message=F,cache=F,warning=F)`
 <!-- cache is off, we save all the neccessary things in Rda -->
 
-We load the cytoband list (karyotype) from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.html>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. 
+We load the list of Vista enhancers from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.html>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. 
 
-Then, for each cytoband we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the cytoband in each of the samples.
+Then, for each Vista enhancer we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the enhancer in each of the samples.
 
 ```{r load and calculate}
 options(width=100)
-source('CytoBandDM.R')
-columns<-c('id','space','start','end')
-karyotype.stat<-cbind(karyotype.with.methylation[,columns],'p.value'=wilcoxon.p.values,'bonferroni'=wilcoxon.p.values.bonferroni,'fdr'=wilcoxon.p.values.fdr,'is.hyper'=normals.are.less.methylated)
+source('vistaEnhancersDM.R')
 ```
 
-Thus, for each interval (cytodand) we have a methylated length (coverage) for each sample).
-Then, we calculate the Wilcoxon p-value for each cytoband's tumor and normal DM coverages.
-We think that a cytoband is differentyally methylated if the p-value is <=0.05. 
+Thus, for each interval (enhancer) we have a methylated length (coverage) for each sample).
+Then, we calculate the Wilcoxon p-value for each enhancer's tumor and normal DM coverages.
+We think that an enhancer is differentyally methylated if the p-value is <=0.05. 
 
-### Here is the list of all differentially methylated cytobands, no multiple test correction
 
-```{r print, no Bonferroni} 
-print.data.frame(karyotype.stat[DM.cytobands,],row.names=FALSE)
-```
-
-### Here is the same list with Benjamini-Hoochberg correction
-```{r print, with FDR} 
-print.data.frame(karyotype.stat[DM.cytobands.fdr,c(columns,'p.value','fdr','is.hyper')],row.names=FALSE)
-```
-
-### And, here is the same list with Bonferroni correction
+### And, here is the list of differentially methylated Vista enhancers with Bonferroni correction
 ```{r print, with Bonferroni} 
-print.data.frame(karyotype.stat[DM.cytobands.bonferroni,c(columns,'p.value','bonferroni','is.hyper')],row.names=FALSE)
+print.data.frame(DM.vistaEnhancers.stat,row.names=FALSE)
 ```
-As far as only one cytoband pass the correction, FDR and Bonferroni are the same. The fdr for the second one is `r wilcoxon.p.values.fdr[order(wilcoxon.p.values.fdr)[2]]` and it is too high. 
 
 Technical info
 -------------------------------
