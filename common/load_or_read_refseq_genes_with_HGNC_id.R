@@ -3,6 +3,19 @@
 #saves the information to ../common/CpGIs.Rda
 #if the file exists, read it after some checks
 
+RangedData.from.df.refseq.with.HGNC<-function(df){
+	RangedData(
+		space=df$space, 
+		ranges=IRanges
+		(
+			start=as.numeric(df$start),
+			end=as.numeric(df$end)
+		),
+		id=df$id,
+		label=df$label,
+		orientation=df$orientation
+	)
+}
 
 refseqGenesWithHGNC.loaded<-FALSE
 
@@ -18,8 +31,6 @@ if(!refseqGenesWithHGNC.loaded)
 	source('../common/load_or_read_HGNC_ids.R')
 	source('../common/load_or_read_refseq_promoters.R')
 	refseqGenesdf<-as(refseqGenes,'data.frame')
-	promoterdf<-as(refseqPromoters,'data.frame')
-	refseqTSSdf<-as(refseqTSS,'data.frame')
 
 	refseq.hgnc.ids=hgnc.ids[grep('N[MR]',hgnc.ids$RefSeq.IDs),]
 	#we save only those HGNC that have NM or NR notation
