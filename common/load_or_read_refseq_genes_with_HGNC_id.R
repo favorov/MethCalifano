@@ -13,7 +13,11 @@ RangedData.from.df.refseq.with.HGNC<-function(df){
 		),
 		id=df$id,
 		label=df$label,
-		orientation=df$orientation
+		orientation=df$orientation,
+		HGNC.ID=df$HGNC.ID,
+		cytoband=df$Chromosome,
+		symbol=df$Approved.Symbol,
+		name=df$Approved.Name	
 	)
 }
 
@@ -43,11 +47,25 @@ if(!refseqGenesWithHGNC.loaded)
 	refseqGenesWithHGNCidsdf<-cbind(refseqGenesWithHGNCidsdf,refseq.hgnc.ids[as.character(refseqGenesWithHGNCidsdf$label),setdiff(colnames(refseq.hgnc.ids),'RefSeq.IDs')])
 	#setdiff not to save RefSeq.IDs two times; actually, this invocation is a JOIN+SELECT: we addree refseq.hgnc.ids by the RefSeq.Ids and we join two tables
 
+	refseqGenesWithHGNCids<-RangedData.from.df.refseq.with.HGNC(refseqGenesWithHGNCidsdf)
 
-	if(0)
-	{
-	promoterdf<-data.frame(
-		t(apply(refseqGenesdf,1,
+	#so, we have refseqGenesWithHGNCidsdf - now, we want to make
+	#refseqPromotersWithHGNCidsdf
+	#refseqTSSWithHGNCidsdf
+	#refseqGenesWithHGNCidsdf.35
+	#refseqGenesWithHGNCidsdf.53
+
+	gene.indices.35<-refseqGenesWithHGNCidsdf[['orientation']]=='-'
+	gene.indices.53<-refseqGenesWithHGNCidsdf[['orientation']]=='+'
+
+	refseqGenesWithHGNCids.35df<-refseqGenesWithHGNCidsdf[gene.indices.35,]
+	refseqGenesWithHGNCids.53df<-refseqGenesWithHGNCidsdf[gene.indices.53,]
+	
+	refseqGenesWithHGNCids.35<-RangedData.from.df.refseq.with.HGNC(refseqGenesWithHGNCids.35df)
+	refseqGenesWithHGNCids.53<-RangedData.from.df.refseq.with.HGNC(refseqGenesWithHGNCids.53df)
+
+	refseqPromotersWithHGNCidsdf<-data.frame(
+		t(apply(refseqGenesWithHGNCidsdf,1,
 				function(x)
 				{
 					if(x['orientation']=='+')
@@ -65,11 +83,12 @@ if(!refseqGenesWithHGNC.loaded)
 				}
 			))
 	,stringsAsFactors=FALSE)
+#the promoter.before.start and promoter.after.start conts are in '../common/load_or_read_refseq_promoters.R' 
 
-	refseqPromoters<-RangedData.from.df.refseq(promoterdf)
+	refseqPromotersWithHGNCids<-RangedData.from.df.refseq.with.HGNC(refseqPromotersWithHGNCidsdf)
 
-	refseqTSSdf<-data.frame(
-		t(apply(refseqGenesdf,1,
+	refseqTSSWithHGNCidsdf<-data.frame(
+		t(apply(refseqGenesWithHGNCidsdf,1,
 				function(x)
 				{
 					if(x['orientation']=='+')
@@ -82,10 +101,10 @@ if(!refseqGenesWithHGNC.loaded)
 			))
 	,stringsAsFactors=FALSE)
 
-	refseqTSS<-RangedData.from.df.refseq(refseqTSSdf)
+	refseqTSSWithHGNCids<-RangedData.from.df.refseq.with.HGNC(refseqTSSWithHGNCidsdf)
 
-	save(file='../common/refseqWithHGNC.rda',list=c('refseqPromoters','refseqGenes.35','refseqGenes.53','refseqTSS','promoter.after.start','promoter.before.start'))
-	}
+	save(file='../common/refseqWithHGNC.rda',list=c('refseqGenesWithHGNCids','refseqPromotersWithHGNCids','refseqGenesWithHGNCids.35','refseqGenesWithHGNCids.53','refseqTSSWithHGNCids','promoter.after.start','promoter.before.start'))
+
 }
 
 
