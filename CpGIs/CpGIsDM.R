@@ -160,6 +160,6 @@ for (chr in names(DM.CpGIs.Ranges))
 }
 message('done\n')
 
-DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'adjacentTSS'=nearestTSS,'pos'=position,'strand'=strand)
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'Gene.near'=nearestTSS,'pos'=position,'strand'=strand)
 
 DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
