@@ -27,7 +27,7 @@ if(!refseqPromoters.loaded)
 	refseqGenes.35<-RangedData.from.df.refseq(refseqGenesdf[genes.35,])
 	refseqGenes.53<-RangedData.from.df.refseq(refseqGenesdf[genes.53,])
 
-	promoterdf<-data.frame(
+	refseqPromoterdf<-data.frame(
 		t(apply(refseqGenesdf,1,
 				function(x)
 				{
@@ -47,7 +47,7 @@ if(!refseqPromoters.loaded)
 			))
 	,stringsAsFactors=FALSE)
 
-	refseqPromoters<-RangedData.from.df.refseq(promoterdf)
+	refseqPromoters<-RangedData.from.df.refseq(refseqPromoterdf)
 
 	refseqTSSdf<-data.frame(
 		t(apply(refseqGenesdf,1,
