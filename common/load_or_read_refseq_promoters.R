@@ -21,11 +21,11 @@ if(!refseqPromoters.loaded)
 
 	refseqGenesdf<-as(refseqGenes,'data.frame')
 
-	genes.35<-refseqGenesdf[['orientation']]=='-'
-	genes.53<-refseqGenesdf[['orientation']]=='+'
+	gene.indices.35<-refseqGenesdf[['orientation']]=='-'
+	gene.indices.53<-refseqGenesdf[['orientation']]=='+'
 
-	refseqGenes.35<-RangedData.from.df.refseq(refseqGenesdf[genes.35,])
-	refseqGenes.53<-RangedData.from.df.refseq(refseqGenesdf[genes.53,])
+	refseqGenes.35<-RangedData.from.df.refseq(refseqGenesdf[gene.indices.35,])
+	refseqGenes.53<-RangedData.from.df.refseq(refseqGenesdf[gene.indices.53,])
 
 	refseqPromoterdf<-data.frame(
 		t(apply(refseqGenesdf,1,
