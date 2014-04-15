@@ -145,7 +145,7 @@ message('done\n')
 
 message('Looking for closest gene')
 
-source('../common/load_or_read_refseq_promoters.R')
+source('../common/load_or_read_refseq_genes_with_HGNC_id.R')
 
 nearestTSS<-character(0)
 strand<-character(0)
@@ -153,25 +153,13 @@ position<-integer(0)
 
 for (chr in names(DM.CpGIs.Ranges))
 {
-	nearestTSS.indices<-nearest(DM.CpGIs.Ranges[chr]$ranges,refseqTSS[chr]$ranges)
-	nearestTSS<-c(nearestTSS,as.character(refseqTSS[chr]$label)[nearestTSS.indices])
-	strand<-c(strand,as.character(refseqTSS[chr]$orientation)[nearestTSS.indices])
-	position<-c(position,start(refseqTSS[chr]$ranges[nearestTSS.indices]))
+	nearest.HGNC.TSS.indices<-nearest(DM.CpGIs.Ranges[chr]$ranges,refseqTSSWithHGNCids[chr]$ranges)
+	nearestTSS<-c(nearestTSS,as.character(refseqTSSWithHGNCids[chr]$symbol)[nearest.HGNC.TSS.indices])
+	strand<-c(strand,as.character(refseqTSSWithHGNCids[chr]$orientation)[nearest.HGNC.TSS.indices])
+	position<-c(position,start(refseqTSSWithHGNCids[chr]$ranges[nearest.HGNC.TSS.indices]))
 }
 message('done\n')
-message('Mapping RefSeq to HGNC name')
-source('../common/load_or_read_HGNC_ids.R')
 
-HGNC_coord_list<-as.integer(sapply(nearestTSS,
-				function(RSid)
-				{
-					coord<-which(hgnc.ids$RefSeq.IDs==RSid)
-					#id<-hgnc.ids$HGNC.ID[coord[1]]
-					coord
-				},USE.NAMES=FALSE
-			))
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'adjacentTSS'=nearestTSS,'pos'=position,'strand'=strand)
 
-message('done\n')
-DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'adjacentTSS'=nearestTSS,'pos'=position,'strand'=strand,'HGNC'=hgnc.ids$HGNC.ID[HGNC_coord_list],'Gene name'=hgnc.ids$Approved.Symbol[HGNC_coord_list])
-
-DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'
+DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
