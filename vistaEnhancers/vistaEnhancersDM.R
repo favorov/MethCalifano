@@ -107,7 +107,7 @@ vistaEnhancers.stat<-cbind(vistaEnhancers.with.methylation[,columns],'p.value'=w
 DM.vistaEnhancers.stat<-vistaEnhancers.stat[DM.enhancers.bonferroni,]
 message('Looking for closest genes')
 
-source('../common/load_or_read_refseq_genes.R')
+source('../common/load_or_read_refseq_genes_with_HGNC_id.R')
 
 DM.vistaEnhancers.Ranges<-as(DM.vistaEnhancers.stat[,columns],'RangedData')
 
@@ -116,32 +116,12 @@ upstream<-character(0)
 
 for (chr in names(DM.vistaEnhancers.Ranges))
 {
-	upstream.indices<-precede(DM.vistaEnhancers.Ranges[chr]$ranges,refseqGenes[chr]$ranges)
-	downstream.indices<-follow(DM.vistaEnhancers.Ranges[chr]$ranges,refseqGenes[chr]$ranges)
-	upstream<-c(upstream,as.character(refseqGenes[chr]$label)[upstream.indices])
-	downstream<-c(downstream,as.character(refseqGenes[chr]$label)[downstream.indices])
+	upstream.indices<-precede(DM.vistaEnhancers.Ranges[chr]$ranges,refseqGenesWithHGNCids[chr]$ranges)
+	downstream.indices<-follow(DM.vistaEnhancers.Ranges[chr]$ranges,refseqGenesWithHGNCids[chr]$ranges)
+	upstream<-c(upstream,as.character(refseqGenesWithHGNCids[chr]$symbol)[upstream.indices])
+	downstream<-c(downstream,as.character(refseqGenesWithHGNCids[chr]$symbol)[downstream.indices])
 }
 message('done\n')
-message('Mapping RefSeq to HGNC name')
-source('../common/load_or_read_HGNC_ids.R')
 
-HGNC_u_coord_list<-as.integer(sapply(upstream,
-				function(RSid)
-				{
-					coord<-which(hgnc.ids$RefSeq.IDs==RSid)
-					#id<-hgnc.ids$HGNC.ID[coord[1]]
-					coord
-				},USE.NAMES=FALSE
-			))
-
-HGNC_d_coord_list<-as.integer(sapply(downstream,
-				function(RSid)
-				{
-					coord<-which(hgnc.ids$RefSeq.IDs==RSid)
-					#id<-hgnc.ids$HGNC.ID[coord[1]]
-					coord
-				},USE.NAMES=FALSE
-			))
-message('done\n')
-DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,'upsream'=upstream,'HGNC'=hgnc.ids$HGNC.ID[HGNC_u_coord_list],'name'=hgnc.ids$Approved.Symbol[HGNC_u_coord_list],'downstream'=downstream,'HGNC'=hgnc.ids$HGNC.ID[HGNC_d_coord_list],'name'=hgnc.ids$Approved.Symbol[HGNC_d_coord_list])
+DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,'upsream'=upstream,'downstream'=downstream)
 
