@@ -20,7 +20,10 @@ source('CpGIsDM.R')
 
 Thus, for each island we have a methylated length (coverage) for each sample).
 Then, we calculate the Wilcoxon p-value for each island's tumor and normal DM coverages.
-We think that am island is differentyally methylated if the p-value is <=0.05. 
+We think that an island is differentially methylated if the p-value is <=0.05.
+
+In the table: TSS near is the closest start of a HGNC gene (according to RefSeq coords) to the island.
+position and strand are of the gene. Distanse is the distance of the middle og the island from the TSS, negative means that the island is in the upstream.
 
 ### Here is the list of all differentially methylated (p<=0.05) CpG with Bonferroni correction
 ```{r print, with Bonferroni} 

@@ -150,16 +150,23 @@ source('../common/load_or_read_refseq_genes_with_HGNC_id.R')
 nearestTSS<-character(0)
 strand<-character(0)
 position<-integer(0)
+distance<-integer(0)
 
 for (chr in names(DM.CpGIs.Ranges))
 {
 	nearest.HGNC.TSS.indices<-nearest(DM.CpGIs.Ranges[chr]$ranges,refseqTSSWithHGNCids[chr]$ranges)
 	nearestTSS<-c(nearestTSS,as.character(refseqTSSWithHGNCids[chr]$symbol)[nearest.HGNC.TSS.indices])
-	strand<-c(strand,as.character(refseqTSSWithHGNCids[chr]$orientation)[nearest.HGNC.TSS.indices])
-	position<-c(position,start(refseqTSSWithHGNCids[chr]$ranges[nearest.HGNC.TSS.indices]))
+	this_chr_positions<-start(refseqTSSWithHGNCids[chr]$ranges[nearest.HGNC.TSS.indices])
+	this_chr_strand<-as.character(refseqTSSWithHGNCids[chr]$orientation)[nearest.HGNC.TSS.indices]
+	strand<-c(strand,this_chr_strand)
+	position<-c(position,this_chr_positions)
+	this_chr_distances<-this_chr_positions-(start(DM.CpGIs.Ranges[chr]$ranges)+end(DM.CpGIs.Ranges[chr]))/2
+	this_chr_distances<-as.integer(ifelse(this_chr_strand=='+',this_chr_distances,-this_chr_distances))
+	#if thread is +, positive distance means CpGi down from the gene, so this_chr_positions>middle
+	distance<-c(distance,this_chr_distances)
 }
 message('done\n')
 
-DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'Gene.near'=nearestTSS,'pos'=position,'strand'=strand)
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'TSS near'=nearestTSS,'pos'=position,'strand'=strand,'distance'=distance)
 
 DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
