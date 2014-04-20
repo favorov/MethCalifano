@@ -116,7 +116,7 @@ if(!CpGIs.wilcoxon.data.loaded)
 
 #here, we form output statictics
 columns<-c('id','space','start','end')
-CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
+CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'p.value'=wilcoxon.p.values,'hyper?'=normals.are.less.methylated)
 DM.CpGIs.stat<-CpGIs.stat[DM.CpGIslands.Bonferroni,]
 
 #we want to put each diffmet CpGi to a cytoband
@@ -139,7 +139,12 @@ for (chr in names(CpGIs.to.karyotype))
 	cytobands.of.DM.cpgis<-c(cytobands.of.DM.cpgis,as.character(karyotype[chr][[1]][cytoband.numbers.this.chr]))
 }
 
-DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis)
+popdir<-getwd()
+setwd('../CytoBands/') # not to recalculate all the CytoBand caches
+source('../CytoBands/CytoBandDM.R')
+setwd(popdir)
+
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis,'DM.band?'=cytobands.of.DM.cpgis%in%as.character(karyotype.with.methylation$id)[DM.cytobands])
 message('done\n')
 
 
