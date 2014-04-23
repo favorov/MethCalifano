@@ -64,6 +64,8 @@ if (!karyotype.with.methylation.loaded)
 			list.of.ovelaps.in.this.chr<-as.list(overlaps[[chr]])
 			width.of.meth.ranges.in.this.chr<-width(methylated.ranges[chr])
 			methylcoverage.this.chr<-sapply(1:length(karyotype[chr][[1]]),function(band){
+				#attention: length(CpGIs[chr][[1]] supposes that there is column in datarange other than space and ranges (e.g., Id)
+				#otherwise, use  length(start(CpGIs[chr]))
 				sum(width.of.meth.ranges.in.this.chr[list.of.ovelaps.in.this.chr[[band]]])
 			})#list of methylated coverage per cytoband
 			methylcoverage<-c(methylcoverage,methylcoverage.this.chr)

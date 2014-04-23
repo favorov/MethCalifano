@@ -63,7 +63,15 @@ if (!noodles.1000.with.methylation.loaded)
 	}
 	message('combining noodles')
 	noodles.1000.with.methylation<-data.frame(chr=noodles.space,start=noodles.start,end=noodles.end)
-	noodles.1000<-makeGRangesFromDataFrame(noodles.1000.with.methylation,seqinfo=chrom.length)	
+	#noodles.1000<-makeGRangesFromDataFrame(noodles.1000.with.methylation,seqinfo=chrom.length)	
+	noodles.1000<-RangedData(
+		space=noodles.space, 
+		ranges=IRanges
+		(
+			start=noodles.start,
+			end=noodles.end
+		)
+	)
 
 	message('noodles done')
 
@@ -98,7 +106,7 @@ if (!noodles.1000.with.methylation.loaded)
 		{
 			list.of.ovelaps.in.this.chr<-as.list(overlaps[[chr]])
 			width.of.meth.ranges.in.this.chr<-width(methylated.ranges[chr])
-			methylcoverage.this.chr<-sapply(1:length(noodles.1000[chr][[1]]),function(band){
+			methylcoverage.this.chr<-sapply(1:length(start(noodles.1000[chr])),function(band){
 				sum(width.of.meth.ranges.in.this.chr[list.of.ovelaps.in.this.chr[[band]]])
 			})#list of methylated coverage per cytoband
 			methylcoverage<-c(methylcoverage,methylcoverage.this.chr)

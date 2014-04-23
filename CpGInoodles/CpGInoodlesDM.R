@@ -64,6 +64,8 @@ if (!CpGIs.with.methylation.loaded)
 				list.of.ovelaps.in.this.chr<-as.list(overlaps[[chr]])
 				width.of.meth.ranges.in.this.chr<-width(methylated.ranges[chr])
 				methylcoverage.this.chr<-sapply(1:length(CpGIs[chr][[1]]),function(island_no){
+					#attention: length(CpGIs[chr][[1]] supposes that there is column in datarange other than space and ranges (e.g., Id)
+					#otherwise, use  length(start(CpGIs[chr]))
 					sum(width.of.meth.ranges.in.this.chr[list.of.ovelaps.in.this.chr[[island_no]]])
 				})#list of methylated coverage per cytoband
 			#list of methylated coverage per island
