@@ -10,27 +10,16 @@ if (!suppressWarnings(require('DASiR')))
 	biocLite("DASiR")
 }
 
-RangedData.from.df.simple<-function(df){
-	RangedData(
-		space=df$space, 
-		ranges=IRanges
-		(
-			start=as.numeric(df$start),
-			end=as.numeric(df$end)
-		)
-	)
-}
-
 noodle.length<-1000
 
-noodles.1000.with.methylation.loaded<-FALSE
-# we can the whole thing to noodles.1000.with.methylation.Rda
-if(file.exists('noodles.1000.with.methylation.Rda'))
-	if ('noodles.1000.with.methylation' %in% load('noodles.1000.with.methylation.Rda'))
-		if (class(noodles.1000.with.methylation)=='data.frame')
-			noodles.1000.with.methylation.loaded<-TRUE
+noodles.1000.with.wilcoxon.loaded<-FALSE
+# we can the whole thing to noodles.1000.with.wilcoxon.Rda
+if(file.exists('noodles.1000.with.wilcoxon.Rda'))
+	if ('noodles.1000.with.wilcoxon' %in% load('noodles.1000.with.wilcoxon.Rda'))
+		if (class(noodles.1000.with.wilcoxon)=='data.frame')
+			noodles.1000.with.wilcoxon.loaded<-TRUE
 
-if (!noodles.1000.with.methylation.loaded)
+if (!noodles.1000.with.wilcoxon.loaded)
 {
 	source('../common/read_clinical.R')
 	#Clinical prepared.
@@ -63,7 +52,8 @@ if (!noodles.1000.with.methylation.loaded)
 	}
 	message('combining noodles')
 	noodles.1000.with.methylation<-data.frame(chr=noodles.space,start=noodles.start,end=noodles.end)
-	#noodles.1000<-makeGRangesFromDataFrame(noodles.1000.with.methylation,seqinfo=chrom.length)	
+	noodles.1000.with.wilcoxon<-noodles.1000.with.methylation # we start with them same
+
 	noodles.1000<-RangedData(
 		space=noodles.space, 
 		ranges=IRanges
@@ -118,29 +108,46 @@ if (!noodles.1000.with.methylation.loaded)
 		bed_used[match[1]]<-TRUE
 		bed_available<-c(bed_available,TRUE)
 	}
+
+	message('Wilcoxon prep')
+	noodle.meth<-noodles.1000.with.methylation[,DNAids[bed_available]]
+	noodle.meth.in.normals<-as.matrix(noodle.meth[,normals[bed_available]])
+	noodle.meth.in.tumors<-as.matrix(noodle.meth[,tumors[bed_available]])
+
+	message('done\n')
+
+	message('Wilcoxoning...')
+	tests.number<-dim(noodles.1000.with.methylation)[1]
+	noodles.1000.wilcoxon.p.values<-numeric(tests.number)
+	noodles.1000.normals.are.less.methylated<-logical(tests.number)
+
+	expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
+
+	for (rown in 1:tests.number)
+	{
+		if ((rown %% 100000)==0 ){message(paste(as.character(rown),'of',as.character(tests.number)))}
+		if (max(noodle.meth.in.normals[rown,],noodle.meth.in.tumors[rown,])==0)
+		{
+				wilcoxon.p.values[rown]<-1
+				next
+		}
+		#meth.values<-as.numeric(noodles.1000.with.methylation[rown,][DNAids[bed_available]])
+		#meth.values<-jitter(meth.values)
+		#wilcoxor.res<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
+		w<-wilcox.test(jitter(noodle.meth.in.normals[rown,]),jitter(noodle.meth.in.tumors[rown,]))
+		noodles.1000.wilcoxon.p.values[rown]<-w$p.value
+		noodles.1000.normals.are.less.methylated[rown]<-(w[['statistic']]<expected.w.statistic)
+	}
+	noodles.1000.with.wilcoxon<-cbind(noodles.1000.with.wilcoxon,'p-value'=noodles.1000.wilcoxon.p.values,'if.hyper'=noodles.1000.normals.are.less.methylated)
 	message('Saving...')
-	save(file='noodles.1000.with.methylation.Rda',list=c('noodles.1000.with.methylation','Clinical','clinFile','beds','bed_available','bed_used','tumors','normals','DNAids','noodle.length'))
+	save(file='noodles.1000.with.wilcoxon.Rda',list=c('noodles.1000.with.wilcoxon','Clinical','clinFile','beds','bed_available','bed_used','tumors','normals','DNAids','noodle.length'))
 }
 
-#tests.number<-dim(noodles.1000.with.methylation)[1]
 
-#wilcoxon.p.values<-numeric(tests.number)
-#normals.are.less.methylated<-logical(tests.number)
+noodles.1000.wilcoxon.p.values.bonferroni<-p.adjust(wilcoxon.p.values,'bonferroni')
+noodles.1000.wilcoxon.p.values.fdr<-p.adjust(wilcoxon.p.values,'fdr')
 
-#expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
-
-#for (rown in 1:tests.number)
-#{
-#	meth.values<-jitter(as.numeric(noodles.1000.with.methylation[rown,][DNAids[bed_available]]))
-#	w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
-#	wilcoxon.p.values[rown]<-w$p.value
-#	normals.are.less.methylated[rown]<-(w[['statistic']]<expected.w.statistic)
-#}
-
-#wilcoxon.p.values.bonferroni<-p.adjust(wilcoxon.p.values,'bonferroni')
-#wilcoxon.p.values.fdr<-p.adjust(wilcoxon.p.values,'fdr')
-
-#DM.cytobands<-which(wilcoxon.p.values<=0.05)
-#DM.cytobands.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
-#DM.cytobands.fdr<-which(wilcoxon.p.values.fdr<=0.05)
+DM.noodles.1000<-which(noodles.1000.wilcoxon.p.values<=0.05)
+DM.noodles.1000.bonferroni<-which(noodles.1000.wilcoxon.p.values.bonferroni<=0.05)
+DM.noodles.1000.fdr<-which(noodles.1000.wilcoxon.p.values.fdr<=0.05)
 
