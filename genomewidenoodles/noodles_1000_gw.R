@@ -128,7 +128,7 @@ if (!noodles.1000.with.wilcoxon.loaded)
 		if ((rown %% 100000)==0 ){message(paste(as.character(rown),'of',as.character(tests.number)))}
 		if (max(noodle.meth.in.normals[rown,],noodle.meth.in.tumors[rown,])==0)
 		{
-				wilcoxon.p.values[rown]<-1
+				noodles.1000.wilcoxon.p.values[rown]<-1
 				next
 		}
 		#meth.values<-as.numeric(noodles.1000.with.methylation[rown,][DNAids[bed_available]])
