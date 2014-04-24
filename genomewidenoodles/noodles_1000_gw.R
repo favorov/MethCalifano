@@ -110,9 +110,9 @@ if (!noodles.1000.with.wilcoxon.loaded)
 	}
 
 	message('Wilcoxon prep')
-	noodle.meth<-noodles.1000.with.methylation[,DNAids[bed_available]]
-	noodle.meth.in.normals<-as.matrix(noodle.meth[,normals[bed_available]])
-	noodle.meth.in.tumors<-as.matrix(noodle.meth[,tumors[bed_available]])
+	noodle.1000.meth<-noodles.1000.with.methylation[,DNAids[bed_available]]
+	noodle.1000.meth.in.normals<-as.matrix(noodle.1000.meth[,normals[bed_available]])
+	noodle.1000.meth.in.tumors<-as.matrix(noodle.1000.meth[,tumors[bed_available]])
 
 	message('done\n')
 
@@ -126,7 +126,7 @@ if (!noodles.1000.with.wilcoxon.loaded)
 	for (rown in 1:tests.number)
 	{
 		if ((rown %% 100000)==0 ){message(paste(as.character(rown),'of',as.character(tests.number)))}
-		if (max(noodle.meth.in.normals[rown,],noodle.meth.in.tumors[rown,])==0)
+		if (max(noodle.1000.meth.in.normals[rown,],noodle.1000.meth.in.tumors[rown,])==0)
 		{
 				noodles.1000.wilcoxon.p.values[rown]<-1
 				next
@@ -134,7 +134,7 @@ if (!noodles.1000.with.wilcoxon.loaded)
 		#meth.values<-as.numeric(noodles.1000.with.methylation[rown,][DNAids[bed_available]])
 		#meth.values<-jitter(meth.values)
 		#wilcoxor.res<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
-		w<-wilcox.test(jitter(noodle.meth.in.normals[rown,]),jitter(noodle.meth.in.tumors[rown,]))
+		w<-wilcox.test(jitter(noodle.1000.meth.in.normals[rown,]),jitter(noodle.1000.meth.in.tumors[rown,]))
 		noodles.1000.wilcoxon.p.values[rown]<-w$p.value
 		noodles.1000.normals.are.less.methylated[rown]<-(w[['statistic']]<expected.w.statistic)
 	}
