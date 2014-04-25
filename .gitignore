@@ -3,6 +3,7 @@
 .Rhistory
 *.rda
 *.Rda
+*.Rdata
 *~
 *.swp
 .*
