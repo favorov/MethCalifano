@@ -87,7 +87,7 @@ if (!CpGIs.with.methylation.loaded)
 CpGIs.wilcoxon.data.loaded<-FALSE
 # we can the whole thing to CpGIs.with.methylation.Rda
 if(file.exists('CpGIs.wilcoxon.data.Rda'))
-	if ('DM.CpGIslands.Bonferroni' %in% load('CpGIs.wilcoxon.data.Rda'))
+	if ('wilcoxon.p.values' %in% load('CpGIs.wilcoxon.data.Rda'))
 			CpGIs.wilcoxon.data.loaded<-TRUE
 if(!CpGIs.wilcoxon.data.loaded)
 {
@@ -109,13 +109,60 @@ if(!CpGIs.wilcoxon.data.loaded)
 		#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
 	}
 
-	DM.CpGIslands<-which(wilcoxon.p.values<=0.05)
-	DM.CpGIslands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
 	message('done\n')
 	message('Saving...\n')
-	save(file='CpGIs.wilcoxon.data.Rda',list=c('wilcoxon.p.values','normals.are.less.methylated','tests.number','DM.CpGIslands','DM.CpGIslands.Bonferroni'))
+	save(file='CpGIs.wilcoxon.data.Rda',list=c('wilcoxon.p.values','normals.are.less.methylated','tests.number'))
 }
 
+CpGIs.fisher.data.loaded<-FALSE
+# we can the whole thing to CpGIs.with.methylation.Rda
+if(file.exists('CpGIs.fisher.data.Rda'))
+	if ('fisher.p.values' %in% load('CpGIs.fisher.data.Rda'))
+			CpGIs.fisher.data.loaded<-TRUE
+if(!CpGIs.fisher.data.loaded)
+{
+	message('Fishering\n')
+	tests.number<-dim(CpGIs.with.methylation)[1]
+	fisher.p.values<-numeric(tests.number)
+	meth.in.normals.ratio<-numeric(tests.number)
+	meth.in.tumors.ratio<-numeric(tests.number)
+	OR<-numeric(tests.number)
+	CI_95_L<-numeric(tests.number)
+	CI_95_H<-numeric(tests.number)
+
+
+	for (rown in 1:tests.number)
+	{
+		cotable<-table(as.logical(as.numeric(CpGIs.with.methylation[rown,][DNAids[bed_available]])),tumors[bed_available])
+		if(nrow(cotable)==1)#nonmeth
+		{
+			fisher.p.values[rown]<-1.
+			meth.in.tumors.ratio[rown]<-0
+			meth.in.normals.ratio[rown]<-0
+			OR[rown]<-NA
+			CI_95_L[rown]<-NA
+			CI_95_H[rown]<-NA
+			next
+		}
+		fisherres<-fisher.test(cotable)
+		fisher.p.values[rown]<-fisherres$p.value
+		meth.in.tumors.ratio[rown]<-cotable[2,2]/cotable[1,2]
+		meth.in.normals.ratio[rown]<-cotable[2,1]/cotable[1,1]
+		OR[rown]<-fisherres$estimate
+		CI_95_L[rown]<-fisherres$conf.int[1]
+		CI_95_H[rown]<-fisherres$conf.int[2]
+	}
+
+	message('done\n')
+	message('Saving...\n')
+	save(file='CpGIs.fisher.data.Rda',list=c('fisher.p.values','tests.number','meth.in.tumors.ratio','meth.in.tumors.ratio','OR','CI_95_L','CI_95_H'))
+}
+
+DM.Wilcoxon.CpGIslands<-which(wilcoxon.p.values<=0.05)
+DM.Wilcoxon.CpGIslands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
+
+DM.Fisher.CpGIslands<-which(fisher.p.values<=0.05)
+DM.Fisher.CpGIslands.Bonferroni<-which(fisher.p.values*tests.number<=0.05)
 #here, we form output statictics
 columns<-c('id','space','start','end')
 CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'p.value'=wilcoxon.p.values,'hyper?'=normals.are.less.methylated)
