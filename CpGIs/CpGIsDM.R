@@ -94,7 +94,7 @@ if(!CpGIs.wilcoxon.data.loaded)
 	message('Wilcoxon\n')
 	wilcoxon.p.values<-numeric(0)
 
-	normals.are.less.methylated<-logical(0)
+	normals.are.less.methyl.covered<-logical(0)
 
 	expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
 
@@ -105,13 +105,13 @@ if(!CpGIs.wilcoxon.data.loaded)
 		meth.values<-jitter(as.numeric(CpGIs.with.methylation[rown,][DNAids[bed_available]]))
 		w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
 		wilcoxon.p.values<-c(wilcoxon.p.values,w$p.value)
-		normals.are.less.methylated<-c(normals.are.less.methylated,(w[['statistic']]<expected.w.statistic))
+		normals.are.less.methyl.covered<-c(normals.are.less.methyl.covered,(w[['statistic']]<expected.w.statistic))
 		#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
 	}
 
 	message('done\n')
 	message('Saving...\n')
-	save(file='CpGIs.wilcoxon.data.Rda',list=c('wilcoxon.p.values','normals.are.less.methylated','tests.number'))
+	save(file='CpGIs.wilcoxon.data.Rda',list=c('wilcoxon.p.values','normals.are.less.methyl.covered','tests.number'))
 }
 
 CpGIs.fisher.data.loaded<-FALSE
@@ -155,23 +155,41 @@ if(!CpGIs.fisher.data.loaded)
 
 	message('done\n')
 	message('Saving...\n')
-	save(file='CpGIs.fisher.data.Rda',list=c('fisher.p.values','tests.number','meth.in.tumors.ratio','meth.in.tumors.ratio','OR','CI_95_L','CI_95_H'))
+	save(file='CpGIs.fisher.data.Rda',list=c('fisher.p.values','tests.number','meth.in.tumors.ratio','meth.in.normals.ratio','OR','CI_95_L','CI_95_H'))
 }
 
-DM.Wilcoxon.CpGIslands<-which(wilcoxon.p.values<=0.05)
-DM.Wilcoxon.CpGIslands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
+DM.W.CpGIslands<-which(wilcoxon.p.values<=0.05)
+DM.W.CpGIslands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
 
-DM.Fisher.CpGIslands<-which(fisher.p.values<=0.05)
-DM.Fisher.CpGIslands.Bonferroni<-which(fisher.p.values*tests.number<=0.05)
+DM.F.CpGIslands<-which(fisher.p.values<=0.05)
+DM.F.CpGIslands.Bonferroni<-which(fisher.p.values*tests.number<=0.05)
 #here, we form output statictics
+
+#bonferroni
+DM.CpGIslands.Bonferroni<-union(DM.W.CpGIslands.Bonferroni,DM.F.CpGIslands.Bonferroni)
+
 columns<-c('id','space','start','end')
-CpGIs.stat<-cbind(CpGIs.with.methylation[,columns],'p.value'=wilcoxon.p.values,'hyper?'=normals.are.less.methylated)
-DM.CpGIs.stat<-CpGIs.stat[DM.CpGIslands.Bonferroni,]
+DM.CpGIs.stat<-cbind(
+	CpGIs.with.methylation[DM.CpGIslands.Bonferroni,columns],
+	'wilcoxon.p.value'=wilcoxon.p.values[DM.CpGIslands.Bonferroni],
+	'hyper?'=normals.are.less.methyl.covered[DM.CpGIslands.Bonferroni],
+	'fisher.p.value'=fisher.p.values[DM.CpGIslands.Bonferroni],
+	'tmr.ratio'=meth.in.tumors.ratio[DM.CpGIslands.Bonferroni],
+	'nor.ratio'=meth.in.normals.ratio[DM.CpGIslands.Bonferroni],
+	'OR'=OR[DM.CpGIslands.Bonferroni],
+	'CI_95_L'=CI_95_L[DM.CpGIslands.Bonferroni],
+	'CI_95_H'=CI_95_H[DM.CpGIslands.Bonferroni]
+)
+
+rownames(DM.CpGIs.stat)<-NULL
 
 #we want to put each diffmet CpGi to a cytoband
 source('../common/load_or_read_karyotype.R')
 DM.CpGIs.Ranges<-as(DM.CpGIs.stat[,columns],'RangedData')
+
+
 message('Mapping to karyotype...\n')
+
 CpGIs.to.karyotype<-findOverlaps(DM.CpGIs.Ranges,karyotype,type="within")
 cytobands.of.DM.cpgis=character(0)
 for (chr in names(CpGIs.to.karyotype))
@@ -214,9 +232,11 @@ for (chr in names(DM.CpGIs.Ranges))
 	this_chr_strand<-as.character(refseqTSSWithHGNCids[chr]$orientation)[nearest.HGNC.TSS.indices]
 	strand<-c(strand,this_chr_strand)
 	position<-c(position,this_chr_positions)
-	this_chr_distances<-this_chr_positions-(start(DM.CpGIs.Ranges[chr]$ranges)+end(DM.CpGIs.Ranges[chr]))/2
-	this_chr_distances<-as.integer(ifelse(this_chr_strand=='+',this_chr_distances,-this_chr_distances))
-	#if thread is +, positive distance means CpGi down from the gene, so this_chr_positions>middle
+	this_chr_distances_u<-this_chr_positions-end(DM.CpGIs.Ranges[chr]$ranges)
+	this_chr_distances_d<-this_chr_positions-start(DM.CpGIs.Ranges[chr]$ranges)
+	this_chr_distances<-ifelse(this_chr_distances_u>0,this_chr_distances_u,ifelse(this_chr_distances_d<0,this_chr_distances_d,0))
+	this_chr_distances<-as.integer(ifelse(this_chr_strand=='-',this_chr_distances,-this_chr_distances))
+	#if thread is + and positive distance means CpGi down from the gene, so we change it to opposite
 	distance<-c(distance,this_chr_distances)
 }
 message('done\n')
@@ -224,3 +244,16 @@ message('done\n')
 DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'TSS near'=nearestTSS,'pos'=position,'strand'=strand,'distance'=distance)
 
 DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
+
+write.table(DM.CpGIs.stat,file='DM.CpGIs.stat.txt',sep='\t',row.names=FALSE)
+
+if(!require('xtable'))
+{
+  source("http://bioconductor.org/biocLite.R")
+  biocLite("xtable")
+  library("xtable")  
+}
+
+if(file.exists("DM.CpGIs.Ranges.html")) {file.remove("DM.CpGIs.Ranges.html")}
+
+print(xtable(DM.CpGIs.stat), type="html", file="DM.CpGIs.stat.html")

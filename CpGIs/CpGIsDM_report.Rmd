@@ -14,7 +14,6 @@ We load the CpG islands list from <a href=http://genome.ucsc.edu/>UCSC</a> DAS s
 Then, for each island we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the island in each of the samples.
 
 ```{r load and calculate}
-options(width=140)
 source('CpGIsDM.R')
 ```
 
@@ -22,12 +21,18 @@ Thus, for each island we have a methylated length (coverage) for each sample).
 Then, we calculate the Wilcoxon p-value for each island's tumor and normal DM coverages.
 We think that an island is differentially methylated if the p-value is <=0.05.
 
-In the table: TSS near is the closest start of a HGNC gene (according to RefSeq coords) to the island.
-position and strand are of the gene. Distanse is the distance of the middle og the island from the TSS, negative means that the island is in the upstream.
-
 ### Here is the list of all differentially methylated (p<=0.05) CpG with Bonferroni correction
+
+In the table: TSS near is the closest start of a HGNC gene (according to RefSeq coords) to the island.
+position and strand are of the gene. Distance is the distance from the middle of the island to TSS, negative means that the island is in the upstream.
+We show Wilcoxon and Fisher's p-values for each island as well as OR and the CI for OR.
+
+<a href=./DM.CpGIs.stat.txt>Here is the table in txt format, to be loaded to excel</a>
+
+<a href=./DM.CpGIs.stat.html>Here is the table in html format</a>
+
 ```{r print, with Bonferroni} 
-print.data.frame(DM.CpGIs.stat,row.names=FALSE)
+print.data.frame(DM.CpGIs.stat)
 ```
 
 
