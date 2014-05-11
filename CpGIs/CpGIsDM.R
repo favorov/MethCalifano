@@ -256,4 +256,4 @@ if(!require('xtable'))
 
 if(file.exists("DM.CpGIs.Ranges.html")) {file.remove("DM.CpGIs.Ranges.html")}
 
-print(xtable(DM.CpGIs.stat), type="html", file="DM.CpGIs.stat.html")
+print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.html")
