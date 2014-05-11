@@ -1,7 +1,8 @@
 #knit all Rmd in this folder
 if(!require('knitr'))
 {
-	install.packges('knitr')
+	source("http://bioconductor.org/biocLite.R")
+	biocLite('knitr')
 	library('knitr')
 }
 
