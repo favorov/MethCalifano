@@ -245,7 +245,7 @@ DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'TSS near'=nearestTSS,'pos'=position,'strand'
 
 DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
 
-write.table(DM.CpGIs.stat,file='DM.CpGIs.stat.txt',sep='\t',row.names=FALSE)
+write.table(DM.CpGIs.stat,file='DM.CpGIs.stat.tsv',sep='\t',row.names=FALSE)
 
 if(!require('xtable'))
 {
