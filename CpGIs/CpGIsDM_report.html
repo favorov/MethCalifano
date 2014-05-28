@@ -19,6 +19,7 @@ body, td {
 body {
   max-width: 800px;
   margin: auto;
+  padding: 1em;
   line-height: 20px;
 }
 
@@ -26,28 +27,28 @@ tt, code, pre {
    font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
 }
 
-h1 { 
-   font-size:2.2em; 
+h1 {
+   font-size:2.2em;
 }
 
-h2 { 
-   font-size:1.8em; 
+h2 {
+   font-size:1.8em;
 }
 
-h3 { 
-   font-size:1.4em; 
+h3 {
+   font-size:1.4em;
 }
 
-h4 { 
-   font-size:1.0em; 
+h4 {
+   font-size:1.0em;
 }
 
-h5 { 
-   font-size:0.9em; 
+h5 {
+   font-size:0.9em;
 }
 
-h6 { 
-   font-size:0.8em; 
+h6 {
+   font-size:0.8em;
 }
 
 a:visited {
@@ -91,54 +92,54 @@ hr {
 }
 
 @media print {
-   * { 
-      background: transparent !important; 
-      color: black !important; 
-      filter:none !important; 
-      -ms-filter: none !important; 
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
    }
 
-   body { 
-      font-size:12pt; 
-      max-width:100%; 
-   }
-       
-   a, a:visited { 
-      text-decoration: underline; 
+   body {
+      font-size:12pt;
+      max-width:100%;
    }
 
-   hr { 
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
       visibility: hidden;
       page-break-before: always;
    }
 
-   pre, blockquote { 
-      padding-right: 1em; 
-      page-break-inside: avoid; 
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
    }
 
-   tr, img { 
-      page-break-inside: avoid; 
+   tr, img {
+      page-break-inside: avoid;
    }
 
-   img { 
-      max-width: 100% !important; 
+   img {
+      max-width: 100% !important;
    }
 
-   @page :left { 
-      margin: 15mm 20mm 15mm 10mm; 
-   }
-     
-   @page :right { 
-      margin: 15mm 10mm 15mm 20mm; 
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
    }
 
-   p, h2, h3 { 
-      orphans: 3; widows: 3; 
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
    }
 
-   h2, h3 { 
-      page-break-after: avoid; 
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
    }
 }
 </style>
@@ -152,7 +153,7 @@ hr {
 
 <h2>Alexander Favorov  </h2>
 
-<h3>13 May 2014</h3>
+<h3>28 May 2014</h3>
 
 <!-- cache is off, we save all the neccessary things in Rda -->
 
@@ -166,13 +167,13 @@ We think that an island is differentially methylated if the p-value is &lt;=0.05
 
 <h3>Here is the list of all differentially methylated (p&lt;=0.05) CpG with Bonferroni correction</h3>
 
-<p>In the table: TSS near is the closest start of a HGNC gene (according to RefSeq coords) to the island.
+<p>In the table: TSS near is the closest start of a HGNC gene (according to Ensemble coords as represented in Homo.sapiens and org.Hs.eg.db) to the island.
 position and strand are of the gene. Distance is the distance from the middle of the island to TSS, negative means that the island is in the upstream.
 We show Wilcoxon and Fisher&#39;s p-values for each island as well as OR and the CI for OR.</p>
 
 <p><a href=./DM.CpGIs.stat.html>Here is the table in html format</a></p>
 
-<p><a download href=./DM.CpGIs.stat.tsv>Here is the table in txt format, to be loaded to excel</a></p>
+<p><a download href=./DM.CpGIs.stat.txt>Here is the table in txt format, to be loaded to excel</a></p>
 
 <h2>Technical info</h2>
 
@@ -183,7 +184,7 @@ We show Wilcoxon and Fisher&#39;s p-values for each island as well as OR and the
 <pre><code>##                                                                    size
 ## ../../Data/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv 11206
 ##                                                                                 mtime
-## ../../Data/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv 2014-03-11 10:14:09
+## ../../Data/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv 2014-03-11 08:14:09
 </code></pre>
 
 <p>Number of records is 56</p>
@@ -257,6 +258,10 @@ We show Wilcoxon and Fisher&#39;s p-values for each island as well as OR and the
 
 <pre><code>## character(0)
 </code></pre>
+
+<p>Version of Homo.sapiens is: 1.1.2</p>
+
+<p>Version of org.Hs.eg.db is: 2.14.0</p>
 
 </body>
 

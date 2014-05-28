@@ -229,6 +229,8 @@ DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis,'DM.band?'=c
 message('done\n')
 
 
+if(0){ #don't do it
+
 message('Looking for closest gene')
 
 source('../common/load_or_read_refseq_genes_with_HGNC_id.R')
@@ -258,6 +260,8 @@ for (chr in names(DM.CpGIs.Ranges))
 message('done\n')
 
 DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'TSS near'=nearestTSS,'pos'=position,'strand'=strand,'distance'=distance,'chr.tss'=chrrr)
+}#don't do it end
+
 
 
 message('Looking for closest gene - Elana annotation')
@@ -289,22 +293,22 @@ dist.TSS<-ifelse(strand(TSS)[near.TSS]=='+',
 		ifelse(start(DM.CpGIs.GRanges)>start(TSS)[near.TSS],-dist.TSS,dist.TSS)
 )
 
-DM.CpGIs.GRanges$near.TSS<-TSS$SYMBOL[near.TSS]
+DM.CpGIs.GRanges$closest.TSS<-TSS$SYMBOL[near.TSS]
 DM.CpGIs.GRanges$pos.TSS<-start(TSS)[near.TSS]
-DM.CpGIs.GRanges$dire<-as.character(strand(TSS)[near.TSS])
-DM.CpGIs.GRanges$dist.TSS<-dist.TSS
+DM.CpGIs.GRanges$dir<-as.character(strand(TSS)[near.TSS])
+DM.CpGIs.GRanges$dist<-dist.TSS
 
 interchangedf<-as(DM.CpGIs.GRanges,'data.frame')
 
 rownames(interchangedf)=interchangedf$id
 
-DM.CpGIs.stat<-cbind(DM.CpGIs.stat,interchangedf[as.character(DM.CpGIs.stat$id),c('near.TSS','pos.TSS','dire','dist.TSS')])
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,interchangedf[as.character(DM.CpGIs.stat$id),c('closest.TSS','pos.TSS','dir','dist')])
 
 message('done\n')
 
 DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
 
-write.table(DM.CpGIs.stat,file='DM.CpGIs.stat.tsv',sep='\t',row.names=FALSE)
+write.table(DM.CpGIs.stat,file='DM.CpGIs.stat.txt',sep='\t',row.names=FALSE)
 
 if(!require('xtable'))
 {
@@ -316,5 +320,6 @@ if(!require('xtable'))
 if(file.exists("DM.CpGIs.Ranges.html")) {file.remove("DM.CpGIs.Ranges.html")}
 
 
-print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.html",include.rownames=FALSE)
-#print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.html")
+print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.html",include.rownames=FALSE)
+#print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.html",include.rownames=FALSE)
+#all

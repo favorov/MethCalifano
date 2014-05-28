@@ -23,13 +23,13 @@ We think that an island is differentially methylated if the p-value is <=0.05.
 
 ### Here is the list of all differentially methylated (p<=0.05) CpG with Bonferroni correction
 
-In the table: TSS near is the closest start of a HGNC gene (according to RefSeq coords) to the island.
+In the table: TSS near is the closest start of a HGNC gene (according to Ensemble coords as represented in Homo.sapiens and org.Hs.eg.db) to the island.
 position and strand are of the gene. Distance is the distance from the middle of the island to TSS, negative means that the island is in the upstream.
 We show Wilcoxon and Fisher's p-values for each island as well as OR and the CI for OR.
 
 <a href=./DM.CpGIs.stat.html>Here is the table in html format</a>
 
-<a download href=./DM.CpGIs.stat.tsv>Here is the table in txt format, to be loaded to excel</a>
+<a download href=./DM.CpGIs.stat.txt>Here is the table in txt format, to be loaded to excel</a>
 
 Technical info
 -------------------------------
@@ -53,4 +53,7 @@ Beds no in DNAids:
 ```{r not in DNAids}
 beds[!bed_used]
 ```
+Version of Homo.sapiens is: `r packageVersion('Homo.sapiens')`
+
+Version of org.Hs.eg.db is: `r packageVersion('org.Hs.eg.db')`
 
