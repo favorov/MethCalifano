@@ -29,7 +29,7 @@ We show Wilcoxon and Fisher's p-values for each island as well as OR and the CI 
 
 <a href=./DM.CpGIs.stat.html>Here is the table in html format</a>
 
-<a href=./DM.CpGIs.stat.tsv>Here is the table in txt format, to be loaded to excel</a>
+<a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/CpGIs/DM.CpGIs.stat.tsv>Here is the table in tsv format, to be loaded to excel</a>
 
 Technical info
 -------------------------------
