@@ -178,7 +178,7 @@ DM.F.CpGIslands<-which(fisher.p.values<=0.05)
 DM.F.CpGIslands.Bonferroni<-which(fisher.p.values*tests.number<=0.05)
 #here, we form output statictics
 
-#bonferroni
+#bonferroni: we will use Bonferroni for extract in the cbind command below 
 DM.CpGIslands.Bonferroni<-sort(union(DM.W.CpGIslands.Bonferroni,DM.F.CpGIslands.Bonferroni))
 
 
@@ -229,42 +229,7 @@ DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis,'DM.band?'=c
 message('done\n')
 
 
-if(0){ #don't do it
-
 message('Looking for closest gene')
-
-source('../common/load_or_read_refseq_genes_with_HGNC_id.R')
-
-nearestTSS<-character(0)
-strand<-character(0)
-position<-integer(0)
-distance<-integer(0)
-chrrr<-character(0)
-
-for (chr in names(DM.CpGIs.Ranges))
-{
-	nearest.HGNC.TSS.indices<-nearest(DM.CpGIs.Ranges[chr]$ranges,refseqTSSWithHGNCids[chr]$ranges)
-	nearestTSS<-c(nearestTSS,as.character(refseqTSSWithHGNCids[chr]$symbol)[nearest.HGNC.TSS.indices])
-	this_chr_positions<-start(refseqTSSWithHGNCids[chr]$ranges[nearest.HGNC.TSS.indices])
-	this_chr_strand<-as.character(refseqTSSWithHGNCids[chr]$orientation)[nearest.HGNC.TSS.indices]
-	strand<-c(strand,this_chr_strand)
-	position<-c(position,this_chr_positions)
-	this_chr_distances_u<-this_chr_positions-end(DM.CpGIs.Ranges[chr]$ranges)
-	this_chr_distances_d<-this_chr_positions-start(DM.CpGIs.Ranges[chr]$ranges)
-	this_chr_distances<-ifelse(this_chr_distances_u>0,this_chr_distances_u,ifelse(this_chr_distances_d<0,this_chr_distances_d,0))
-	this_chr_distances<-as.integer(ifelse(this_chr_strand=='-',this_chr_distances,-this_chr_distances))
-	#if thread is + and positive distance means CpGi down from the gene, so we change it to opposite
-	distance<-c(distance,this_chr_distances)
-	chrrr<-c(chrrr,rep(chr,nrow(DM.CpGIs.Ranges[chr])))
-}
-message('done\n')
-
-DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'TSS near'=nearestTSS,'pos'=position,'strand'=strand,'distance'=distance,'chr.tss'=chrrr)
-}#don't do it end
-
-
-
-message('Looking for closest gene - Elana annotation')
 
 TSS<- genes(TxDb.Hsapiens.UCSC.hg19.knownGene)
 
@@ -306,9 +271,25 @@ DM.CpGIs.stat<-cbind(DM.CpGIs.stat,interchangedf[as.character(DM.CpGIs.stat$id),
 
 message('done\n')
 
+message('Looking for overlapped genes')
+
+ovele<-7000
+
+DM.CpGIs.GRanges<-as(DM.CpGIs.Ranges,'GRanges') # the same tester again
+
+end(DM.CpGIs.GRanges)<-pmin(end(DM.CpGIs.GRanges)+overle,seqlengths(TSS)[as.character(seqnames(DM.CpGIs.GRanges))])
+
+start(DM.CpGIs.GRanges)<-pmax(start(DM.CpGIs.GRanges)-overle,1)
+
+overla<-findOverlap(TSS,DM.CpGIs.GRanges)
+
+#tapply
+
+message('done\n')
+
 DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
 
-write.table(DM.CpGIs.stat,file='DM.CpGIs.stat.tsv',sep='\t',row.names=FALSE)
+write.table(DM.CpGIs.stat,file='DM.CpGIs.stat.Bonferroni.tsv',sep='\t',row.names=FALSE)
 
 if(!require('xtable'))
 {
@@ -317,9 +298,9 @@ if(!require('xtable'))
   library("xtable")  
 }
 
-if(file.exists("DM.CpGIs.Ranges.html")) {file.remove("DM.CpGIs.Ranges.html")}
+if(file.exists("DM.CpGIs.stat.Bonferroni.html")) {file.remove("DM.CpGIs.stat.Bonferroni.html")}
 
 
-print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.html",include.rownames=FALSE)
+print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.Bonferroni.html",include.rownames=FALSE)
 #print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.html",include.rownames=FALSE)
 #all
