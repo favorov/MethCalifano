@@ -273,15 +273,19 @@ message('done\n')
 
 message('Looking for overlapped genes')
 
-ovele<-7000
+flanks<-7000
 
 DM.CpGIs.GRanges<-as(DM.CpGIs.Ranges,'GRanges') # the same tester again
 
-end(DM.CpGIs.GRanges)<-pmin(end(DM.CpGIs.GRanges)+overle,seqlengths(TSS)[as.character(seqnames(DM.CpGIs.GRanges))])
+end(DM.CpGIs.GRanges)<-pmin(end(DM.CpGIs.GRanges)+flanks,seqlengths(TSS)[as.character(seqnames(DM.CpGIs.GRanges))])
 
-start(DM.CpGIs.GRanges)<-pmax(start(DM.CpGIs.GRanges)-overle,1)
+start(DM.CpGIs.GRanges)<-pmax(start(DM.CpGIs.GRanges)-flanks,1)
 
-overla<-findOverlap(TSS,DM.CpGIs.GRanges)
+overla<-findOverlaps(DM.CpGIs.GRanges,TSS)
+
+overlapped.TSS<-tapply(TSS$SYMBOL[subjectHits(overla)],queryHits(overla),paste,collapse=',')
+
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'overlapped.TSS'=overlapped.TSS[as.character(1:length(DM.CpGIs.GRanges))])
 
 #tapply
 
@@ -289,7 +293,7 @@ message('done\n')
 
 DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
 
-write.table(DM.CpGIs.stat,file='DM.CpGIs.stat.Bonferroni.tsv',sep='\t',row.names=FALSE)
+write.table(DM.CpGIs.stat,file='DM.CpGIs.stat.bonf.tsv',sep='\t',row.names=FALSE)
 
 if(!require('xtable'))
 {
@@ -298,9 +302,9 @@ if(!require('xtable'))
   library("xtable")  
 }
 
-if(file.exists("DM.CpGIs.stat.Bonferroni.html")) {file.remove("DM.CpGIs.stat.Bonferroni.html")}
+if(file.exists("DM.CpGIs.stat.bonf.html")) {file.remove("DM.CpGIs.stat.bonf.html")}
 
 
-print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.Bonferroni.html",include.rownames=FALSE)
+print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s')), type="html", file="DM.CpGIs.stat.bonf.html",include.rownames=FALSE)
 #print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.html",include.rownames=FALSE)
 #all
