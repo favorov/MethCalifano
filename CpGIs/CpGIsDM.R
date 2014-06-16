@@ -225,7 +225,7 @@ setwd('../CytoBands/') # not to recalculate all the CytoBand caches
 source('../CytoBands/CytoBandDM.R')
 setwd(popdir)
 
-DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis,'DM.band?'=cytobands.of.DM.cpgis%in%as.character(karyotype.with.methylation$id)[DM.cytobands])
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis,'DM.band?'=cytobands.of.DM.cpgis %in% as.character(karyotype.with.methylation$id)[DM.cytobands])
 message('done\n')
 
 
@@ -259,7 +259,7 @@ dist.TSS<-ifelse(strand(TSS)[near.TSS]=='+',
 )
 
 DM.CpGIs.GRanges$closest.TSS<-TSS$SYMBOL[near.TSS]
-DM.CpGIs.GRanges$pos.TSS<-start(TSS)[near.TSS]
+DM.CpGIs.GRanges$pos<-start(TSS)[near.TSS]
 DM.CpGIs.GRanges$dir<-as.character(strand(TSS)[near.TSS])
 DM.CpGIs.GRanges$dist<-dist.TSS
 
@@ -267,7 +267,7 @@ interchangedf<-as(DM.CpGIs.GRanges,'data.frame')
 
 rownames(interchangedf)=interchangedf$id
 
-DM.CpGIs.stat<-cbind(DM.CpGIs.stat,interchangedf[as.character(DM.CpGIs.stat$id),c('closest.TSS','pos.TSS','dir','dist')])
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,interchangedf[as.character(DM.CpGIs.stat$id),c('closest.TSS','pos','dir','dist')])
 
 message('done\n')
 
@@ -283,11 +283,16 @@ start(DM.CpGIs.GRanges)<-pmax(start(DM.CpGIs.GRanges)-flanks,1)
 
 overla<-findOverlaps(DM.CpGIs.GRanges,TSS)
 
+#overlapped.TSS
+
 overlapped.TSS<-tapply(TSS$SYMBOL[subjectHits(overla)],queryHits(overla),paste,collapse=',')
 
 DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'overlapped.TSS'=overlapped.TSS[as.character(1:length(DM.CpGIs.GRanges))])
 
-#tapply
+overlapped.pos<-tapply(as.character(start(TSS))[subjectHits(overla)],queryHits(overla),paste,collapse=',')
+
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'overlapped.pos'=overlapped.pos[as.character(1:length(DM.CpGIs.GRanges))])
+
 
 message('done\n')
 
@@ -305,6 +310,6 @@ if(!require('xtable'))
 if(file.exists("DM.CpGIs.stat.bonf.html")) {file.remove("DM.CpGIs.stat.bonf.html")}
 
 
-print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s')), type="html", file="DM.CpGIs.stat.bonf.html",include.rownames=FALSE)
+print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s')), type="html", file="DM.CpGIs.stat.bonf.html",include.rownames=FALSE)
 #print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.html",include.rownames=FALSE)
 #all
