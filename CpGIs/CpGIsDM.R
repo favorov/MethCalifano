@@ -293,6 +293,9 @@ overlapped.pos<-tapply(as.character(start(TSS))[subjectHits(overla)],queryHits(o
 
 DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'overlapped.pos'=overlapped.pos[as.character(1:length(DM.CpGIs.GRanges))])
 
+ovrl.dir<-tapply(as.character(strand(TSS))[subjectHits(overla)],queryHits(overla),paste,collapse=',')
+
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'ovrl.dir'=ovrl.dir[as.character(1:length(DM.CpGIs.GRanges))])
 
 message('done\n')
 
@@ -310,6 +313,6 @@ if(!require('xtable'))
 if(file.exists("DM.CpGIs.stat.bonf.html")) {file.remove("DM.CpGIs.stat.bonf.html")}
 
 
-print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s')), type="html", file="DM.CpGIs.stat.bonf.html",include.rownames=FALSE)
+print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','s')), type="html", file="DM.CpGIs.stat.bonf.html",include.rownames=FALSE)
 #print(xtable(DM.CpGIs.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','d','s','d')), type="html", file="DM.CpGIs.stat.html",include.rownames=FALSE)
 #all
