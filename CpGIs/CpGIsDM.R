@@ -172,10 +172,10 @@ if(!CpGIs.fisher.data.loaded)
 }
 
 DM.W.CpGIslands<-which(wilcoxon.p.values<=0.05)
-DM.W.CpGIslands.Bonferroni<-which(wilcoxon.p.values*tests.number<=0.05)
+DM.W.CpGIslands.Bonferroni<-which(p.adjust(wilcoxon.p.values,method='bonferroni')<=0.05)
 
 DM.F.CpGIslands<-which(fisher.p.values<=0.05)
-DM.F.CpGIslands.Bonferroni<-which(fisher.p.values*tests.number<=0.05)
+DM.F.CpGIslands.Bonferroni<-which(p.adjust(fisher.p.values,method='bonferroni')<=0.05)
 #here, we form output statictics
 
 #bonferroni: we will use Bonferroni for extract in the cbind command below 
@@ -206,6 +206,8 @@ message('Mapping to karyotype...\n')
 
 CpGIs.to.karyotype<-findOverlaps(DM.CpGIs.Ranges,karyotype,type="within")
 cytobands.of.DM.cpgis=character(0)
+is.cytobands.of.DM.cpgis.DM=logical(0)
+
 for (chr in names(CpGIs.to.karyotype))
 {
   #chromosome cycle
@@ -217,7 +219,10 @@ for (chr in names(CpGIs.to.karyotype))
 		my_cytoz<-as.list(CpGIs.to.karyotype[[chr]])[[island_no]]
 		if (!length(my_cytoz)) {NA} else {my_cytoz[1]}
 	})
-	cytobands.of.DM.cpgis<-c(cytobands.of.DM.cpgis,as.character(karyotype[chr][[1]][cytoband.numbers.this.chr]))
+	cytobands.of.DM.cpgis.this.chr<-as.character(karyotype[chr][[1]][cytoband.numbers.this.chr])
+	cytobands.of.DM.cpgis<-c(cytobands.of.DM.cpgis,cytobands.of.DM.cpgis.this.chr)
+	is.cytobands.of.DM.cpgis.DM.this.chr<-cytobands.of.DM.cpgis.this.chr %in% as.character(karyotype.with.methylation$id)[intersect(which(karyotype.with.methylation$space==chr),DM.cytobands)]
+	is.cytobands.of.DM.cpgis.DM<-c(is.cytobands.of.DM.cpgis.DM,is.cytobands.of.DM.cpgis.DM.this.chr)
 }
 
 popdir<-getwd()
@@ -225,7 +230,7 @@ setwd('../CytoBands/') # not to recalculate all the CytoBand caches
 source('../CytoBands/CytoBandDM.R')
 setwd(popdir)
 
-DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis,'DM.band?'=cytobands.of.DM.cpgis %in% as.character(karyotype.with.methylation$id)[DM.cytobands])
+DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis,'DM.band?'=is.cytobands.of.DM.cpgis.DM)
 message('done\n')
 
 
