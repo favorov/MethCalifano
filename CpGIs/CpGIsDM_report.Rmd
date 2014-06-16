@@ -23,9 +23,10 @@ We think that an island is differentially methylated if the p-value is <=0.05.
 
 ### Here is the list of all differentially methylated (p<=0.05) CpG with Bonferroni correction
 
-In the table: TSS near is the closest start of a HGNC gene (according to Ensemble coords as represented in Homo.sapiens and org.Hs.eg.db) to the island.
-position and strand are of the gene. Distance is the distance from the middle of the island to TSS, negative means that the island is in the upstream.
+In the table: 
+The DM CpG islands coords and the methylation status description; cytoband information; TSS near is the closest start of a HGNC gene (according to Ensemble coords as represented in Homo.sapiens and org.Hs.eg.db) to the island, position and strand are of the gene. Distance is the distance from the middle of the island to TSS, negative means that the island is in the upstream.
 We show Wilcoxon and Fisher's p-values for each island as well as OR and the CI for OR.
+We also show all the HGNC's genes TSS that ovelap the island +- 7000 bp.
 
 <a href=./DM.CpGIs.stat.bonf.html>Here is the table in html format</a>
 
