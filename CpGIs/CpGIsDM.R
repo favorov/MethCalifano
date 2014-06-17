@@ -199,10 +199,15 @@ rownames(DM.CpGIs.stat)<-NULL
 
 #we want to put each diffmet CpGi to a cytoband
 source('../common/load_or_read_karyotype.R')
+
+popdir<-getwd()
+setwd('../CytoBands/') # not to recalculate all the CytoBand caches
+source('../CytoBands/CytoBandDM.R')
+setwd(popdir)
+message('Mapping to karyotype...\n')
+
 DM.CpGIs.Ranges<-as(DM.CpGIs.stat[,columns],'RangedData')
 
-
-message('Mapping to karyotype...\n')
 
 CpGIs.to.karyotype<-findOverlaps(DM.CpGIs.Ranges,karyotype,type="within")
 cytobands.of.DM.cpgis=character(0)
@@ -225,10 +230,6 @@ for (chr in names(CpGIs.to.karyotype))
 	is.cytobands.of.DM.cpgis.DM<-c(is.cytobands.of.DM.cpgis.DM,is.cytobands.of.DM.cpgis.DM.this.chr)
 }
 
-popdir<-getwd()
-setwd('../CytoBands/') # not to recalculate all the CytoBand caches
-source('../CytoBands/CytoBandDM.R')
-setwd(popdir)
 
 DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis,'DM.band?'=is.cytobands.of.DM.cpgis.DM)
 message('done\n')
