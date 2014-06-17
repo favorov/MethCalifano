@@ -26,8 +26,10 @@ We think that a cytoband is differentyally methylated if the p-value is <=0.05.
 
 ### Here is the list of all differentially methylated cytobands, no multiple test correction
 
-```{r print, no Bonferroni} 
-print.data.frame(karyotype.stat[DM.cytobands,],row.names=FALSE)
+```{r print, no correction} 
+karyotype.stat.DM<-karyotype.stat[DM.cytobands,]
+karyotype.stat.DM<-karyotype.stat.DM[order(as.integer(substring(karyotype.stat.DM$space,4)),karyotype.stat.DM$start),]
+print.data.frame(karyotype.stat.DM[,c(columns,'p.value','is.hyper')],row.names=FALSE)
 ```
 
 ### Here is the same list with Benjamini-Hoochberg correction

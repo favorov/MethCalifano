@@ -81,26 +81,34 @@ if (!karyotype.with.methylation.loaded)
 	save(file='karyotype.with.methylation.Rda',list=c('karyotype.with.methylation','Clinical','clinFile','beds','bed_available','bed_used','tumors','normals','DNAids'))
 }
 
-tests.number<-dim(karyotype.with.methylation)[1]
+karyotype.DM.loaded<-FALSE
+# we can the whole thing to karyotype.with.methylation.Rda
+if(file.exists('karyotype.DM.Rda'))
+	if ('DM.cytobands' %in% load('karyotype.DM.Rda'))
+			karyotype.DM.loaded-TRUE
 
-wilcoxon.p.values<-numeric(tests.number)
-normals.are.less.methylated<-logical(tests.number)
-
-expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
-
-for (rown in 1:tests.number)
 {
-	meth.values<-jitter(as.numeric(karyotype.with.methylation[rown,][DNAids[bed_available]]))
-	w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
-	wilcoxon.p.values[rown]<-w$p.value
-	normals.are.less.methylated[rown]<-(w[['statistic']]<expected.w.statistic)
-	#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
+	tests.number<-dim(karyotype.with.methylation)[1]
+
+	wilcoxon.p.values<-numeric(tests.number)
+	normals.are.less.methylated<-logical(tests.number)
+
+	expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
+
+	for (rown in 1:tests.number)
+	{
+		meth.values<-jitter(as.numeric(karyotype.with.methylation[rown,][DNAids[bed_available]]))
+		w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
+		wilcoxon.p.values[rown]<-w$p.value
+		normals.are.less.methylated[rown]<-(w[['statistic']]<expected.w.statistic)
+		#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
+	}
+
+	wilcoxon.p.values.bonferroni<-p.adjust(wilcoxon.p.values,'bonferroni')
+	wilcoxon.p.values.fdr<-p.adjust(wilcoxon.p.values,'fdr')
+
+	DM.cytobands<-which(wilcoxon.p.values<=0.05)
+	DM.cytobands.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
+	DM.cytobands.fdr<-which(wilcoxon.p.values.fdr<=0.05)
+	save(file='karyotype.DM.Rda',list=c('DM.cytobands','DM.cytobands.bonferroni','DM.cytobands.fdr'))
 }
-
-wilcoxon.p.values.bonferroni<-p.adjust(wilcoxon.p.values,'bonferroni')
-wilcoxon.p.values.fdr<-p.adjust(wilcoxon.p.values,'fdr')
-
-DM.cytobands<-which(wilcoxon.p.values<=0.05)
-DM.cytobands.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
-DM.cytobands.fdr<-which(wilcoxon.p.values.fdr<=0.05)
-

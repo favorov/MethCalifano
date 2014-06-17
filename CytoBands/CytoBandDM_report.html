@@ -19,6 +19,7 @@ body, td {
 body {
   max-width: 800px;
   margin: auto;
+  padding: 1em;
   line-height: 20px;
 }
 
@@ -26,28 +27,28 @@ tt, code, pre {
    font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
 }
 
-h1 { 
-   font-size:2.2em; 
+h1 {
+   font-size:2.2em;
 }
 
-h2 { 
-   font-size:1.8em; 
+h2 {
+   font-size:1.8em;
 }
 
-h3 { 
-   font-size:1.4em; 
+h3 {
+   font-size:1.4em;
 }
 
-h4 { 
-   font-size:1.0em; 
+h4 {
+   font-size:1.0em;
 }
 
-h5 { 
-   font-size:0.9em; 
+h5 {
+   font-size:0.9em;
 }
 
-h6 { 
-   font-size:0.8em; 
+h6 {
+   font-size:0.8em;
 }
 
 a:visited {
@@ -91,54 +92,54 @@ hr {
 }
 
 @media print {
-   * { 
-      background: transparent !important; 
-      color: black !important; 
-      filter:none !important; 
-      -ms-filter: none !important; 
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
    }
 
-   body { 
-      font-size:12pt; 
-      max-width:100%; 
-   }
-       
-   a, a:visited { 
-      text-decoration: underline; 
+   body {
+      font-size:12pt;
+      max-width:100%;
    }
 
-   hr { 
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
       visibility: hidden;
       page-break-before: always;
    }
 
-   pre, blockquote { 
-      padding-right: 1em; 
-      page-break-inside: avoid; 
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
    }
 
-   tr, img { 
-      page-break-inside: avoid; 
+   tr, img {
+      page-break-inside: avoid;
    }
 
-   img { 
-      max-width: 100% !important; 
+   img {
+      max-width: 100% !important;
    }
 
-   @page :left { 
-      margin: 15mm 20mm 15mm 10mm; 
-   }
-     
-   @page :right { 
-      margin: 15mm 10mm 15mm 20mm; 
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
    }
 
-   p, h2, h3 { 
-      orphans: 3; widows: 3; 
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
    }
 
-   h2, h3 { 
-      page-break-after: avoid; 
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
    }
 }
 </style>
@@ -152,7 +153,7 @@ hr {
 
 <h2>Alexander Favorov  </h2>
 
-<h3>08 Apr 2014</h3>
+<h3>16 Jun 2014</h3>
 
 <!-- cache is off, we save all the neccessary things in Rda -->
 
@@ -166,40 +167,44 @@ We think that a cytoband is differentyally methylated if the p-value is &lt;=0.0
 
 <h3>Here is the list of all differentially methylated cytobands, no multiple test correction</h3>
 
-<pre><code>##      id space     start       end   p.value bonferroni      fdr is.hyper
-##   p22.2  chr1  88400001  92000000 0.0402651   1.000000 0.998649     TRUE
-##     p12  chr1 117800001 120600000 0.0010853   0.935487 0.311829     TRUE
-##   q21.2  chr1 147000001 150300000 0.0059751   1.000000 0.719005     TRUE
-##  q24.31 chr10 101900001 103000000 0.0353834   1.000000 0.998649     TRUE
-##   q23.2 chr11 112500001 114500000 0.0270956   1.000000 0.998649    FALSE
-##  q24.21 chr12 114300001 116800000 0.0195615   1.000000 0.975629     TRUE
-##  q21.31 chr13  62300001  65700000 0.0338705   1.000000 0.998649    FALSE
-##  q21.32 chr13  65700001  68600000 0.0496395   1.000000 0.998649    FALSE
-##   q13.3 chr14  36600001  37800000 0.0000076   0.006551 0.006551     TRUE
-##  q21.32 chr17  44900001  47400000 0.0420118   1.000000 0.998649     TRUE
-##  q21.31 chr18  53800001  56200000 0.0324123   1.000000 0.998649     TRUE
-##  q13.13 chr19  38300001  38700000 0.0496395   1.000000 0.998649     TRUE
-##   q31.1  chr2 169700001 178000000 0.0215046   1.000000 0.975629     TRUE
-##  p11.22 chr20  21300001  22300000 0.0018234   1.000000 0.392952     TRUE
-##  p21.33  chr3  43700001  44100000 0.0119440   1.000000 0.857980     TRUE
-##   q22.3  chr3 135700001 138700000 0.0045045   1.000000 0.719005     TRUE
-##     q24  chr3 142800001 148900000 0.0066729   1.000000 0.719005     TRUE
-##  q25.32  chr3 157000001 159000000 0.0050490   1.000000 0.719005     TRUE
-##   q26.2  chr3 167600001 170900000 0.0113480   1.000000 0.857980     TRUE
-##  q26.31  chr3 170900001 175700000 0.0310071   1.000000 0.998649     TRUE
-##  q26.32  chr3 175700001 179000000 0.0402651   1.000000 0.998649     TRUE
-##  q26.33  chr3 179000001 182700000 0.0102333   1.000000 0.857980     TRUE
-##   q27.1  chr3 182700001 184500000 0.0338705   1.000000 0.998649     TRUE
-##   q27.2  chr3 184500001 186000000 0.0283502   1.000000 0.998649     TRUE
-##   q27.3  chr3 186000001 187900000 0.0177708   1.000000 0.975629     TRUE
-##     q28  chr3 187900001 192300000 0.0270956   1.000000 0.998649     TRUE
-##     q29  chr3 192300001 198022430 0.0177708   1.000000 0.975629     TRUE
-##   q31.3  chr5 139500001 144500000 0.0146081   1.000000 0.968632     TRUE
-##   p22.1  chr6  27000001  30400000 0.0195615   1.000000 0.975629     TRUE
-##   p15.2  chr7  25500001  28000000 0.0205134   1.000000 0.975629     TRUE
-##   p24.3  chr9         1   2200000 0.0078542   1.000000 0.752258     TRUE
-##   q21.2  chr9  79200001  81100000 0.0496395   1.000000 0.998649     TRUE
-##   p11.1  chrX  58100001  60600000 0.0007740   0.667224 0.311829    FALSE
+<pre><code>##      id space     start       end   p.value is.hyper
+##   p22.2  chr1  88400001  92000000 0.0402651     TRUE
+##     p12  chr1 117800001 120600000 0.0010853     TRUE
+##   q21.2  chr1 147000001 150300000 0.0059751     TRUE
+##   q31.1  chr2 169700001 178000000 0.0215046     TRUE
+##  p21.33  chr3  43700001  44100000 0.0119440     TRUE
+##   q22.3  chr3 135700001 138700000 0.0045045     TRUE
+##     q24  chr3 142800001 148900000 0.0066729     TRUE
+##  q25.32  chr3 157000001 159000000 0.0050490     TRUE
+##   q26.2  chr3 167600001 170900000 0.0113480     TRUE
+##  q26.31  chr3 170900001 175700000 0.0310071     TRUE
+##  q26.32  chr3 175700001 179000000 0.0402651     TRUE
+##  q26.33  chr3 179000001 182700000 0.0102333     TRUE
+##   q27.1  chr3 182700001 184500000 0.0338705     TRUE
+##   q27.2  chr3 184500001 186000000 0.0283502     TRUE
+##   q27.3  chr3 186000001 187900000 0.0177708     TRUE
+##     q28  chr3 187900001 192300000 0.0270956     TRUE
+##     q29  chr3 192300001 198022430 0.0186478     TRUE
+##   q31.3  chr5 139500001 144500000 0.0153493     TRUE
+##   p22.1  chr6  27000001  30400000 0.0205134     TRUE
+##   p15.2  chr7  25500001  28000000 0.0205134     TRUE
+##   p24.3  chr9         1   2200000 0.0078542     TRUE
+##   q21.2  chr9  79200001  81100000 0.0496395     TRUE
+##  q24.31 chr10 101900001 103000000 0.0353834     TRUE
+##   q23.2 chr11 112500001 114500000 0.0270956    FALSE
+##  q24.21 chr12 114300001 116800000 0.0195615     TRUE
+##   p11.1 chr13  16300001  17900000 0.0385791    FALSE
+##  q21.31 chr13  62300001  65700000 0.0338705    FALSE
+##  q21.32 chr13  65700001  68600000 0.0496395    FALSE
+##     p12 chr14   3700001   8100000 0.0092152     TRUE
+##   q13.3 chr14  36600001  37800000 0.0000076     TRUE
+##     p13 chr15         1   3900000 0.0476332    FALSE
+##     p12 chr15   3900001   8700000 0.0070480    FALSE
+##  q21.32 chr17  44900001  47400000 0.0438210     TRUE
+##  q21.31 chr18  53800001  56200000 0.0324123     TRUE
+##  q13.13 chr19  38300001  38700000 0.0496395     TRUE
+##  p11.22 chr20  21300001  22300000 0.0018234     TRUE
+##   p11.1  chrX  58100001  60600000 0.0007740    FALSE
 </code></pre>
 
 <h3>Here is the same list with Benjamini-Hoochberg correction</h3>
