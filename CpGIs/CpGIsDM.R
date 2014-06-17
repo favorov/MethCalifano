@@ -292,15 +292,15 @@ generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 
 	#overlapped.TSS
 
-	overlapped.TSS<-tapply(TSS$SYMBOL[subjectHits(overla)],queryHits(overla),paste,collapse=',')
+	overlapped.TSS<-tapply(TSS$SYMBOL[subjectHits(overla)],queryHits(overla),paste,collapse=', ')
 
 	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'overlapped.TSS'=overlapped.TSS[as.character(1:length(DM.CpGIs.GRanges))])
 
-	overlapped.pos<-tapply(as.character(start(TSS))[subjectHits(overla)],queryHits(overla),paste,collapse=',')
+	overlapped.pos<-tapply(as.character(start(TSS))[subjectHits(overla)],queryHits(overla),paste,collapse=', ')
 
 	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'overlapped.pos'=overlapped.pos[as.character(1:length(DM.CpGIs.GRanges))])
 
-	ovrl.dir<-tapply(as.character(strand(TSS))[subjectHits(overla)],queryHits(overla),paste,collapse=',')
+	ovrl.dir<-tapply(as.character(strand(TSS))[subjectHits(overla)],queryHits(overla),paste,collapse=', ')
 
 	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'ovrl.dir'=ovrl.dir[as.character(1:length(DM.CpGIs.GRanges))])
 
