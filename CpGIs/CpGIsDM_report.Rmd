@@ -32,7 +32,21 @@ We also show all the HGNC's genes TSS that ovelap the island +- 7000 bp.
 
 <a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/CpGIs/DM.CpGIs.stat.bonf.tsv>Here is the table in tsv format, to be loaded to excel</a>
 
-Technical info
+### The same table for FDR<0.1
+
+<a href=./DM.CpGIs.stat.fdr.html>Here is the table in html format</a>
+
+<a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/CpGIs/DM.CpGIs.stat.fdr.tsv>Here is the table in tsv format, to be loaded to excel</a>
+
+### The same for uncorrected p-value<0.05
+
+<a href=./DM.CpGIs.stat.uncorr.html>Here is the table in html format</a>
+
+<a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/CpGIs/DM.CpGIs.stat.uncorr.tsv>Here is the table in tsv format, to be loaded to excel</a>
+
+
+
+### Technical info
 -------------------------------
 Clinical data file: `r clinFile`.
 
