@@ -17,7 +17,7 @@ if(file.exists('noodles.C.Rda'))
 {
 	loaded<-load('noodles.C.Rda')
 	if ('noodles.C.methylation' %in% loaded) 
-		if (class(noodles.M.methylation)=='data.frame')
+		if (class(noodles.C.methylation)=='data.frame')
 			if ('noodles.C' %in% loaded)
 				if(class(noodles.C)=='GRanges')
 			noodles.C.loaded<-TRUE
@@ -27,8 +27,8 @@ if(!noodles.C.loaded)
 {
 	noodle.length<-100
 	chrs<-nucl.chromosomes.hg19()
-	noodles.C<-prepare.covering.noodles(chrs,noodle.length)
-	#noodles.C<-prepare.covering.noodles(chrs['chr1'],noodle.length)
+	#noodles.C<-prepare.covering.noodles(chrs,noodle.length)
+	noodles.C<-prepare.covering.noodles(chrs['chr1'],noodle.length)
 	#chr1 test
 	
 	#project-dependent part
