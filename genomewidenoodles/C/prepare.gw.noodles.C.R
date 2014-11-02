@@ -45,31 +45,30 @@ if(!noodles.C.loaded)
 	DNAids<-DNAids[normals | tumors]
 	#we do not want to work with xeongraft & cell lines
 
-	bed_available<-logical(0)
-	bed_used<-rep(FALSE,length(beds))
-
-	for (DNAid in DNAids)
-	{ 
-		DNAidKey<-strsplit(DNAid,',')[[1]][1]	#remove all after ,	
-		message(DNAidKey)
-		match<-grep(DNAidKey,beds)
-		if (!length(match)) 
-		{
-			DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') 
-			#remove _ from key; sometimes, it help
+	bedfilenames<-lapply(DNAids,function(DNAid){ 
+			DNAidKey<-strsplit(DNAid,',')[[1]][1]	#remove all after ,	
+			message(DNAidKey)
 			match<-grep(DNAidKey,beds)
+			if (!length(match)) 
+			{
+				DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') 
+				#remove _ from key; sometimes, it help
+				match<-grep(DNAidKey,beds)
+			}
+			if (!length(match)) 
+			{
+				bed_available<-c(bed_available,FALSE)
+				next
+			}
+			if (length(match)>1) stop(paste0("More than one match of DNAid ",DNAid," amonng the bed file names.\n"));
+			bedfilename<-paste0(peakbedsfolder,beds[match[1]]);
+			#message(match[1])
+			#message(bedfilename)
+			bedfilename
 		}
-		if (!length(match)) 
-		{
-			bed_available<-c(bed_available,FALSE)
-			next
-		}
-		if (length(match)>1) stop(paste0("More than one match of DNAid ",DNAid," amonng the bed file names.\n"));
-		bedfilename<-paste0(peakbedsfolder,beds[match[1]]);
-		bed_used[match[1]]<-TRUE
-		bed_available<-c(bed_available,TRUE)
-		message('done\n')
-	}
+	)
+	message('Files assigned.\n')
+	bedfilenames<-unlist(bedfilenames)
 	#
 	
 	#noodles.C.methylation<-CountCoverageOfNoodles(noodles.M,paste0(beddir,bedfiles),bed.ids)
