@@ -11,27 +11,68 @@ if (!suppressWarnings(require('differential.coverage')))
 	library('differential.coverage')
 }
 
-noodles.M.loaded<-FALSE
+noodles.C.loaded<-FALSE
 # we can the whole thing to noodles.M.Rda
-if(file.exists('noodles.M.Rda'))
+if(file.exists('noodles.C.Rda'))
 {
-	loaded<-load('noodles.M.Rda')
-	if ('noodles.M.methylation' %in% loaded) 
+	loaded<-load('noodles.C.Rda')
+	if ('noodles.C.methylation' %in% loaded) 
 		if (class(noodles.M.methylation)=='data.frame')
-			if ('noodles.M' %in% loaded)
-				if(class(noodles.M)=='GRanges')
-			noodles.M.loaded<-TRUE
+			if ('noodles.C' %in% loaded)
+				if(class(noodles.C)=='GRanges')
+			noodles.C.loaded<-TRUE
 }
 
-if(!noodles.M.loaded)
+if(!noodles.C.loaded)
 {
-	beddir<-'../../../../Methylation/bedfiles/'
-	noodle.length<-1000
+	noodle.length<-100
 	chrs<-nucl.chromosomes.hg19()
-	noodles.M<-prepare.uniform.noodles(chrs,noodle.length)
-	bedfiles<-dir(beddir) 
-	bedfiles<-bedfiles[grep('All_',bedfiles,invert=TRUE)] # remove two 'All_' files
-	bed.ids<-sapply(strsplit(bedfiles,split='_'),function(x){if(x[2]!='DNA') x[2] else x[3]}) #somhere id in pos 2, somewhere in 3
-	noodles.M.methylation<-CountCoverageOfNoodles(noodles.M,paste0(beddir,bedfiles),bed.ids)
-	save(file='noodles.M.Rda',list=c('noodles.M','noodles.M.methylation','bed.ids','noodle.length'))
+	#noodles.C<-prepare.covering.noodles(chrs,noodle.length)
+	noodles.C<-prepare.covering.noodles(chrs['chr1'],noodle.length)
+	
+	#project-dependent part
+	#we read the IDS and codes from the clinical file
+	data.version<-'final'
+	data.folder<-'../../../Data'
+	source('../../common/read_clinical.R')
+	
+	#Clinical prepared.
+	#it is folder with bed files
+	peakbedsfolder<-paste0(data.folder,'/PeakCalls/bedfiles/')
+
+	beds<-list.files(peakbedsfolder)
+
+	DNAids<-DNAids[normals | tumors]
+	#we do not want to work with xeongraft & cell lines
+
+	bed_available<-logical(0)
+	bed_used<-rep(FALSE,length(beds))
+
+	for (DNAid in DNAids)
+	{ 
+		DNAidKey<-strsplit(DNAid,',')[[1]][1]	#remove all after ,	
+		message(DNAidKey)
+		match<-grep(DNAidKey,beds)
+		if (!length(match)) 
+		{
+			DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') 
+			#remove _ from key; sometimes, it help
+			match<-grep(DNAidKey,beds)
+		}
+		if (!length(match)) 
+		{
+			bed_available<-c(bed_available,FALSE)
+			next
+		}
+		if (length(match)>1) stop(paste0("More than one match of DNAid ",DNAid," amonng the bed file names.\n"));
+		bedfilename<-paste0(peakbedsfolder,beds[match[1]]);
+		bed_used[match[1]]<-TRUE
+		bed_available<-c(bed_available,TRUE)
+		message('done\n')
+	}
+	#
+	
+	#noodles.C.methylation<-CountCoverageOfNoodles(noodles.M,paste0(beddir,bedfiles),bed.ids)
+	#save(file='noodles.C.Rda',list=c('noodles.C','noodles.C.methylation','bed.ids','contrast','noodle.length'))
 }
+
