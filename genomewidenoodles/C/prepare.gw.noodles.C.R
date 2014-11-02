@@ -27,8 +27,9 @@ if(!noodles.C.loaded)
 {
 	noodle.length<-100
 	chrs<-nucl.chromosomes.hg19()
-	#noodles.C<-prepare.covering.noodles(chrs,noodle.length)
-	noodles.C<-prepare.covering.noodles(chrs['chr1'],noodle.length)
+	noodles.C<-prepare.covering.noodles(chrs,noodle.length)
+	#noodles.C<-prepare.covering.noodles(chrs['chr1'],noodle.length)
+	#chr1 test
 	
 	#project-dependent part
 	#we read the IDS and codes from the clinical file
@@ -43,6 +44,15 @@ if(!noodles.C.loaded)
 	beds<-list.files(peakbedsfolder)
 
 	DNAids<-DNAids[normals | tumors]
+	#we do not want to work with xeongraft & cell lines
+
+	contrast<-integer(0)
+
+	contrast[normals & ! tumors] <- 0
+	contrast[tumors & ! normals] <- 1
+	#contrast : 0 for normals, 1 for tumors, NA for unknown 
+	
+	contrast<-contrast[!is.na(contrast)]
 	#we do not want to work with xeongraft & cell lines
 
 	bedfilenames<-lapply(DNAids,function(DNAid){ 
@@ -69,9 +79,7 @@ if(!noodles.C.loaded)
 	)
 	message('Files assigned.\n')
 	bedfilenames<-unlist(bedfilenames)
-	#
-	
-	#noodles.C.methylation<-CountCoverageOfNoodles(noodles.M,paste0(beddir,bedfiles),bed.ids)
-	#save(file='noodles.C.Rda',list=c('noodles.C','noodles.C.methylation','bed.ids','contrast','noodle.length'))
+	noodles.C.methylation<-CountCoverageOfNoodles(noodles.C,bedfilenames,DNAids)
+	save(file='noodles.C.Rda',list=c('noodles.C','noodles.C.methylation','DNAids','bedfilenames','contrast','noodle.length'))
 }
 
