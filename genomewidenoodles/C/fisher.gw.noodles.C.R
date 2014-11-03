@@ -97,7 +97,7 @@ if(!noodles.fisher.results.loaded)
 
 		if(file.exists(noodles.file))
 		{
-			loaded<-load()
+			loaded<-load(noodles.file)
 			if (noodles.methylation.var.name %in% loaded) 
 				if (class(get(noodles.methylation.var.name))=='data.frame')
 					if (noodles.ranges.var.name %in% loaded)
@@ -116,11 +116,11 @@ if(!noodles.fisher.results.loaded)
 		message('fishering')
 
 		noodles.number<-dim(get(noodles.methylation.var.name))[1]
-		#project-specific code; the bed.ids were prepared in 
-		contrast<-logical(length(bed.ids))
-		contrast[grep('HN',bed.ids)]<-TRUE
-		norm.no<-length(which(!contrast))
-		tumor.no<-length(which(contrast))
+		#project-specific code; the bed.ids were prepared earlier
+		#here, we suppose that contrast is prepare earlier, and loaded
+		#and it is 0 for normal, 1 for tumor
+		norm.no<-length(which(contrast==0))
+		tumor.no<-length(which(contrast==1))
 
 		fishtabs<-as.matrix(prepare.tabulated.fisher(tumor.no,norm.no))
 
@@ -147,7 +147,7 @@ if(!noodles.fisher.results.loaded)
 		colnames(fisher.noodles.result.mat)<-c('fisher.p.values','meth.in.normals.ratio','meth.in.tumors.ratio','OR','CI_95_L','CI_95_H') 
 		
 		revcontrast<-!contrast
-		report.every<-step.tests.number %/% 100
+		report.every<-tests.number %/% 100
 		message('fill result matrix')
 
 		for (rown in 1:tests.number) 	
