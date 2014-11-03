@@ -81,5 +81,12 @@ if(!noodles.C.loaded)
 	bedfilenames<-unlist(bedfilenames)
 	noodles.C.methylation<-CountCoverageOfNoodles(noodles.C,bedfilenames,DNAids)
 	save(file='noodles.C.Rda',list=c('noodles.C','noodles.C.methylation','DNAids','bedfilenames','contrast','noodle.length'))
+	
+	#
+	norm.no<-length(which(contrast==0))
+	tumor.no<-length(which(contrast==1))
+
+	prepare.tabulated.fisher(tumor.no,norm.no)
+	#this call prepares the file with matrix
 }
 
