@@ -27,8 +27,8 @@ if(!noodles.C.loaded)
 {
 	noodle.length<-100
 	chrs<-nucl.chromosomes.hg19()
-	#noodles.C<-prepare.covering.noodles(chrs,noodle.length)
-	noodles.C<-prepare.covering.noodles(chrs['chr1'],noodle.length)
+	noodles.C<-prepare.covering.noodles(chrs,noodle.length)
+	#noodles.C<-prepare.covering.noodles(chrs['chr1'],noodle.length)
 	#chr1 test
 	
 	#project-dependent part
