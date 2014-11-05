@@ -236,73 +236,29 @@ generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 	message('done\n')
 
 
-	message('Looking for closest gene')
-
-	TSS<- genes(TxDb.Hsapiens.UCSC.hg19.knownGene)
-
-	geneSymbols <- select(
-		org.Hs.eg.db,
-		keys=as.character(TSS$gene_id),
-		columns=c('SYMBOL'),
-		keytype='ENTREZID'
+	DM.CpGIs.GRanges<-GRanges(
+		seqinfo=nucl.chromosomes.hg19(),
+		ranges=IRanges(start=DM.CpGIs.stat[,'start'],end=DM.CpGIs.stat[,'end']),
+		seqnames=DM.CpGIs.stat[,'space'],
+		id=DM.CpGIs.stat[,'id']
 	)
 
-	TSS$SYMBOL <- geneSymbols$SYMBOL
+	seqinfo(DM.CpGIs.GRanges)<-nucl.chromosomes.hg19()
 
-	tss.start<-ifelse(strand(TSS)=='+',start(TSS),end(TSS))
+	message('Looking for closest genes')
+	DM.CpGIs.closest.genes<-closest.gene.start.by.interval(DM.CpGIs.GRanges)
 
-	start(TSS)<-tss.start
-	end(TSS)<-tss.start
+	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,elementMetadata(DM.CpGIs.closest.genes)[,c('closest.TSS','pos','dir','dist')])
 
-	DM.CpGIs.GRanges<-as(DM.CpGIs.Ranges,'GRanges')
-
-	near.TSS<-nearest(DM.CpGIs.GRanges,TSS)
-
-	dist.TSS<-distance(DM.CpGIs.GRanges,TSS[near.TSS])
-
-	dist.TSS<-ifelse(strand(TSS)[near.TSS]=='+',
-			ifelse(start(DM.CpGIs.GRanges)>start(TSS)[near.TSS],dist.TSS,-dist.TSS),
-			ifelse(start(DM.CpGIs.GRanges)>start(TSS)[near.TSS],-dist.TSS,dist.TSS)
-	)
-
-	DM.CpGIs.GRanges$closest.TSS<-TSS$SYMBOL[near.TSS]
-	DM.CpGIs.GRanges$pos<-start(TSS)[near.TSS]
-	DM.CpGIs.GRanges$dir<-as.character(strand(TSS)[near.TSS])
-	DM.CpGIs.GRanges$dist<-dist.TSS
-
-	interchangedf<-as(DM.CpGIs.GRanges,'data.frame')
-
-	rownames(interchangedf)=interchangedf$id
-
-	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,interchangedf[as.character(DM.CpGIs.stat$id),c('closest.TSS','pos','dir','dist')])
-
-	message('done\n')
+	message('done')
 
 	message('Looking for overlapped genes')
 
 	flanks<-7000
 
-	DM.CpGIs.GRanges<-as(DM.CpGIs.Ranges,'GRanges') # the same tester again
+	DM.CpGIs.ovelapped.genes<-genes.with.TSS.covered.by.interval(DM.CpGIs.GRanges,flanks=flanks)
 
-	end(DM.CpGIs.GRanges)<-pmin(end(DM.CpGIs.GRanges)+flanks,seqlengths(TSS)[as.character(seqnames(DM.CpGIs.GRanges))])
-
-	start(DM.CpGIs.GRanges)<-pmax(start(DM.CpGIs.GRanges)-flanks,1)
-
-	overla<-findOverlaps(DM.CpGIs.GRanges,TSS)
-
-	#overlapped.TSS
-
-	overlapped.TSS<-tapply(TSS$SYMBOL[subjectHits(overla)],queryHits(overla),paste,collapse=', ')
-
-	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'overlapped.TSS'=overlapped.TSS[as.character(1:length(DM.CpGIs.GRanges))])
-
-	overlapped.pos<-tapply(as.character(start(TSS))[subjectHits(overla)],queryHits(overla),paste,collapse=', ')
-
-	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'overlapped.pos'=overlapped.pos[as.character(1:length(DM.CpGIs.GRanges))])
-
-	ovrl.dir<-tapply(as.character(strand(TSS))[subjectHits(overla)],queryHits(overla),paste,collapse=', ')
-
-	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'ovrl.dir'=ovrl.dir[as.character(1:length(DM.CpGIs.GRanges))])
+	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,elementMetadata(DM.CpGIs.ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
 
 	message('done\n')
 
