@@ -53,7 +53,6 @@ if(data.version==5 || data.version=='final')
 	tumors <- as.integer(Clinical$code) < 99
 	normals <- (as.integer(Clinical$code) > 99) & ((as.integer(Clinical$code) < 200) )
 
-	DNAids<-Clinical$'Tumor/Tissue DNA HAND ID'
 	#clinical prepared
 }
 
