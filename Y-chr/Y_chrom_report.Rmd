@@ -42,6 +42,7 @@ The watermark test:  Wilcoxon for 1&#39;s for all males against 0&#39;s for all 
 ```{r wilcoxon_watermark} 
 print(wilcox.test(one_m_j,zero_f_j))
 ```
+
 ### The best measure is the coverage lenghts.
 
 
@@ -55,15 +56,14 @@ file.info(clinFile)[,c('size','mtime')]
 ```
 Number of records is `r nrow(Clinical)`
 
-Bed files:
+Number of used records is `r length(DNAids)`
+
+There were `r sum(bed.used)` bed files:
 ```{r bed files}
 beds
 ```
-DNAIds not in beds:
-```{r not in beds}
-DNAids[!bed_available]
-```
-Beds no in DNAids:
+
+Beds not used:
 ```{r not in DNAids}
-beds[!bed_used]
+beds[!bed.used]
 ```
