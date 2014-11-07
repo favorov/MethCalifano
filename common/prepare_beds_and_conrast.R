@@ -4,8 +4,10 @@ peakbedsfolder<-paste0(data.folder,'/PeakCalls/bedfiles/')
 
 beds<-list.files(peakbedsfolder)
 
-DNAids<-DNAids[normals | tumors]
+DNAids<-Clinical$'Tumor/Tissue DNA HAND ID'[normals | tumors]
+codes<-rownames(Clinical)[normals | tumors]
 #we do not want to work with xeongraft & cell lines
+
 
 contrast<-integer(0)
 
