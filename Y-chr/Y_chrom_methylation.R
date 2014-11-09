@@ -37,7 +37,7 @@ if (!Y.chrom.stats.loaded)
 			'Peak score sum'=score.sum,
 			'Product sum'=ls.prod.sum,
 			stringsAsFactors = FALSE)
-	save(file='Y.chrom.stats.Rda',list=c('Y.chrom.stats','clinFile','Clinical','beds','bedfilenames','clinical.row.used','bed.used','DNAids'))
+	save(file='Y.chrom.stats.Rda',list=c('Y.chrom.stats','clinFile','Clinical','bedsinfolder','bedfilenames','clinical.row.used','bed.used','DNAids'))
 }
 
 print(Y.chrom.stats)

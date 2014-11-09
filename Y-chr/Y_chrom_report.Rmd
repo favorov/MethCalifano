@@ -60,10 +60,10 @@ Number of used records is `r length(DNAids)`
 
 There were `r sum(bed.used)` bed files:
 ```{r bed files}
-beds
+bedsinfolder
 ```
 
 Beds not used:
 ```{r not in DNAids}
-beds[!bed.used]
+bedsinfolder[!bed.used]
 ```
