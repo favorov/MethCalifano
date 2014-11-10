@@ -11,7 +11,8 @@ if ((! 'data.folder' %in% ls()) || is.na(data.folder)) data.folder<-'../../Data'
 #the file to be read
 if(data.version==4)	
 {
-	clinFile <- paste0(data.folder,'/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv')
+	clinFileName<-'2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv'
+	clinFile <- paste0(data.folder,'/Clinical/',clinFileName)
 	Clinical <- read.csv(clinFile,stringsAsFactors=F)
 
 	#fix up the column names to account for the fact that there are two header rows
@@ -35,7 +36,8 @@ if(data.version==4)
 
 if(data.version==5 || data.version=='final')	
 {
-	clinFile <- paste0(data.folder,'/Clinical/2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv')
+	clinFileName <- '2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv'
+	clinFile <- paste0(data.folder,'/Clinical/',clinFileName)
 	Clinical <- read.csv(clinFile,stringsAsFactors=F)
 
 	#fix up the column names to account for the fact that there are two header rows
