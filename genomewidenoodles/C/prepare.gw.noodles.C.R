@@ -6,7 +6,7 @@ if (!suppressWarnings(require('differential.coverage')))
 		biocLite("devtools")
 		library("devtools")
 	}
-	install_github('favorov/Differential.Coverage')
+	install_github('favorov/differential.coverage')
 	#load_all('../../../../differential.coverage/')
 	library('differential.coverage')
 }
