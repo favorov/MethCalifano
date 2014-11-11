@@ -47,7 +47,7 @@ if(!CpGIs.loaded)
 		id=as.character(CpGI_data$id)
 	)
 	CpGIs.timestamp<-Sys.time()
-	save(file='CpGIs.Rda',list=c('CpGIs','CpGIs.timestamp)
+	save(file='CpGIs.Rda',list=c('CpGIs','CpGIs.timestamp'))
 }
 #print(CpGIs)
 
