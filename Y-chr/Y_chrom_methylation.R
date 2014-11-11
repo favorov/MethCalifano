@@ -13,7 +13,7 @@ if(file.exists('Y.chrom.stats.Rda'))
 if (!Y.chrom.stats.loaded)
 {
 	source('../common/read_clinical.R')
-	source('../common/prepare_beds_and_conrast.R')
+	source('../common/prepare_beds_and_contrast.R')
 
 	length.sum<-integer(0)
 	score.sum<-numeric(0)
