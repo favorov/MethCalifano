@@ -14,7 +14,7 @@
 #	biocLite("rtracklayer")
 #}
 
-.Deprecated(new='get.cytodand.ranges',package='differential,coverage',old='load_or_read_chrom_ranges.R')
+.Deprecated(new='get.cytodand.ranges',old='load_or_read_chrom_ranges.R')
 
 if (!require('DASiR'))
 {
