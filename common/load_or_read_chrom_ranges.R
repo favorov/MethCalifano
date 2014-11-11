@@ -14,7 +14,7 @@
 #	biocLite("rtracklayer")
 #}
 
-.Deprecated(new='get.cytodand.ranges',old='load_or_read_chrom_ranges.R')
+.Deprecated(new='nucl.chromosomes.hg19',old='load_or_read_chrom_ranges.R')
 
 if (!require('DASiR'))
 {
@@ -25,8 +25,8 @@ if (!require('DASiR'))
 chrom.ranges.loaded<-FALSE
 # we can the whole thing to refseqGenes.with.methylation.Rda
 
-if(file.exists('../common/chromRanges.Rda'))
-	if ('chrom.ranges' %in% load('../common/chromRanges.Rda'))
+if(file.exists('chromRanges.Rda'))
+	if ('chrom.ranges' %in% load('chromRanges.Rda'))
 			chrom.ranges.loaded<-TRUE
 
 if(!chrom.ranges.loaded)
@@ -38,5 +38,5 @@ if(!chrom.ranges.loaded)
 	#we removed the strange and test chromosomes and MT
 	chrom.length <- end(ranges(chrom.ranges))
 	names(chrom.length) <- paste0('chr', seqnames(chrom.ranges)) 
-	save(file='../common/chromRanges.Rda',list=c('chrom.ranges','chrom.length'))
+	save(file='chromRanges.Rda',list=c('chrom.ranges','chrom.length'))
 }
