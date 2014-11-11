@@ -17,9 +17,9 @@ if (!require('DASiR'))
 CpGIs.loaded<-FALSE
 # we can the whole thing to karyotype.with.methylation.Rda
 
-if(file.exists('../common/CpGIs.Rda'))
-	if ('CpGIs' %in% load('../common/CpGIs.Rda'))
-		if (class(CpGIs)=='RangedData')
+if(file.exists('CpGIs.Rda'))
+	if ('CpGIs' %in% load('CpGIs.Rda'))
+		if (class(CpGIs)=='GRanges')
 			CpGIs.loaded<-TRUE
 
 if(!CpGIs.loaded)
@@ -36,16 +36,18 @@ if(!CpGIs.loaded)
 	#CpGI_data is a DataFrame with all the CpGIs bands enumerated
 	chrs<-as.character(seqnames(chrom.ranges))[CpGI_data$segment.range]
 	#the same trick
-	CpGIs<-RangedData(
-		space=paste0('chr',chrs), 
+	CpGIs<-GRanges(
+		seqnames=paste0('chr',chrs),
 		ranges=IRanges
 		(
 			start=as.numeric(as.character(CpGI_data$start)),
 			end=as.numeric(as.character(CpGI_data$end))
 		),
-		id=CpGI_data$id
+		seqinfo=nucl.chromosomes.hg19(),
+		id=as.character(CpGI_data$id)
 	)
-	save(file='../common/CpGIs.Rda',list=c('CpGIs'))
+	CpGIs.timestamp<-Sys.time()
+	save(file='CpGIs.Rda',list=c('CpGIs','CpGIs.timestamp)
 }
 #print(CpGIs)
 
