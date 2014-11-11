@@ -59,7 +59,7 @@ Number of records is `r nrow(Clinical)`
 
 Bed files:
 ```{r bedsinfolder}
-bedinfolder
+bedsinfolder
 ```
 Beds not used:
 ```{r not in DNAids}
