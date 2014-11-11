@@ -2,6 +2,8 @@
 #saves the information to ../common/karyotype.Rda
 #if the file exists, read it after some checks
 
+.Deprecated(new='get.cytodand.ranges',old='load_or_read_karyotype.R')
+
 if (!require('rtracklayer'))
 {
 	source("http://bioconductor.org/biocLite.R")
@@ -17,8 +19,8 @@ if (!require('DASiR'))
 karyotype.loaded<-FALSE
 # we can the whole thing to karyotype.with.methylation.Rda
 
-if(file.exists('../common/karyotype.Rda'))
-	if ('karyotype' %in% load('../common/karyotype.Rda'))
+if(file.exists('karyotype.Rda'))
+	if ('karyotype' %in% load('karyotype.Rda'))
 		if (class(karyotype)=='RangedData')
 			karyotype.loaded<-TRUE
 
