@@ -14,6 +14,8 @@
 #	biocLite("rtracklayer")
 #}
 
+.Deprecated(new='get.cytodand.ranges',package='differential,coverage',old='load_or_read_chrom_ranges.R')
+
 if (!require('DASiR'))
 {
 	source("http://bioconductor.org/biocLite.R")
