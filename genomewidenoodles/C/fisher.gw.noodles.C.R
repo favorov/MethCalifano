@@ -183,7 +183,7 @@ if(!noodles.fisher.results.loaded)
 		#testing the folder
 	 	rdalist=dir(pattern=paste0('noodles.',noodle.code,'fisher.results.worker*'))
 		if(length(rdalist)!=workers.no)
-			stop(paste0('combiner: folder has other noodles.',noodle.code,'.fisher.results.worker.NN.Rda files than the workers.no.'))
+			stop(paste0('combiner: folder has other noodles.',noodle.code,'.fisher.results.worker.NN.Rda files (',length(rdalist),') than the workers.no (',workers.no,').'))
 		worker.no<-1
 		loadfilename<-paste0('noodles.',noodle.code,'.fisher.results.worker.',worker.no,'.Rda')
 		load(loadfilename)
