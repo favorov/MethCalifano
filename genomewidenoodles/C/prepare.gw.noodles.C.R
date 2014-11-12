@@ -37,7 +37,7 @@ if(!noodles.C.loaded)
 	data.folder<-'../../../Data'
 	source('../../common/read_clinical.R')
 	#Clinical prepared.
-	source('../common/prepare_beds_and_contrast.R ')
+	source('../../common/prepare_beds_and_contrast.R ')
 	#beds and contrast is ready
 	#it is folder with bed files
 
