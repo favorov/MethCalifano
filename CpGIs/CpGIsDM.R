@@ -1,3 +1,16 @@
+if (!suppressWarnings(require('differential.coverage')))
+{
+	if (!suppressWarnings(require('devtools')))
+	{
+		source("http://bioconductor.org/biocLite.R")
+		biocLite("devtools")
+		library("devtools")
+	}
+	install_github('favorov/differential.coverage')
+	#load_all('../../../../differential.coverage/')
+	library('differential.coverage')
+}
+
 if (!suppressWarnings(require('rtracklayer')))
 {
 	source("http://bioconductor.org/biocLite.R")
@@ -8,19 +21,6 @@ if (!suppressWarnings(require('DASiR')))
 {
 	source("http://bioconductor.org/biocLite.R")
 	biocLite("DASiR")
-}
-
-if (!require('Homo.sapiens'))
-{
-  source("http://bioconductor.org/biocLite.R")
-  biocLite("Homo.sapiens")
-  library('Homo.sapiens')  
-}
-if (!require('org.Hs.eg.db'))
-{
-  source("http://bioconductor.org/biocLite.R")
-  biocLite('org.Hs.eg.db')
-  library('org.Hs.eg.db')  
 }
 
 if(!require('xtable'))
@@ -125,74 +125,53 @@ if(!CpGIs.fisher.loaded)
 	save(file='CpGIs.fisher.Rda',list=c('fisher.results','tests.number','contrast'))
 }
 
-browser()
 #we want to put each diffmet CpGi to a cytoband
 
-load('../CytoBands/karyotype.methylation.Rda')
 load('../CytoBands/karyotype.DM.Rda')
+load('../CytoBands/karyotype.with.methylation.Rda')
 
 
 generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 												set.id) #variable part of the output file names
 {
 	message('Generating report for ',set.id,'\n')
-	columns<-c('id','space','start','end')
-	DM.CpGIs.stat<-cbind(
-		CpGIs.with.methylation[DM.CpGIslands.set,columns],
+	
+	DM.CpGIs.stat<-data.frame(
+		'id'=elementMetadata(CpGIs)$id[DM.CpGIslands.set],
+		'chr'=as.character(seqnames(CpGIs))[DM.CpGIslands.set],
+		'start'=start(CpGIs)[DM.CpGIslands.set],
+		'end'=end(CpGIs)[DM.CpGIslands.set],
 		'wilcoxon.p.value'=wilcoxon.p.values[DM.CpGIslands.set],
-		'hyper?'=normals.are.less.methyl.covered[DM.CpGIslands.set],
-		'fisher.p.value'=fisher.p.values[DM.CpGIslands.set],
-		'tmr.ratio'=meth.in.tumors.ratio[DM.CpGIslands.set],
-		'nor.ratio'=meth.in.normals.ratio[DM.CpGIslands.set],
-		'OR'=OR[DM.CpGIslands.set],
-		'CI_95_L'=CI_95_L[DM.CpGIslands.set],
-		'CI_95_H'=CI_95_H[DM.CpGIslands.set]
+		'hyper?'=normals.are.less.methylated[DM.CpGIslands.set],
+		'fisher.p.value'=fisher.results$fisher.p.values[DM.CpGIslands.set],
+		'tmr.ratio'=fisher.results$meth.in.tumors.ratio[DM.CpGIslands.set],
+		'nor.ratio'=fisher.results$meth.in.normals.ratio[DM.CpGIslands.set],
+		'OR'=fisher.results$OR[DM.CpGIslands.set],
+		'CI_95_L'=fisher.results$CI_95_L[DM.CpGIslands.set],
+		'CI_95_H'=fisher.results$CI_95_H[DM.CpGIslands.set]
 	)
 
 	rownames(DM.CpGIs.stat)<-NULL
 
 	message('Mapping to karyotype...')
 
-	DM.CpGIs.Ranges<-as(DM.CpGIs.stat[,columns],'RangedData')
+	DM.CpGIs<-CpGIs[DM.CpGIslands.set]
 
+	CpGIs.to.karyotype<-findOverlaps(DM.CpGIs,karyotype,type="within")
 
-	CpGIs.to.karyotype<-findOverlaps(DM.CpGIs.Ranges,karyotype,type="within")
-	cytobands.of.DM.cpgis=character(0)
-	is.cytobands.of.DM.cpgis.DM=logical(0)
+	DM.CpGIs.cytobands<-sapply(1:length(DM.CpGIs),function(i)
+		{
+			cb<-subjectHits(CpGIs.to.karyotype)[which(i==queryHits(CpGIs.to.karyotype))]
+			c(cb,(cb %in% DM.cytobands))
+		}
+	)
 
-	for (chr in names(CpGIs.to.karyotype))
-	{
-		#chromosome cycle
-		len<-length(DM.CpGIs.Ranges[chr][[1]])
-		if (len==0) next
-		#we did not do it in 'big' cycles over
-		#overlaps, because their queries were like cytobands, etc - no empty chromosomes
-		cytoband.numbers.this.chr<-sapply(1:len,function(island_no){
-			my_cytoz<-as.list(CpGIs.to.karyotype[[chr]])[[island_no]]
-			if (!length(my_cytoz)) {NA} else {my_cytoz[1]}
-		})
-		cytobands.of.DM.cpgis.this.chr<-as.character(karyotype[chr][[1]][cytoband.numbers.this.chr])
-		cytobands.of.DM.cpgis<-c(cytobands.of.DM.cpgis,cytobands.of.DM.cpgis.this.chr)
-		is.cytobands.of.DM.cpgis.DM.this.chr<-cytobands.of.DM.cpgis.this.chr %in% as.character(karyotype.with.methylation$id)[intersect(which(karyotype.with.methylation$space==chr),DM.cytobands)]
-		is.cytobands.of.DM.cpgis.DM<-c(is.cytobands.of.DM.cpgis.DM,is.cytobands.of.DM.cpgis.DM.this.chr)
-	}
-
-
-	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands.of.DM.cpgis,'DM.band?'=is.cytobands.of.DM.cpgis.DM)
+	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=karyotype$'name'[DM.CpGIs.cytobands[1,]],'DM.band?'=as.logical(DM.CpGIs.cytobands[2,]))
 	message('done\n')
 
 
-	DM.CpGIs.GRanges<-GRanges(
-		seqinfo=nucl.chromosomes.hg19(),
-		ranges=IRanges(start=DM.CpGIs.stat[,'start'],end=DM.CpGIs.stat[,'end']),
-		seqnames=DM.CpGIs.stat[,'space'],
-		id=DM.CpGIs.stat[,'id']
-	)
-
-	seqinfo(DM.CpGIs.GRanges)<-nucl.chromosomes.hg19()
-
 	message('Looking for closest genes')
-	DM.CpGIs.closest.genes<-closest.gene.start.by.interval(DM.CpGIs.GRanges)
+	DM.CpGIs.closest.genes<-closest.gene.start.by.interval(DM.CpGIs)
 
 	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,elementMetadata(DM.CpGIs.closest.genes)[,c('closest.TSS','pos','dir','dist')])
 
@@ -202,7 +181,7 @@ generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 
 	flanks<-7000
 
-	DM.CpGIs.ovelapped.genes<-genes.with.TSS.covered.by.interval(DM.CpGIs.GRanges,flanks=flanks)
+	DM.CpGIs.ovelapped.genes<-genes.with.TSS.covered.by.interval(DM.CpGIs,flanks=flanks)
 
 	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,elementMetadata(DM.CpGIs.ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
 
@@ -210,27 +189,9 @@ generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 
 	DM.CpGIs.stat$id<-substr(DM.CpGIs.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
 
-	hg.chr.order<-function(chrnames)
-	{
-		suppressWarnings(
-			sapply(chrnames,function(chr)
-				{
-					if(!is.na(as.integer(as.character(chr)))) 
-						return (as.integer(as.character(chr)))
-					if(!is.na(as.integer(substring(as.character(chr),4)))) 
-						return (as.integer(substring(as.character(chr),4)))
-					if(chr=='X' || chr=='chrX') 
-						return (22)
-					if(chr=='Y' || chr=='chrY') 
-						return (23)
-					if(chr=='M' || chr=='chrM' || chr=='MT'|| chr=='chrMT') 
-						return (24)
-					return(NA)
-				}
-		))
-	}
+	#now, we order it according to GRanges order
 
-	DM.CpGIs.stat<-DM.CpGIs.stat[order(hg.chr.order(DM.CpGIs.stat$space),DM.CpGIs.stat$start),]
+	DM.CpGIs.stat<-DM.CpGIs.stat[order(DM.CpGIs),]
 	
 	tsvfilename=paste0("DM.CpGIs.stat.",set.id,".tsv")
 
@@ -248,19 +209,19 @@ generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 #we generate the reports
 #bonferroni 
 DM.W.CpGIslands.Bonferroni<-which(p.adjust(wilcoxon.p.values,method='bonferroni')<=0.05)
-DM.F.CpGIslands.Bonferroni<-which(p.adjust(fisher.p.values,method='bonferroni')<=0.05)
+DM.F.CpGIslands.Bonferroni<-which(p.adjust(fisher.results$fisher.p.values,method='bonferroni')<=0.05)
 DM.CpGIslands.Bonferroni<-sort(union(DM.W.CpGIslands.Bonferroni,DM.F.CpGIslands.Bonferroni))
 generate.DM.CpGi.report(DM.CpGIslands.Bonferroni,'bonf')
 
 #fdr 
 DM.W.CpGIslands.FDR<-which(p.adjust(wilcoxon.p.values,method='fdr')<=0.1)
-DM.F.CpGIslands.FDR<-which(p.adjust(fisher.p.values,method='fdr')<=0.1)
+DM.F.CpGIslands.FDR<-which(p.adjust(fisher.results$fisher.p.values,method='fdr')<=0.1)
 DM.CpGIslands.FDR<-sort(union(DM.W.CpGIslands.FDR,DM.F.CpGIslands.FDR))
 generate.DM.CpGi.report(DM.CpGIslands.FDR,'fdr')
 
 #uncorr
 DM.W.CpGIslands<-which(wilcoxon.p.values<=0.05)
-DM.F.CpGIslands<-which(fisher.p.values<=0.05)
+DM.F.CpGIslands<-which(fisher.results$fisher.p.values<=0.05)
 DM.CpGIslands<-sort(union(DM.W.CpGIslands,DM.F.CpGIslands))
 generate.DM.CpGi.report(DM.CpGIslands,'uncorr')
 
