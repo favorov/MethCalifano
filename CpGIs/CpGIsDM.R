@@ -30,160 +30,106 @@ if(!require('xtable'))
   library("xtable")  
 }
 
+source('../common/load_or_read_CpGIs.R')
 
-CpGIs.with.methylation.loaded<-FALSE
-# we can the whole thing to CpGIs.with.methylation.Rda
-if(file.exists('CpGIs.with.methylation.Rda'))
-	if ('CpGIs.with.methylation' %in% load('CpGIs.with.methylation.Rda'))
-		if (class(CpGIs.with.methylation)=='data.frame')
-			CpGIs.with.methylation.loaded<-TRUE
+CpGIs.methylation.loaded<-FALSE
+# we can the whole thing to CpGIs.methylation.Rda
+if(file.exists('CpGIs.methylation.Rda'))
+	if ('CpGIs.methylation' %in% load('CpGIs.methylation.Rda'))
+		if (class(CpGIs.methylation)=='data.frame')
+			CpGIs.methylation.loaded<-TRUE
 
-if (!CpGIs.with.methylation.loaded)
+if (!CpGIs.methylation.loaded)
 {
 	source('../common/read_clinical.R')
 	#Clinical prepared.
-
+	source('../common/prepare_beds_and_contrast.R ')
+	#beds and contrast is ready
+	CpGIs.methylation<-CountCoverageOfNoodles(CpGIs,bedfilenames,DNAids)
 	#it is folder with bed files
-	peakbedsfolder<-paste0(dataFolder,'/PeakCalls/bedfiles/')
-
-	beds<-list.files(peakbedsfolder)
-
-	#reading islands 
-	# we can the whole thing to CpGIs.with.methylation.Rda
-	source('../common/load_or_read_CpGIs.R')
-	#islands are read fro DAS or loaded
-
-	CpGIs.with.methylation<-as(CpGIs,"data.frame")
-
-	bed_available<-logical(0)
-	bed_used<-rep(FALSE,length(beds))
-
-	for (DNAid in DNAids)
-	{ 
-		DNAidKey<-strsplit(DNAid,',')[[1]][1]	#remove all after ,	
-		message(DNAidKey)
-		match<-grep(DNAidKey,beds)
-		if (!length(match)) 
-		{
-			DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') 
-			#remove _ from key; sometimes, it help
-			match<-grep(DNAidKey,beds)
-		}
-		if (!length(match)) 
-		{
-			bed_available<-c(bed_available,FALSE)
-			next
-		}
-		if (length(match)>1) stop(paste0("More than one match of DNAid ",DNAid," amonng the bed file names.\n"));
-		bedfilename<-paste0(peakbedsfolder,beds[match[1]]);
-		methylated.ranges<-as(import(bedfilename),"RangedData")
-		overlaps<-findOverlaps(CpGIs,methylated.ranges)
-		methylcoverage=integer(0)
-		for(chr in names(CpGIs))
-		#cycle by chromosome
-		{
-				list.of.ovelaps.in.this.chr<-as.list(overlaps[[chr]])
-				width.of.meth.ranges.in.this.chr<-width(methylated.ranges[chr])
-				methylcoverage.this.chr<-sapply(1:length(CpGIs[chr][[1]]),function(island_no){
-					#attention: length(CpGIs[chr][[1]] supposes that there is column in datarange other than space and ranges (e.g., Id)
-					#otherwise, use  length(start(CpGIs[chr]))
-					sum(width.of.meth.ranges.in.this.chr[list.of.ovelaps.in.this.chr[[island_no]]])
-				})#list of methylated coverage per cytoband
-			#list of methylated coverage per island
-			#the main idea is that as.list(hitsobject) convert is to list of vectors, 
-			#list is addressd by query oblects and give ref object lists (possibly, empty)
-			methylcoverage<-c(methylcoverage,methylcoverage.this.chr)
-			#add to main list
-			#we need dual cycle because of the findOverlap return structure
-		}
-		CpGIs.with.methylation[[DNAid]]=methylcoverage
-		bed_used[match[1]]<-TRUE
-		bed_available<-c(bed_available,TRUE)
-		message('done\n')
-	}
 	message('Saving...\n')
-	save(file='CpGIs.with.methylation.Rda',list=c('CpGIs.with.methylation','Clinical','clinFile','beds','bed_available','bed_used','tumors','normals','DNAids'))
+	save(file='CpGIs.methylation.Rda',list=c('CpGIs.methylation','Clinical','clinFile','clinFileName','bedsinfolder','bed.used','tumors','normals','contrast','DNAids'))
 }
 
-CpGIs.wilcoxon.data.loaded<-FALSE
+CpGIs.wilcoxon.loaded<-FALSE
 # we can the whole thing to CpGIs.with.methylation.Rda
-if(file.exists('CpGIs.wilcoxon.data.Rda'))
-	if ('wilcoxon.p.values' %in% load('CpGIs.wilcoxon.data.Rda'))
-			CpGIs.wilcoxon.data.loaded<-TRUE
-if(!CpGIs.wilcoxon.data.loaded)
+if(file.exists('CpGIs.wilcoxon.Rda'))
+	if ('wilcoxon.p.values' %in% load('CpGIs.wilcoxon.Rda'))
+			CpGIs.wilcoxon.loaded<-TRUE
+
+if(!CpGIs.wilcoxon.loaded)
 {
 	message('Wilcoxon\n')
-	wilcoxon.p.values<-numeric(0)
 
-	normals.are.less.methyl.covered<-logical(0)
+	tests.number<-dim(CpGIs.methylation)[1]
 
-	expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
+	expected.w.statistic<-(sum(normals)*sum(tumors))/2
 
-	tests.number<-dim(CpGIs.with.methylation)[1]
+	wilcoxon.res<-apply(CpGIs.methylation,1,function(row){
+			meth.values<-jitter(row)
+			w<-wilcox.test(meth.values[normals],meth.values[tumors])
+			c(w$p.value,(w[['statistic']]<expected.w.statistic))
+		})
 
-	for (rown in 1:tests.number)
-	{
-		meth.values<-jitter(as.numeric(CpGIs.with.methylation[rown,][DNAids[bed_available]]))
-		w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
-		wilcoxon.p.values<-c(wilcoxon.p.values,w$p.value)
-		normals.are.less.methyl.covered<-c(normals.are.less.methyl.covered,(w[['statistic']]<expected.w.statistic))
-		#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
-	}
+	wilcoxon.p.values<-wilcoxon.res[1,]
+	normals.are.less.methylated<-as.logical(wilcoxon.res[2,])
 
-	message('done\n')
 	message('Saving...\n')
-	save(file='CpGIs.wilcoxon.data.Rda',list=c('wilcoxon.p.values','normals.are.less.methyl.covered','tests.number'))
+	save(file='CpGIs.wilcoxon.Rda',list=c('wilcoxon.p.values','normals.are.less.methylated','tests.number'))
+	message('done\n')
 }
 
-CpGIs.fisher.data.loaded<-FALSE
-# we can the whole thing to CpGIs.with.methylation.Rda
-if(file.exists('CpGIs.fisher.data.Rda'))
-	if ('fisher.p.values' %in% load('CpGIs.fisher.data.Rda'))
-			CpGIs.fisher.data.loaded<-TRUE
-if(!CpGIs.fisher.data.loaded)
+
+CpGIs.fisher.loaded<-FALSE
+# we can the whole thing to CpGIs.methylation.Rda
+if(file.exists('CpGIs.fisher.Rda'))
+	if ('fisher.results' %in% load('CpGIs.fisher.Rda') && 'data.frame' == class(fisher.results))
+			CpGIs.fisher.loaded<-TRUE
+
+
+if(!CpGIs.fisher.loaded)
 {
 	message('Fishering\n')
-	tests.number<-dim(CpGIs.with.methylation)[1]
-	fisher.p.values<-numeric(tests.number)
-	meth.in.normals.ratio<-numeric(tests.number)
-	meth.in.tumors.ratio<-numeric(tests.number)
-	OR<-numeric(tests.number)
-	CI_95_L<-numeric(tests.number)
-	CI_95_H<-numeric(tests.number)
+	tests.number<-dim(CpGIs.methylation)[1]
 
+	norm.no<-length(which(normals))
+	tumor.no<-length(which(tumors))
 
-	for (rown in 1:tests.number)
+	fishtabs<-as.matrix(prepare.tabulated.fisher(tumor.no,norm.no))
+
+	message('create result matrix')
+	fisher.noodles.result.mat<-matrix(fishtabs[1,],ncol=6,nrow=tests.number,byrow=TRUE)
+	
+	colnames(fisher.noodles.result.mat)<-c('fisher.p.values','meth.in.normals.ratio','meth.in.tumors.ratio','OR','CI_95_L','CI_95_H') 
+	
+	revcontrast<-!contrast
+	report.every<-tests.number %/% 100
+	message('fill result matrix')
+
+	for (rown in 1:tests.number) 	
 	{
-		cotable<-table(as.logical(as.numeric(CpGIs.with.methylation[rown,][DNAids[bed_available]])),tumors[bed_available])
-		if(nrow(cotable)==1)#nonmeth
-		{
-			fisher.p.values[rown]<-1.
-			meth.in.tumors.ratio[rown]<-0
-			meth.in.normals.ratio[rown]<-0
-			OR[rown]<-NA
-			CI_95_L[rown]<-NA
-			CI_95_H[rown]<-NA
-			next
-		}
-		fisherres<-fisher.test(cotable)
-		fisher.p.values[rown]<-fisherres$p.value
-		meth.in.tumors.ratio[rown]<-cotable[2,2]/cotable[1,2]
-		meth.in.normals.ratio[rown]<-cotable[2,1]/cotable[1,1]
-		OR[rown]<-fisherres$estimate
-		CI_95_L[rown]<-fisherres$conf.int[1]
-		CI_95_H[rown]<-fisherres$conf.int[2]
+		if (!(rown %% report.every)) message(rown)
+		metraw<-CpGIs.methylation[rown,]
+		aslogic<-as.logical(metraw)
+		MY<-sum(aslogic & contrast)
+		MN<-sum(aslogic & revcontrast)
+		if (0==MN && 0==MY) next
+		fishres<-fishtabs[tab.fisher.row.no(tumor.no,norm.no,MY,MN),]
+		fisher.noodles.result.mat[rown,]<-fishres
 	}
 
+	message('converting to dataframe')
+	fisher.results<-as.data.frame(fisher.noodles.result.mat)
 	message('done\n')
 	message('Saving...\n')
-	save(file='CpGIs.fisher.data.Rda',list=c('fisher.p.values','tests.number','meth.in.tumors.ratio','meth.in.normals.ratio','OR','CI_95_L','CI_95_H'))
+	save(file='CpGIs.fisher.Rda',list=c('fisher.results','tests.number','contrast'))
 }
 
+browser()
 #we want to put each diffmet CpGi to a cytoband
-source('../common/load_or_read_karyotype.R')
-load('../CytoBands/karyotype.with.methylation.Rda')
-load('../CytoBands/karyotype.DM.Rda')
 
+load('../CytoBands/karyotype.methylation.Rda')
+load('../CytoBands/karyotype.DM.Rda')
 
 
 generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
