@@ -189,7 +189,7 @@ if(!noodles.fisher.results.loaded)
 		load(loadfilename)
 		prev.contrast<-contrast
 		if (1 != my.worker.no)
-			stop('Combiner error: first file has non-1 my.worker.start')
+			stop('Combiner error: first file has non-1 my.worker.no')
 		if (1 != my.worker.start)
 			stop('Combiner error: first file has non-1 my.worker.start')
 		prev.worker.no<-my.worker.no
