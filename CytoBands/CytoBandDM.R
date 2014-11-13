@@ -60,5 +60,5 @@ if(!karyotype.DM.loaded)
 	DM.cytobands<-which(wilcoxon.p.values<=0.05)
 	DM.cytobands.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
 	DM.cytobands.fdr<-which(wilcoxon.p.values.fdr<=0.05)
-	save(file='karyotype.DM.Rda',list=c('DM.cytobands','DM.cytobands.bonferroni','DM.cytobands.fdr'))
+	save(file='karyotype.DM.Rda',list=c('wilcoxon.p.values','wilcoxon.p.values.fdr','wilcoxon.p.values.bonferroni','DM.cytobands','DM.cytobands.bonferroni','DM.cytobands.fdr','normals.are.less.methylated'))
 }
