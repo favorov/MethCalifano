@@ -27,7 +27,7 @@ if (!karyotype.with.methylation.loaded)
 	#bedfiles are ready
 	karyotype<-get.cytoband.ranges()
 	#karyotype ready
-	SNPchip.version=package.version('SNPChip')
+	SNPchip.version=package.version('SNPchip')
 	karyotype.with.methylation<-CountCoverageOfNoodles(karyotype,bedfilenames,DNAids)
 	#it is folder with bed files
 	save(file='karyotype.with.methylation.Rda',list=c('karyotype','karyotype.with.methylation','Clinical','clinFile','clinFileName','bedsinfolder','bed.used','tumors','normals','DNAids','SNPchip.version'))
