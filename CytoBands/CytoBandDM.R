@@ -23,7 +23,7 @@ if (!karyotype.with.methylation.loaded)
 {
 	source('../common/read_clinical.R')
 	#Clinical prepared.
-	source('../common/prepare_beds_and_contrast.R ')
+	source('../common/prepare_beds_and_contrast.R')
 	#bedfiles are ready
 	karyotype<-get.cytoband.ranges()
 	#karyotype ready
