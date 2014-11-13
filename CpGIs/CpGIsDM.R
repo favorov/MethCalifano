@@ -225,3 +225,4 @@ DM.F.CpGIslands<-which(fisher.results$fisher.p.values<=0.05)
 DM.CpGIslands<-sort(union(DM.W.CpGIslands,DM.F.CpGIslands))
 generate.DM.CpGi.report(DM.CpGIslands,'uncorr')
 
+save(file='CpGIs.DM.indices.Rda',c('DM.CpGIslands.Bonferroni','DM.CpGIslands.FDR','DM.CpGIslands')
