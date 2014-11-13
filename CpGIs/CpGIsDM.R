@@ -206,23 +206,34 @@ generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 	0
 }
 
+CpGIs.DM.indices.loaded<-FALSE
+# we can the whole thing to CpGIs.methylation.Rda
+if(file.exists('CpGIs.DM.indices.Rda'))
+	if ('DM.CpGIslands' %in% load('CpGIs.DM.indices.Rda')) CpGIs.DM.indices.loaded<-TRUE
+
+if(!CpGIs.DM.indices.loaded)
+{
+	#bonferroni 
+	DM.W.CpGIslands.Bonferroni<-which(p.adjust(wilcoxon.p.values,method='bonferroni')<=0.05)
+	DM.F.CpGIslands.Bonferroni<-which(p.adjust(fisher.results$fisher.p.values,method='bonferroni')<=0.05)
+	DM.CpGIslands.Bonferroni<-sort(union(DM.W.CpGIslands.Bonferroni,DM.F.CpGIslands.Bonferroni))
+
+
+	#fdr 
+	DM.W.CpGIslands.FDR<-which(p.adjust(wilcoxon.p.values,method='fdr')<=0.1)
+	DM.F.CpGIslands.FDR<-which(p.adjust(fisher.results$fisher.p.values,method='fdr')<=0.1)
+	DM.CpGIslands.FDR<-sort(union(DM.W.CpGIslands.FDR,DM.F.CpGIslands.FDR))
+
+	#uncorr
+	DM.W.CpGIslands<-which(wilcoxon.p.values<=0.05)
+	DM.F.CpGIslands<-which(fisher.results$fisher.p.values<=0.05)
+	DM.CpGIslands<-sort(union(DM.W.CpGIslands,DM.F.CpGIslands))
+
+	save(file='CpGIs.DM.indices.Rda',list=c('DM.CpGIslands.Bonferroni','DM.CpGIslands.FDR','DM.CpGIslands'))
+}
 #we generate the reports
-#bonferroni 
-DM.W.CpGIslands.Bonferroni<-which(p.adjust(wilcoxon.p.values,method='bonferroni')<=0.05)
-DM.F.CpGIslands.Bonferroni<-which(p.adjust(fisher.results$fisher.p.values,method='bonferroni')<=0.05)
-DM.CpGIslands.Bonferroni<-sort(union(DM.W.CpGIslands.Bonferroni,DM.F.CpGIslands.Bonferroni))
+message('Generating reports')
 generate.DM.CpGi.report(DM.CpGIslands.Bonferroni,'bonf')
-
-#fdr 
-DM.W.CpGIslands.FDR<-which(p.adjust(wilcoxon.p.values,method='fdr')<=0.1)
-DM.F.CpGIslands.FDR<-which(p.adjust(fisher.results$fisher.p.values,method='fdr')<=0.1)
-DM.CpGIslands.FDR<-sort(union(DM.W.CpGIslands.FDR,DM.F.CpGIslands.FDR))
 generate.DM.CpGi.report(DM.CpGIslands.FDR,'fdr')
-
-#uncorr
-DM.W.CpGIslands<-which(wilcoxon.p.values<=0.05)
-DM.F.CpGIslands<-which(fisher.results$fisher.p.values<=0.05)
-DM.CpGIslands<-sort(union(DM.W.CpGIslands,DM.F.CpGIslands))
 generate.DM.CpGi.report(DM.CpGIslands,'uncorr')
-
-save(file='CpGIs.DM.indices.Rda',c('DM.CpGIslands.Bonferroni','DM.CpGIslands.FDR','DM.CpGIslands')
+message('done\n')
