@@ -38,8 +38,8 @@ karyotype.DM.loaded<-FALSE
 # we can the whole thing to karyotype.with.methylation.Rda
 if(file.exists('karyotype.DM.Rda'))
 	if ('DM.cytobands' %in% load('karyotype.DM.Rda'))
-			karyotype.DM.loaded-TRUE
-
+			karyotype.DM.loaded<-TRUE
+if(!karyotype.DM.loaded)
 {
 	tests.number<-dim(karyotype.with.methylation)[1]
 
