@@ -16,7 +16,7 @@ karyotype.with.methylation.loaded<-FALSE
 # we can the whole thing to karyotype.with.methylation.Rda
 if(file.exists('karyotype.with.methylation.Rda'))
 	if ('karyotype.with.methylation' %in% load('karyotype.with.methylation.Rda'))
-		if (class(karyotype.with.methylation)=='data.frame')
+		if (class(karyotype.with.methylation)=='dgCMatrix')
 			karyotype.with.methylation.loaded<-TRUE
 
 if (!karyotype.with.methylation.loaded)
