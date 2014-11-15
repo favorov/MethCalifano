@@ -56,5 +56,5 @@ if (!cytobands.DM.loaded)
 	#DM.cytobands.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
 	#DM.cytobands.fdr<-which(wilcoxon.p.values.fdr<=0.1)
 
-	save(file='cytobands.DM.Rda',list=c('cytobands','cytobands.methylation','Clinical','clinFile','clinFileName','bedsinfolder','bed.used','tumors','normals','DNAids','SNPchip.version'))
+	save(file='cytobands.DM.Rda',list=c('cytobands','cytobands.methylation','cytobands.DM.statistics','Clinical','clinFile','clinFileName','bedsinfolder','bed.used','tumors','normals','DNAids','SNPchip.version'))
 }
