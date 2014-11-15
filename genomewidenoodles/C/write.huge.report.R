@@ -18,8 +18,7 @@ if(!all.the.all.loaded)
 	message('loading..')
 	load('noodles.C.Rda')
 	load('noodles.C.fisher.results.Rda')
-	load('../../CytoBands/karyotype.DM.Rda')
-	load('../../CytoBands/karyotype.with.methylation.Rda')
+	load('../../CytoBands/cytobands.DM.Rda')
 	load('../../CpGIs/CpGIs.Rda')
 	load('../../CpGIs/CpGIs.DM.indices.Rda')
 	all.the.all.loaded<-TRUE
@@ -53,7 +52,7 @@ message('Mapping to karyotype...')
 
 cb<-integer(rows.no)
 
-noodles.to.karyotype<-findOverlaps(report.noodles,karyotype,type="within")
+noodles.to.karyotype<-findOverlaps(report.noodles,cytobands,type="within")
 
 cb[queryHits(noodles.to.karyotype)]=subjectHits(noodles.to.karyotype)
 
@@ -61,7 +60,7 @@ cb[cb==0]=NA
 
 message('done')
 
-report.frame<-cbind(report.frame,'cytoband'=karyotype$'name'[cb],'DM.band?'=as.logical(cb %in% DM.cytobands),stringsAsFactors = FALSE)
+report.frame<-cbind(report.frame,'cytoband'=cytobands$'name'[cb],'DM.band?'=cytobands.DM.statistics$'wilcoxon.p.values'[cb]<0.05,stringsAsFactors = FALSE)
 #prepared
 
 message('Mapping to cpg islands...')
