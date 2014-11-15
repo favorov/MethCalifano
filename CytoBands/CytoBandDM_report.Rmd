@@ -4,10 +4,10 @@
 ```{r load and calculate}
 options(width=100)
 source('CytoBandDM.R')
-karyotype.stat<-as(karyotype,'data.frame')[,c('seqnames','start','end','name')]
-colnames(karyotype.stat)[1]='chrom'
+cytobands.stat<-as(cytobands,'data.frame')[,c('seqnames','start','end','name')]
+colnames(cytobands.stat)[1]='chrom'
 
-karyotype.stat<-cbind(karyotype.stat,'p.value'=wilcoxon.p.values,'bonferroni'=wilcoxon.p.values.bonferroni,'fdr'=wilcoxon.p.values.fdr,'is.hyper'=normals.are.less.methylated)
+cytobands.stat<-cbind(cytobands.stat,cytobands.DM.statistics)
 ```
 
 
@@ -29,23 +29,21 @@ Thus, for each interval (cytodand) we have a methylated length (coverage) for ea
 Then, we calculate the Wilcoxon p-value for each cytoband's tumor and normal DM coverages.
 We think that a cytoband is differentyally methylated if the p-value is <=0.05. 
 
-### Here is the list of all differentially methylated cytobands, no multiple test correction
+### Here is the list of all differentially methylated cytobands, no multiple test correction, p<0.05
 
 ```{r print, no correction} 
-karyotype.stat.DM<-karyotype.stat[DM.cytobands,]
-print.data.frame(karyotype.stat.DM,row.names=FALSE)
+print.data.frame(cytobands.stat[cytobands.stat$'wilcoxon.p.values'<0.05,],row.names=FALSE)
 ```
 
-### Here is the same list with Benjamini-Hoochberg correction
+### Here is the same list with Benjamini-Hoochberg correction FWER<0.1
 ```{r print, with FDR} 
-print.data.frame(karyotype.stat[DM.cytobands.fdr,],row.names=FALSE)
+print.data.frame(cytobands.stat[cytobands.stat$'fdr'<0.1,],row.names=FALSE)
 ```
 
-### And, here is the same list with Bonferroni correction
+### And, here is the same list with Bonferroni correction, p<0.05
 ```{r print, with Bonferroni} 
-print.data.frame(karyotype.stat[DM.cytobands.bonferroni,],row.names=FALSE)
+print.data.frame(cytobands.stat[cytobands.stat$'bonferroni'<0.05,],row.names=FALSE)
 ```
-As far as only one cytoband pass the correction, FDR and Bonferroni are the same. The fdr for the second one is `r wilcoxon.p.values.fdr[order(wilcoxon.p.values.fdr)[2]]` and it is too high. 
 
 Technical info
 -------------------------------

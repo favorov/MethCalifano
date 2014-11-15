@@ -12,53 +12,49 @@ if (!suppressWarnings(require('differential.coverage')))
 }
 
 
-karyotype.with.methylation.loaded<-FALSE
-# we can the whole thing to karyotype.with.methylation.Rda
-if(file.exists('karyotype.with.methylation.Rda'))
-	if ('karyotype.with.methylation' %in% load('karyotype.with.methylation.Rda'))
-		if (class(karyotype.with.methylation)=='dgCMatrix')
-			karyotype.with.methylation.loaded<-TRUE
+cytobands.DM.loaded<-FALSE
+# we can the whole thing to cytobands.DM.Rda
+if(file.exists('cytobands.DM.Rda'))
+	if ('cytobands.methylation' %in% load('cytobands.DM.Rda'))
+		if (class(cytobands.methylation)=='dgCMatrix')
+			cytobands.DM.loaded<-TRUE
 
-if (!karyotype.with.methylation.loaded)
+if (!cytobands.DM.loaded)
 {
 	source('../common/read_clinical.R')
 	#Clinical prepared.
 	source('../common/prepare_beds_and_contrast.R')
 	#bedfiles are ready
-	karyotype<-get.cytoband.ranges()
-	#karyotype ready
+	cytobands<-get.cytoband.ranges()
+	#cytobands ready
 	SNPchip.version=package.version('SNPchip')
-	karyotype.with.methylation<-CountCoverageOfNoodles(karyotype,bedfilenames,DNAids)
+	cytobands.methylation<-CountCoverageOfNoodles(cytobands,bedfilenames,DNAids)
 	#it is folder with bed files
-	save(file='karyotype.with.methylation.Rda',list=c('karyotype','karyotype.with.methylation','Clinical','clinFile','clinFileName','bedsinfolder','bed.used','tumors','normals','DNAids','SNPchip.version'))
-}
-
-
-karyotype.DM.loaded<-FALSE
-# we can the whole thing to karyotype.with.methylation.Rda
-if(file.exists('karyotype.DM.Rda'))
-	if ('DM.cytobands' %in% load('karyotype.DM.Rda'))
-			karyotype.DM.loaded<-TRUE
-if(!karyotype.DM.loaded)
-{
-	tests.number<-dim(karyotype.with.methylation)[1]
+	tests.number<-dim(cytobands.methylation)[1]
 
 	expected.w.statistic<-(sum(normals)*sum(tumors))/2
 
-	wilcoxon.res<-apply(karyotype.with.methylation,1,function(row){
+	wilcoxon.res<-apply(cytobands.methylation,1,function(row){
 			meth.values<-jitter(row)
 			w<-wilcox.test(meth.values[normals],meth.values[tumors])
 			c(w$p.value,(w[['statistic']]<expected.w.statistic))
 		})
 
-	wilcoxon.p.values<-wilcoxon.res[1,]
-	normals.are.less.methylated<-as.logical(wilcoxon.res[2,])
+	cb.wilcoxon.p.values<-wilcoxon.res[1,]
+	cb.normals.are.less.methylated<-as.logical(wilcoxon.res[2,])
 
-	wilcoxon.p.values.bonferroni<-p.adjust(wilcoxon.p.values,'bonferroni')
-	wilcoxon.p.values.fdr<-p.adjust(wilcoxon.p.values,'fdr')
+	cb.wilcoxon.p.values.bonferroni<-p.adjust(cb.wilcoxon.p.values,'bonferroni')
+	cb.wilcoxon.p.values.fdr<-p.adjust(cb.wilcoxon.p.values,'fdr')
+	cytobands.DM.statistics<-data.frame(
+		'wilcoxon.p.values'=cb.wilcoxon.p.values,
+		'is.hyper'=cb.normals.are.less.methylated,
+		'bonferroni'=cb.wilcoxon.p.values.bonferroni,
+		'fdr'=cb.wilcoxon.p.values.fdr
+	)
+	
+	#DM.cytobands<-which(wilcoxon.p.values<=0.05)
+	#DM.cytobands.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
+	#DM.cytobands.fdr<-which(wilcoxon.p.values.fdr<=0.1)
 
-	DM.cytobands<-which(wilcoxon.p.values<=0.05)
-	DM.cytobands.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
-	DM.cytobands.fdr<-which(wilcoxon.p.values.fdr<=0.05)
-	save(file='karyotype.DM.Rda',list=c('wilcoxon.p.values','wilcoxon.p.values.fdr','wilcoxon.p.values.bonferroni','DM.cytobands','DM.cytobands.bonferroni','DM.cytobands.fdr','normals.are.less.methylated'))
+	save(file='cytobands.DM.Rda',list=c('cytobands','cytobands.methylation','Clinical','clinFile','clinFileName','bedsinfolder','bed.used','tumors','normals','DNAids','SNPchip.version'))
 }
