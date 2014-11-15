@@ -36,7 +36,7 @@ CpGIs.methylation.loaded<-FALSE
 # we can the whole thing to CpGIs.methylation.Rda
 if(file.exists('CpGIs.methylation.Rda'))
 	if ('CpGIs.methylation' %in% load('CpGIs.methylation.Rda'))
-		if (class(CpGIs.methylation)=='data.frame')
+		if (class(CpGIs.methylation)=='dgCMatrix')
 			CpGIs.methylation.loaded<-TRUE
 
 if (!CpGIs.methylation.loaded)
@@ -127,8 +127,7 @@ if(!CpGIs.fisher.loaded)
 
 #we want to put each diffmet CpGi to a cytoband
 
-load('../CytoBands/karyotype.DM.Rda')
-load('../CytoBands/karyotype.with.methylation.Rda')
+load('../CytoBands/cytobands.DM.Rda')
 
 
 generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
@@ -157,18 +156,17 @@ generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 
 	DM.CpGIs<-CpGIs[DM.CpGIslands.set]
 
-	CpGIs.to.karyotype<-findOverlaps(DM.CpGIs,karyotype,type="within")
+	CpGIs.to.karyotype<-findOverlaps(DM.CpGIs,cytobands,type="within")
 
 	DM.CpGIs.cytobands<-sapply(1:length(DM.CpGIs),function(i)
 		{
 			cb<-subjectHits(CpGIs.to.karyotype)[which(i==queryHits(CpGIs.to.karyotype))]
-			c(cb,(cb %in% DM.cytobands))
+			c(cb,(cytobands.DM.statistics$'wilcoxon.p.values'[cb]<0.05))
 		}
 	)
 
-	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=karyotype$'name'[DM.CpGIs.cytobands[1,]],'DM.band?'=as.logical(DM.CpGIs.cytobands[2,]))
+	DM.CpGIs.stat<-cbind(DM.CpGIs.stat,'cytoband'=cytobands$'name'[DM.CpGIs.cytobands[1,]],'DM.band?'=as.logical(DM.CpGIs.cytobands[2,]))
 	message('done\n')
-
 
 	message('Looking for closest genes')
 	DM.CpGIs.closest.genes<-closest.gene.start.by.interval(DM.CpGIs)
