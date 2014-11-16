@@ -32,8 +32,8 @@ generate.noodles.C.report<-function(report.set,#indices
 	report.fisher<-fisher.noodles.C.result[report.set,]
 	rows.no<-length(report.set)
 
-	tsvfilename=paste0("noodles.C.annotaion.",set.id,".tsv")
-	htmlfilename=paste0("noodles.C.annotaion.",set.id,".html")
+	tsvfilename=paste0("noodles.C.annotation.",set.id,".tsv")
+	htmlfilename=paste0("noodles.C.annotation.",set.id,".html")
 
 
 	#prepare dataframe
@@ -97,10 +97,12 @@ generate.noodles.C.report<-function(report.set,#indices
 
 	report.frame<-cbind(report.frame,elementMetadata(ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
 
-	message('done\n')
+	message('done')
 
 	#prepared
-
+	
+	save(file=paste0('noodles.C.annotation.',set.id,'.Rda'),list=c('report.frame'))
+	
 	write.table(report.frame,file=tsvfilename,sep='\t',row.names=FALSE)
 
 	if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
