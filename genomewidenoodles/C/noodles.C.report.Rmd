@@ -2,7 +2,8 @@
 <!-- cache is off, we save all the neccessary things in Rda -->
 
 ```{r load and calculate}
-
+data.folder<-'../../../Data'
+source('../../common/read_clinical.R')
 ```
 
 Which C (100bp) noodles islands are differentially methylated in the `r clinFileName` data?
@@ -17,14 +18,15 @@ Here, we run an unsuperviser 100bp-probe genomwide differential methylation test
 
 ### Here is the list of all differentially methylated (p<=0.05) C-noodles with Bonferroni correction
 
-In the table: 
-The DM CpG islands coords and the methylation status description; cytoband information; TSS near is the closest start of a HGNC gene (according to Ensemble coords as represented in Homo.sapiens and org.Hs.eg.db) to the island, position and strand are of the gene. Distance is the distance from the middle of the island to TSS, negative means that the island is in the upstream.
-We show Fisher's p-values for each island as well as OR and the CI for OR.
-We also show all the HGNC's genes TSS that ovelap the island +- 7000 bp.
 
 <a href=./noodles.C.annotation.bonf.html>Here is the table in html format</a>
 
 <a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/genomewidenoodles/C/noodles.C.annotation.bonf.tsv>Here is the table in tsv format, to be loaded to excel</a>
+
+In the table: 
+The DM CpG islands coords and the methylation status description; cytoband information; TSS near is the closest start of a HGNC gene (according to Ensemble coords as represented in Homo.sapiens and org.Hs.eg.db) to the island, position and strand are of the gene. Distance is the distance from the middle of the island to TSS, negative means that the island is in the upstream.
+We show Fisher's p-values for each island as well as OR and the CI for OR.
+We also show all the HGNC's genes TSS that ovelap the island +- 7000 bp.
 
 ### The same table for FDR<0.1
 
@@ -37,5 +39,15 @@ We also show all the HGNC's genes TSS that ovelap the island +- 7000 bp.
 <a href=./noodles.C.annotation.uncorr.html>Here is the table in html format</a>
 
 <a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/genomewidenoodles/C/noodles.C.annotation.uncorr.tsv>Here is the table in tsv format, to be loaded to excel</a>
+
+### Technical info
+-------------------------------
+Clinical data file: `r clinFile`.
+
+Its size and modification time: 
+```{r file.info}
+file.info(clinFile)[,c('size','mtime')] 
+```
+Number of records is `r nrow(Clinical)`
 
 
