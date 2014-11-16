@@ -109,7 +109,10 @@ generate.noodles.C.report<-function(report.set,#indices
 #digits and display are to be +1 because of rows# that we do not print
 }
 
-rows.no<-dim(fisher.noodles.C.result)[1]
-report.interval<-1:rows.no
-generate.noodles.C.report(report.interval,'first60000')
+fish<-fisher.noodles.C.result$fisher.p.values
+
+generate.noodles.C.report(which(p.adjust(fish,method='bonferroni')<=0.05),'bonf')
+generate.noodles.C.report(which(p.adjust(fish,method='fdr')<=0.05),'fdr')
+
+generate.noodles.C.report(which(fish<0.05),'uncorr')
 
