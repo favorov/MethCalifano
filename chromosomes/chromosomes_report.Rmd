@@ -9,12 +9,12 @@ rownames(chrmeans)<-c('tumors','normals')
 ```
 
 
-Does the coverage rate of  chromosomes differs between normals and means in`r clinFileName` data?
+Does the coverage rate of  chromosomes differs between normals and means in the data?
 ========================================================
 
 Alexander Favorov  
 -----------------------------------------------
-
+### `r clinFileName`
 ### `r format(Sys.Date(), "%d %b %Y")` 
 
 We load the coverage information, than for each cromosome we estimate the coverage rate by normalizing for chromosome length. Then we count the mean coverage rate values between all tumors and between all normals for each chromosome.
