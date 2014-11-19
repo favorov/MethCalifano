@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Does the coverage rate of  chromosomes differs between normals and means in2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv data?</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<!-- cache is off, we save all the neccessary things in Rda -->
+
+<h1>Does the coverage rate of  chromosomes differs between normals and means in2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv data?</h1>
+
+<h2>Alexander Favorov  </h2>
+
+<h3>19 Nov 2014</h3>
+
+<p>We load the coverage information, than for each cromosome we estimate the coverage rate by normalizing for chromosome length. Then we count the mean coverage rate values between all tumors and between all normals for each chromosome.</p>
+
+<pre><code>##               chr1       chr2       chr3       chr4       chr5       chr6       chr7       chr8
+## tumors  0.02128706 0.01931298 0.01586433 0.01626271 0.01755625 0.01888090 0.02716632 0.02305992
+## normals 0.02010378 0.01936971 0.01431618 0.01632394 0.01688906 0.01872932 0.02733179 0.02213419
+##               chr9      chr10      chr11      chr12      chr13      chr14      chr15      chr16
+## tumors  0.02289869 0.02551432 0.02146694 0.02476175 0.01664454 0.01723895 0.01708815 0.04216946
+## normals 0.02139615 0.02657248 0.02322906 0.02356002 0.01801784 0.01834026 0.01729284 0.04399894
+##              chr17      chr18      chr19      chr20      chr21      chr22        chrX        chrY
+## tumors  0.04779913 0.02510925 0.07983310 0.03472249 0.03323950 0.04350845 0.009106501 0.007420858
+## normals 0.04722347 0.02353183 0.07374988 0.03453435 0.03328644 0.04520471 0.012973502 0.006784939
+</code></pre>
+
+<p>The result is: no :(</p>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAflBMVEX9/v0AAAAAADkAAGUAOTkAOWUAOY8AZo8AZrU5AAA5ADk5AGU5OWU5OY85j485j9plAABlADllAGVlOQBlZjlltf2POQCPOTmPZgCPj2WP2/21ZgC124+1/rW1/tq1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v1DkhwaAAAAKnRSTlP//////////////////////////////////////////////////////wAyqPBcAAAACXBIWXMAAAsSAAALEgHS3X78AAALsklEQVR4nO3ci5bixhVGYatxOk0mE3A7MHHjBOw0t/d/QVfpAhIMA0JC5xT//taatI2EStRGQiKe/mkPST9Z7wBsEF4U4UURXhThRRFeFOFFEV4U4UURXhThRRFeFOFFEV4U4UURXhThRRFeFOFFEV4U4UURXhThRRFeFOFFOQ6/nWZZNul9s4vZyQObcfbycXn93Xy07H0n7PkNv85ybz1vdpGdhj9/pIHww9rN49G+yg/GVXHoL/J3Qf6/8ZFZXOnl32GN+B6J64XnjP47ff08LC82VFsnrJHVnl+Mk2XhKeUY5drVktA8hP99XPxDsahcc539PQy3XBUbKh+Mp48sf6NcXGtWX8uO2/CbcQy4m89i6uLQX8dA22mY++KRSVntz/iZEJbl//ZzfF61PGqs8/8ifG15Gb4ao3oflAtCnuLncdFxbyohYfXgttyV/Q/WmhzXMuQ2/Prw8b4Zh9SxdzjkPvL6+ZsinoJDi/KjYDsdLTfjMLmr+vK4pLlOfmJvLC8fOYxRrZ1vLSzLTz3xGcWiw5rrLI6YzeI/Hx4s3q4X1yqHrdaylED4dZ5iFfKswmMxU3kYlW+FfXEdOFrmK27Dqf6wPC5rrtN8fr794pFyjGrt4w7kj8StFosOa67zAzy++WLe8sH8WA6jXFirHLZay5Lb8MdT/TF8mP4/p/m0NsLHT8xr4at12oQvDv38zHAxfPHwcRfzcWoPNNeqhi3XGnxSa9yGD0dFeXF3OG2GRi+/xUcPp8qixSo/F5+e6ivNdY6n+oOTU33Vo9za5CR87SR+TFrbxWKDF9Y6HdaQ2/C127nqQul4y108cjwIa5dhtYu7Ypqb68RFb43lRYHjxV0V/nhx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" alt="plot of chunk plotting"/> </p>
+
+<h2>Technical info</h2>
+
+<p>Clinical data file: ../../Data/Clinical/2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv.</p>
+
+<p>Its size and modification time: </p>
+
+<pre><code>##                                                                             size
+## ../../Data/Clinical/2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv 14084
+##                                                                                          mtime
+## ../../Data/Clinical/2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv 2014-10-27 11:54:21
+</code></pre>
+
+<p>Number of records is 79</p>
+
+<p>Bed files:</p>
+
+<pre><code>##  [1] &quot;002_38623_Enrich_hg19.combined_vs_001_38623_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [2] &quot;004_38676_Enrich_hg19.combined_vs_003_38676_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [3] &quot;004_41505_enrich_hg19.combined_vs_003_41505_total_hg19.combined.50_peaks.bed&quot;                       
+##  [4] &quot;005_31415_Enrich_hg19.combined_vs_016_31415_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [5] &quot;006_34440_Enrich_hg19.combined_vs_017_34440_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [6] &quot;006_39713_enrich_hg19.combined_vs_005_39713_total_hg19.combined.50_peaks.bed&quot;                       
+##  [7] &quot;008_27743_Enrich_hg19.combined_vs_014_27743_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [8] &quot;008_41791_enrich_hg19.combined_vs_007_41791_total_hg19.combined.50_peaks.bed&quot;                       
+##  [9] &quot;009_39477_enrich_hg19.combined_vs_001_39477_total_hg19.combined.50_peaks.bed&quot;                       
+## [10] &quot;009_40913_enrich_hg19.combined_vs_001_40913_total_hg19.combined.50_peaks.bed&quot;                       
+## [11] &quot;010_34432_enrich_hg19.combined_vs_003_34432_total_hg19.combined.50_peaks.bed&quot;                       
+## [12] &quot;010_SCC_090_enrich_hg19.combined_vs_002_SCC_090_total_hg19.combined.50_peaks.bed&quot;                   
+## [13] &quot;011_25320_enrich_hg19.combined_vs_003_25320_total_hg19.combined.50_peaks.bed&quot;                       
+## [14] &quot;011_3669_TDNA_enrich_hg19.combined_vs_002_3669_TDNA_total_hg19.combined.50_peaks.bed&quot;               
+## [15] &quot;012_39451_enrich_hg19.combined_vs_004_39451_total_hg19.combined.50_peaks.bed&quot;                       
+## [16] &quot;012_40673_enrich_hg19.combined_vs_004_40673_total_hg19.combined.50_peaks.bed&quot;                       
+## [17] &quot;012_41522_enrich_hg19.combined_vs_011_41522_total_hg19.combined.50_peaks.bed&quot;                       
+## [18] &quot;013_25116_enrich_hg19.combined_vs_005_25116_total_hg19.combined.50_peaks.bed&quot;                       
+## [19] &quot;013_3714_TDNA_enrich_hg19.combined_vs_005_3714_TDNA_total_hg19.combined.50_peaks.bed&quot;               
+## [20] &quot;013_42133_enrich_hg19.combined_vs_014_42133_total_hg19.combined.50_peaks.bed&quot;                       
+## [21] &quot;014_25154_enrich_hg19.combined_vs_006_25154_total_hg19.combined.50_peaks.bed&quot;                       
+## [22] &quot;014_43684_rpt2_enrich_hg19.combined_vs_013_43684_rpt2_total_hg19.combined.50_peaks.bed&quot;             
+## [23] &quot;014_5006_enrich_hg19.combined_vs_006_5006_total_hg19.combined.50_peaks.bed&quot;                         
+## [24] &quot;015_27254_Enrich_hg19.combined_vs_013_27254_Total_hg19.combined.50_peaks.bed&quot;                       
+## [25] &quot;015_27773_enrich_hg19.combined_vs_007_27773_total_hg19.combined.50_peaks.bed&quot;                       
+## [26] &quot;015_40907_enrich_hg19.combined_vs_007_40907_total_hg19.combined.50_peaks.bed&quot;                       
+## [27] &quot;016_2704_TDNA_enrich_hg19.combined_vs_008_2704_TDNA_total_hg19.combined.50_peaks.bed&quot;               
+## [28] &quot;016_34346_enrich_hg19.combined_vs_008_34346_total_hg19.combined.50_peaks.bed&quot;                       
+## [29] &quot;016_40908_enrich_hg19.combined_vs_015_40908_total_hg19.combined.50_peaks.bed&quot;                       
+## [30] &quot;016_41790_rpt2_enrich_hg19.combined_vs_015_41790_rpt2_total_hg19.combined.50_peaks.bed&quot;             
+## [31] &quot;018_SCC_047_2_rpt2_enrich_hg19.combined_vs_017_SCC_047_2_rpt2_total_hg19.combined.50_peaks.bed&quot;     
+## [32] &quot;020_43281_rpt2_enrich_hg19.combined_vs_019_43281_rpt2_total_hg19.combined.50_peaks.bed&quot;             
+## [33] &quot;021_37960_Enrich_hg19.combined_vs_007_37960_Total_hg19.combined.50_peaks.bed&quot;                       
+## [34] &quot;022_43250_rpt2_enrich_hg19.combined_vs_021_43250_rpt2_total_hg19.combined.50_peaks.bed&quot;             
+## [35] &quot;024_38698_Enrich_hg19.combined_vs_023_38698_Total_hg19.combined.50_peaks.bed&quot;                       
+## [36] &quot;024_43236_rpt2_enrich_hg19.combined_vs_023_43236_rpt2_total_hg19.combined.50_peaks.bed&quot;             
+## [37] &quot;025_3366_Enrich_hg19.combined_vs_009_3366_Total_hg19.combined.50_peaks.bed&quot;                         
+## [38] &quot;025_38690_enrich_hg19.combined_vs_017_38690_total_hg19.combined.50_peaks.bed&quot;                       
+## [39] &quot;026_23749_Enrich_hg19.combined_vs_010_23749_Total_hg19.combined.50_peaks.bed&quot;                       
+## [40] &quot;027_23896_Enrich_hg19.combined_vs_011_23896_Total_hg19.combined.50_peaks.bed&quot;                       
+## [41] &quot;027_40666_enrich_hg19.combined_vs_019_40666_total_hg19.combined.50_peaks.bed&quot;                       
+## [42] &quot;028_23947_Enrich_hg19.combined_vs_012_23947_Total_hg19.combined.50_peaks.bed&quot;                       
+## [43] &quot;028_25304_enrich_hg19.combined_vs_020_25304_total_hg19.combined.50_peaks.bed&quot;                       
+## [44] &quot;029_34448_Enrich_hg19_vs_018_34448_Total_hg19.combined.50_peaks.bed&quot;                                
+## [45] &quot;029_38851_enrich_hg19.combined_vs_021_38851_total_hg19.combined.50_peaks.bed&quot;                       
+## [46] &quot;030_35639_Enrich_hg19.combined_vs_020_35639_Total_hg19.combined.50_peaks.bed&quot;                       
+## [47] &quot;031_38667_Enrich_hg19.combined_vs_022_38667_Total_hg19.combined.50_peaks.bed&quot;                       
+## [48] &quot;032_34471_Enrich_hg19.combined_vs_019_34471_Total_hg19.combined.50_peaks.bed&quot;                       
+## [49] &quot;18732_enrich.combined.removeDuplicates_vs_18732_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [50] &quot;25441_enrich.combined.removeDuplicates_vs_25441_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [51] &quot;27279_enrich.combined.removeDuplicates_vs_27279_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [52] &quot;27281_enrich.combined.removeDuplicates_vs_27281_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [53] &quot;30018_enrich.combined.removeDuplicates_vs_30018_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [54] &quot;30553_enrich.combined.removeDuplicates_vs_30553_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [55] &quot;30577_enrich.combined.removeDuplicates_vs_30577_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [56] &quot;30580_enrich.combined.removeDuplicates_vs_30580_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [57] &quot;30596_enrich.combined.removeDuplicates_vs_30596_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [58] &quot;31124_enrich.combined.removeDuplicates_vs_31124_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [59] &quot;32913_enrich.combined.removeDuplicates_vs_32913_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [60] &quot;35663_enrich.combined.removeDuplicates_vs_35663_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [61] &quot;35667_enrich.combined.removeDuplicates_vs_35667_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [62] &quot;35675_enrich.combined.removeDuplicates_vs_35675_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [63] &quot;37941_enrich.combined.removeDuplicates_vs_37941_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [64] &quot;4931_enrich.combined.removeDuplicates_vs_4931_total.combined.removeDuplicates.50_peaks.bed&quot;         
+## [65] &quot;JHUJC01002_001_37920_enrich_hg19.combined_vs_JHUJC01002_002_37920_total.combined.50_peaks.bed&quot;      
+## [66] &quot;JHUJC01002_003_3680TDNA_enrich_hg19.combined_vs_JHUJC01002_004_3680TDNA_total.combined.50_peaks.bed&quot;
+## [67] &quot;JHUJC01002_005_24366_enrich.combined_vs_JHUJC01002_006_24366_total.combined.50_peaks.bed&quot;           
+## [68] &quot;JHUJC01002_007_2934TDNA_enrich.combined_vs_JHUJC01002_008_2934TDNA_total.combined.50_peaks.bed&quot;     
+## [69] &quot;JHUJC01002_009_32085_enrich.combined_vs_JHUJC01002_010_32085_total.combined.50_peaks.bed&quot;           
+## [70] &quot;JHUJC01002_011_27239_enrich.combined_vs_JHUJC01002_012_27239_total.combined.50_peaks.bed&quot;           
+## [71] &quot;JHUJC01002_013_24866_enrich.combined_vs_JHUJC01002_014_24866_total.combined.50_peaks.bed&quot;           
+## [72] &quot;JHUJC01002_015_30599_enrich.combined_vs_JHUJC01002_016_30599_total.combined.50_peaks.bed&quot;           
+## [73] &quot;JHUJC01002_017_30593_enrich.combined.bam.JHUJC01002_018_30593_total.combined.bam_peaks.bed&quot;         
+## [74] &quot;JHUJC01002_019_1342_enrich.combined.bam.JHUJC01002_020_1342_total.combined.bam_peaks.bed&quot;           
+## [75] &quot;JHUJC01002_021_30588_enrich.combined.bam.JHUJC01002_022_30588_total.combined.bam_peaks.bed&quot;         
+## [76] &quot;JHUJC01002_023_30551_enrich.combined.bam.JHUJC01002_024_30551_total.combined.bam_peaks.bed&quot;         
+## [77] &quot;JHUJC01002_025_30555_enrich.combined.bam.JHUJC01002_026_30555_total.combined.bam_peaks.bed&quot;         
+## [78] &quot;JHUJC01002_027_30539_enrich.combined.bam.JHUJC01002_028_30539_total.combined.bam_peaks.bed&quot;         
+## [79] &quot;JHUJC01002_029_30648_enrich.combined.bam.JHUJC01002_030_30648_total.combined.bam_peaks.bed&quot;         
+## [80] &quot;JHUJC01002_031_2675TDNA_enrich.combined.bam.JHUJC01002_032_2675TDNA_total.combined.bam_peaks.bed&quot;
+</code></pre>
+
+<p>Beds not used:</p>
+
+<pre><code>## [1] &quot;010_SCC_090_enrich_hg19.combined_vs_002_SCC_090_total_hg19.combined.50_peaks.bed&quot;              
+## [2] &quot;013_42133_enrich_hg19.combined_vs_014_42133_total_hg19.combined.50_peaks.bed&quot;                  
+## [3] &quot;014_43684_rpt2_enrich_hg19.combined_vs_013_43684_rpt2_total_hg19.combined.50_peaks.bed&quot;        
+## [4] &quot;018_SCC_047_2_rpt2_enrich_hg19.combined_vs_017_SCC_047_2_rpt2_total_hg19.combined.50_peaks.bed&quot;
+## [5] &quot;25441_enrich.combined.removeDuplicates_vs_25441_total.combined.removeDuplicates.50_peaks.bed&quot;
+</code></pre>
+
+</body>
+
+</html>

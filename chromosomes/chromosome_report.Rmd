@@ -5,7 +5,7 @@
 options(width=100)
 source('chromosomes.R') 
 chrmeans<-apply(chrom.meth.cover.rel,1,function(row){c(mean(row[which(tumors)]),mean(row[which(normals)]))})
-rownames(chrmeans)<-c(tumors,normals)
+rownames(chrmeans)<-c('tumors','normals')
 ```
 
 
@@ -17,7 +17,7 @@ Alexander Favorov
 
 ### `r format(Sys.Date(), "%d %b %Y")` 
 
-We load the coverage information, than for each cromosome we estimate the coverage rate by normalizing for chromosome length. Then we coubt the mean values for tumors and for normals for each chromosome.
+We load the coverage information, than for each cromosome we estimate the coverage rate by normalizing for chromosome length. Then we count the mean coverage rate values between all tumors and between all normals for each chromosome.
 
 ```{r print data}
 chrmeans
@@ -25,7 +25,8 @@ chrmeans
 
 The result is: no :(
 
-```{plotting}
+```{r plotting}
+par(mfrow=c(1,1))
 boxplot(t(chrmeans))
 title('Coverage rate for chromosomes')
 ```
