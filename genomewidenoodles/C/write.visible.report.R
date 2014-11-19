@@ -109,7 +109,7 @@ generate.noodles.C.report<-function(report.set,#indices
 
 	#prepared
 	
-	#save(file=paste0('noodles.C.annotation.',set.id,'.Rda'),list=c('report.frame'))
+	save(file=paste0('noodles.C.annotation.',set.id,'.Rda'),list=c('report.frame'))
 	
 	write.table(report.frame,file=tsvfilename,sep='\t',row.names=FALSE)
 
