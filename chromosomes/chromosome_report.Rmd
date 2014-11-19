@@ -1,0 +1,52 @@
+`r opts_chunk$set(echo=F,message=F,cache=F,warning=F)`
+<!-- cache is off, we save all the neccessary things in Rda -->
+
+```{r load and calculate}
+options(width=100)
+source('chromosomes.R') 
+chrmeans<-apply(chrom.meth.cover.rel,1,function(row){c(mean(row[which(tumors)]),mean(row[which(normals)]))})
+rownames(chrmeans)<-c(tumors,normals)
+```
+
+
+Does the coverage rate of  chromosomes differs between normals and means in`r clinFileName` data?
+========================================================
+
+Alexander Favorov  
+-----------------------------------------------
+
+### `r format(Sys.Date(), "%d %b %Y")` 
+
+We load the coverage information, than for each cromosome we estimate the coverage rate by normalizing for chromosome length. Then we coubt the mean values for tumors and for normals for each chromosome.
+
+```{r print data}
+chrmeans
+```
+
+The result is: no :(
+
+```{plotting}
+boxplot(t(chrmeans))
+title('Coverage rate for chromosomes')
+```
+
+
+Technical info
+-------------------------------
+Clinical data file: `r clinFile`.
+
+Its size and modification time: 
+```{r file.info}
+file.info(clinFile)[,c('size','mtime')] 
+```
+Number of records is `r nrow(Clinical)`
+
+Bed files:
+```{r bedsinfolder}
+bedsinfolder
+```
+Beds not used:
+```{r not in DNAids}
+bedsinfolder[!bed.used]
+```
+
