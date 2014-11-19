@@ -20,8 +20,6 @@ if(file.exists('chromosomes.meth.coverage.Rda'))
 				class(chrom.meth.cover)=='matrix')
 			chromosomes.meth.coverage.loaded<-TRUE
 
-chromosomes.meth.coverage.loaded<-FALSE
-
 if (!chromosomes.meth.coverage.loaded)
 {
 	source('../common/read_clinical.R')
