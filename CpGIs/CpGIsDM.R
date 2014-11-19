@@ -36,7 +36,8 @@ CpGIs.methylation.loaded<-FALSE
 # we can the whole thing to CpGIs.methylation.Rda
 if(file.exists('CpGIs.methylation.Rda'))
 	if ('CpGIs.methylation' %in% load('CpGIs.methylation.Rda'))
-		if (class(CpGIs.methylation)=='dgCMatrix')
+		if (class(CpGIs.methylation)=='dgCMatrix' || 
+				class(CpGIs.methylation)=='matrix')
 			CpGIs.methylation.loaded<-TRUE
 
 if (!CpGIs.methylation.loaded)

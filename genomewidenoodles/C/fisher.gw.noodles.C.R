@@ -99,7 +99,8 @@ if(!noodles.fisher.results.loaded)
 		{
 			loaded<-load(noodles.file)
 			if (noodles.methylation.var.name %in% loaded) 
-				if (class(get(noodles.methylation.var.name))=='dgCMatrix')
+				if (class(get(noodles.methylation.var.name))=='dgCMatrix' || 
+						class(get(noodles.methylation.var.name))=='matrix')
 					if (noodles.ranges.var.name %in% loaded)
 						if(class(get(noodles.ranges.var.name))=='GRanges')
 					noodles.loaded<-TRUE

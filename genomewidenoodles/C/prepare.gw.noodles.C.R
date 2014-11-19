@@ -17,7 +17,8 @@ if(file.exists('noodles.C.Rda'))
 {
 	loaded<-load('noodles.C.Rda')
 	if ('noodles.C.methylation' %in% loaded) 
-		if (class(noodles.C.methylation)=='dgCMatrix')
+		if (class(noodles.C.methylation)=='dgCMatrix' || 
+				class(noodles.C.methylation)=='matrix')
 			if ('noodles.C' %in% loaded)
 				if(class(noodles.C)=='GRanges')
 			noodles.C.loaded<-TRUE

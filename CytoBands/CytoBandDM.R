@@ -16,7 +16,8 @@ cytobands.DM.loaded<-FALSE
 # we can the whole thing to cytobands.DM.Rda
 if(file.exists('cytobands.DM.Rda'))
 	if ('cytobands.methylation' %in% load('cytobands.DM.Rda'))
-		if (class(cytobands.methylation)=='dgCMatrix')
+		if (class(cytobands.methylation)=='dgCMatrix' || 
+				class(cytobands.methylation)=='matrix')
 			cytobands.DM.loaded<-TRUE
 
 if (!cytobands.DM.loaded)
