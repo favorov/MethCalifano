@@ -32,12 +32,15 @@ report.fisher<-fisher.noodles.C.result[report.interval,]
 #actually, it is to develop for little tests.no
 
 tsvfilename="noodles.C.complete.annotaion.tsv"
+YesNofilename="noodles.C.methylation.tsv"
 
 
 #prepare dataframe
 message('init dataframe')
 report.frame<-data.frame('chr'=as.character(seqnames(report.noodles)),start=start(report.noodles),end=end(report.noodles),stringsAsFactors = FALSE)
-	
+
+rownames(report.frame)<-paste(report.frame$chr,":",report.frame$start,'-',report.frame$end,sep='')
+
 message('adding Fisher')
 report.frame<-cbind(report.frame,
 		'fisher.p.value'=report.fisher$fisher.p.values,
@@ -82,23 +85,29 @@ report.frame<-cbind(report.frame,'CpGi'=CpGIs$'id'[ci],'DM.island?'=ifelse(is.na
 message('Looking for closest genes')
 closest.genes<-closest.gene.start.by.interval(report.noodles)
 
-report.frame<-cbind(report.frame,elementMetadata(closest.genes)[,c('closest.TSS','pos','dir','dist')])
-
 message('done')
 
-message('Looking for overlapped genes')
+#message('Looking for overlapped genes')
 
-flanks<-7000
+#flanks<-7000
 
-ovelapped.genes<-genes.with.TSS.covered.by.interval(report.noodles,flanks=flanks)
+#ovelapped.genes<-genes.with.TSS.covered.by.interval(report.noodles,flanks=flanks)
+#message('done')
 
-report.frame<-cbind(report.frame,elementMetadata(ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
+message('combining')
+#report.frame<-cbind(report.frame,elementMetadata(closest.genes)[,c('closest.TSS','pos','dir','dist')],elementMetadata(ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
+report.frame<-cbind(report.frame,elementMetadata(closest.genes)[,c('closest.TSS','pos','dir','dist')])
+#,elementMetadata(ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
 
 message('done\n')
 
 #prepared
 
 met.mat<-ifelse(as.matrix(noodles.C.methylation[report.interval,]),1,0)
-report.frame<-cbind(report.frame,met.mat)
-write.table(report.frame,file=tsvfilename,sep='\t',row.names=FALSE)
+
+rownames(met.mat)<-rownames(report.frame)
+
+write.table(report.frame,file=tsvfilename,sep='\t',row.names=TRUE)
+
+write.table(met.mat,file=YesNofilename,sep='\t',row.names=TRUE,col.names=TRUE)
 
