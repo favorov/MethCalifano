@@ -29,7 +29,7 @@ if (!cytobands.DM.loaded)
 	cytobands<-get.cytoband.ranges()
 	#cytobands ready
 	SNPchip.version=package.version('SNPchip')
-	cytobands.methylation<-CountCoverageOfNoodles(cytobands,bedfilenames,DNAids)
+	cytobands.methylation<-count.coverage.of.noodles(cytobands,bedfilenames,DNAids)
 	#it is folder with bed files
 	tests.number<-dim(cytobands.methylation)[1]
 
