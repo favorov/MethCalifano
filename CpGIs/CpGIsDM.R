@@ -46,7 +46,7 @@ if (!CpGIs.methylation.loaded)
 	#Clinical prepared.
 	source('../common/prepare_beds_and_contrast.R')
 	#beds and contrast is ready
-	CpGIs.methylation<-CountCoverageOfNoodles(CpGIs,bedfilenames,DNAids)
+	CpGIs.methylation<-count.coverage.of.noodles(CpGIs,bedfilenames,DNAids)
 	#it is folder with bed files
 	message('Saving...\n')
 	save(file='CpGIs.methylation.Rda',list=c('CpGIs.methylation','Clinical','clinFile','clinFileName','bedsinfolder','bed.used','tumors','normals','contrast','DNAids'))
