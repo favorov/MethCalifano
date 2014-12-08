@@ -1,6 +1,18 @@
 #fetches known CpGIs from UCSC DAS server
 #saves the information to ../common/CpGIs.Rda
 #if the file exists, read it after some checks
+if (!suppressWarnings(require('differential.coverage')))
+{
+	if (!suppressWarnings(require('devtools')))
+	{
+		source("http://bioconductor.org/biocLite.R")
+		biocLite("devtools")
+		library("devtools")
+	}
+	install_github('favorov/differential.coverage')
+	#load_all('../../../../differential.coverage/')
+	library('differential.coverage')
+}
 
 if (!require('rtracklayer'))
 {
