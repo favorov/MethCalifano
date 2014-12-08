@@ -136,6 +136,7 @@ generate.DM.vistaEnhaners.report<-function(DM.vistaEnhancers.set,#indices
 	
 	DM.vistaEnhancers.stat<-data.frame(
 		'id'=elementMetadata(vistaEnhancers)$id[DM.vistaEnhancers.set],
+		'type'=elementMetadata(vistaEnhancers)$type[DM.vistaEnhancers.set],
 		'chr'=as.character(seqnames(vistaEnhancers))[DM.vistaEnhancers.set],
 		'start'=start(vistaEnhancers)[DM.vistaEnhancers.set],
 		'end'=end(vistaEnhancers)[DM.vistaEnhancers.set],
@@ -207,7 +208,7 @@ generate.DM.vistaEnhaners.report<-function(DM.vistaEnhancers.set,#indices
 
 	if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
 
-	print(xtable(DM.vistaEnhancers.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','s')), type="html", file=htmlfilename,include.rownames=FALSE)
+	print(xtable(DM.vistaEnhancers.stat,digits=c(0,0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0), display=c('d','s','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','s')), type="html", file=htmlfilename,include.rownames=FALSE)
 	
 	0
 }
