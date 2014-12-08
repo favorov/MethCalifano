@@ -241,6 +241,12 @@ if(!vistaEnhancers.DM.indices.loaded)
 
 	save(file='vistaEnhancers.DM.indices.Rda',
 		list=c(
+			'DM.F.vistaEnhancers.Bonferroni',
+			'DM.F.vistaEnhancers.FDR',
+			'DM.F.vistaEnhancers',
+			'DM.W.vistaEnhancers.Bonferroni',
+			'DM.W.vistaEnhancers.FDR',
+			'DM.W.vistaEnhancers',
 			'DM.vistaEnhancers.Bonferroni',
 			'DM.vistaEnhancers.FDR',
 			'DM.vistaEnhancers',
