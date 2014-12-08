@@ -2,6 +2,19 @@
 #saves the information to ../common/karyotype.Rda
 #if the file exists, read it after some checks
 
+if (!suppressWarnings(require('differential.coverage')))
+{
+	if (!suppressWarnings(require('devtools')))
+	{
+		source("http://bioconductor.org/biocLite.R")
+		biocLite("devtools")
+		library("devtools")
+	}
+	install_github('favorov/differential.coverage')
+	#load_all('../../../../differential.coverage/')
+	library('differential.coverage')
+}
+
 if (!require('rtracklayer'))
 {
 	source("http://bioconductor.org/biocLite.R")
@@ -17,9 +30,9 @@ if (!require('DASiR'))
 vistaEnhancers.loaded<-FALSE
 # we can the whole thing to karyotype.with.methylation.Rda
 
-if(file.exists('../common/vistaEnhancers.Rda'))
-	if ('vistaEnhancers' %in% load('../common/vistaEnhancers.Rda'))
-		if (class(vistaEnhancers)=='RangedData')
+if(file.exists('vistaEnhancers.Rda'))
+	if ('vistaEnhancers' %in% load('vistaEnhancers.Rda'))
+		if (class(vistaEnhancers)=='GRanges')
 			vistaEnhancers.loaded<-TRUE
 
 if(!vistaEnhancers.loaded)
@@ -36,15 +49,24 @@ if(!vistaEnhancers.loaded)
 	#vistaEnhancers is a DataFrame with all the Vista Enhacers bands enumerated
 	chrs<-as.character(seqnames(chrom.ranges))[vistaEnhancers_data$segment.range]
 	#segment.range in return is not the chrom name; it is index of the chr's record in chrom.range
-	vistaEnhancers<-RangedData(
-		space=paste0('chr',chrs), 
+	vistaEnhancers<-GRanges(
+		seqnames=paste0('chr',chrs), 
 		ranges=IRanges
 		(
 			start=as.numeric(as.character(vistaEnhancers_data$start)),
 			end=as.numeric(as.character(vistaEnhancers_data$end))
 		),
+		seqinfo=nucl.chromosomes.hg19(),
 		id=vistaEnhancers_data$label,
-		score=vistaEnhancers_data$score
+		score=as.numeric(as.character(vistaEnhancers_data$score)),
+		type=as.character(vistaEnhancers_data$type)
 	)
-	save(file='../common/vistaEnhancers.Rda',list=c('vistaEnhancers'))
+	vista.enhancers.timestamp<-Sys.time()
+  #log of conversion. accomodate and test before use
+  #ve=as(vistaEnhancers,'GRanges')
+  #elementMetadata(ve)$id=as.character(elementMetadata(ve)$id)
+  #elementMetadata(ve)$score=as.integer(as.character(elementMetadata(ve)$score))
+  #vistaEnhancers<-ve
+  #up to here
+	save(file='vistaEnhancers.Rda',list=c('vistaEnhancers','vista.enhancers.timestamp'))
 }
