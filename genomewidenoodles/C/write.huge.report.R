@@ -87,12 +87,14 @@ closest.genes<-closest.gene.start.by.interval(report.noodles)
 
 message('done')
 
-message('Looking for overlapped genes')
+#message('Looking for overlapped genes')
 
-flanks<-7000
+#too loongloongloong time
 
-ovelapped.genes<-genes.with.TSS.covered.by.interval(report.noodles,flanks=flanks)
-message('done')
+#flanks<-7000
+
+#ovelapped.genes<-genes.with.TSS.covered.by.interval(report.noodles,flanks=flanks)
+#message('done')
 
 message('combining')
 report.frame<-cbind(report.frame,elementMetadata(closest.genes)[,c('closest.TSS','pos','dir','dist')],elementMetadata(ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
