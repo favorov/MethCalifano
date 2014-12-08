@@ -3,7 +3,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Which Vista enhancers are differentially methylated in the 2014-02-06_RO1_Batch1-4_ClinicalData_DeID data?</title>
+<title>Which Vista enhancers are differentially methylated in the 2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv data?</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
 
 
 
@@ -19,6 +31,7 @@ body, td {
 body {
   max-width: 800px;
   margin: auto;
+  padding: 1em;
   line-height: 20px;
 }
 
@@ -26,28 +39,28 @@ tt, code, pre {
    font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
 }
 
-h1 { 
-   font-size:2.2em; 
+h1 {
+   font-size:2.2em;
 }
 
-h2 { 
-   font-size:1.8em; 
+h2 {
+   font-size:1.8em;
 }
 
-h3 { 
-   font-size:1.4em; 
+h3 {
+   font-size:1.4em;
 }
 
-h4 { 
-   font-size:1.0em; 
+h4 {
+   font-size:1.0em;
 }
 
-h5 { 
-   font-size:0.9em; 
+h5 {
+   font-size:0.9em;
 }
 
-h6 { 
-   font-size:0.8em; 
+h6 {
+   font-size:0.8em;
 }
 
 a:visited {
@@ -57,7 +70,9 @@ a:visited {
 pre, img {
   max-width: 100%;
 }
-
+pre {
+  overflow-x: auto;
+}
 pre code {
    display: block; padding: 0.5em;
 }
@@ -91,54 +106,54 @@ hr {
 }
 
 @media print {
-   * { 
-      background: transparent !important; 
-      color: black !important; 
-      filter:none !important; 
-      -ms-filter: none !important; 
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
    }
 
-   body { 
-      font-size:12pt; 
-      max-width:100%; 
-   }
-       
-   a, a:visited { 
-      text-decoration: underline; 
+   body {
+      font-size:12pt;
+      max-width:100%;
    }
 
-   hr { 
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
       visibility: hidden;
       page-break-before: always;
    }
 
-   pre, blockquote { 
-      padding-right: 1em; 
-      page-break-inside: avoid; 
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
    }
 
-   tr, img { 
-      page-break-inside: avoid; 
+   tr, img {
+      page-break-inside: avoid;
    }
 
-   img { 
-      max-width: 100% !important; 
+   img {
+      max-width: 100% !important;
    }
 
-   @page :left { 
-      margin: 15mm 20mm 15mm 10mm; 
-   }
-     
-   @page :right { 
-      margin: 15mm 10mm 15mm 20mm; 
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
    }
 
-   p, h2, h3 { 
-      orphans: 3; widows: 3; 
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
    }
 
-   h2, h3 { 
-      page-break-after: avoid; 
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
    }
 }
 </style>
@@ -148,119 +163,183 @@ hr {
 </head>
 
 <body>
-<h1>Which Vista enhancers are differentially methylated in the 2014-02-06_RO1_Batch1-4_ClinicalData_DeID data?</h1>
+<!-- cache is off, we save all the neccessary things in Rda -->
+
+<h1>Which Vista enhancers are differentially methylated in the 2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv data?</h1>
 
 <h2>Alexander Favorov  </h2>
 
-<h3>15 Apr 2014</h3>
+<h3>07 Dec 2014</h3>
 
-<!-- cache is off, we save all the neccessary things in Rda -->
+<p>We load the Vista Enhancers list from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server (2014-12-02 20:23:37) and we load our MACS as described in <a href=../../Data/Clinical/2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv> 2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv </a> file. </p>
 
-<p>We load the list of Vista enhancers from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.html>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. </p>
+<p>Then, for each island we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the island in each of the samples.</p>
 
-<p>Then, for each Vista enhancer we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the enhancer in each of the samples.</p>
+<p>Thus, for each island we have a methylated length (coverage) for each sample).
+Then, we calculate the Wilcoxon p-value for each island&#39;s tumor and normal DM coverages.
+We think that an island is differentially methylated if the p-value is &lt;=0.05.
+We do the same for Fisher&#39;s test.</p>
 
-<p>Thus, for each interval (enhancer) we have a methylated length (coverage) for each sample).
-Then, we calculate the Wilcoxon p-value for each enhancer&#39;s tumor and normal DM coverages.
-We think that an enhancer is differentyally methylated if the p-value is &lt;=0.05. </p>
+<h2>Here is the list of all differentially methylated (p&lt;=0.05) CpG with Bonferroni correction</h2>
 
-<h3>And, here is the list of differentially methylated Vista enhancers with Bonferroni correction</h3>
+<p>In the table: 
+The DM CpG islands coords and the methylation status description; Fisher&#39;s test results cytoband information; TSS near is the closest start of a HGNC gene (according to Ensemble coords as represented in Homo.sapiens and org.Hs.eg.db) to the island, position and strand are of the gene. Distance is the distance from the middle of the island to TSS, negative means that the island is in the upstream.
+We show Wilcoxon and Fisher&#39;s p-values for each island as well as OR and the CI for OR.
+We also show all the HGNC&#39;s genes TSS that ovelap the island +- 7000 bp.</p>
 
-<pre><code>##  space     start       end           id score   p.value is.hyper   upsream downstream
-##  chr10  50603806  50605254  element_318   200 4.034e-07     TRUE     ERCC6  C10orf128
-##  chr10 102419120 102419731  element_286   200 3.041e-06     TRUE    MIR608     HIF1AN
-##  chr12 115123534 115124174  element_482   200 1.973e-05     TRUE    MIR620   TBX5-AS1
-##  chr12 115124395 115125300  element_483   900 8.905e-08     TRUE    MIR620   TBX5-AS1
-##  chr16  54323421  54324336   element_51   900 1.973e-05     TRUE     CRNDE        FTO
-##  chr20  21488552  21490021 element_1205   900 4.601e-06     TRUE LINC00261       XRN2
-##   chr3 147125147 147126336 element_1043   900 2.978e-08     TRUE      ZIC1     PLSCR1
-##   chr3 168958334 168962944 element_1433   900 1.019e-05     TRUE      TERC    EGFEM1P
-##   chr6 108437244 108438452 element_1189   200 1.281e-06     TRUE     LACE1      OSTM1
-##   chr9    968798    970093  element_196   200 5.636e-06     TRUE     DMRT3      DMRT1
-##   chr9    973436    975288  element_112   900 7.600e-06     TRUE     DMRT3      DMRT1
-</code></pre>
+<p>###These resuls are for union of the Wilcoxon-based and the Fisher-based list:</p>
 
-<h2>Technical info</h2>
+<p><a href=./DM.vistaEnhancers.stat.bonf.html>Here is the table in html format</a></p>
 
-<p>Clinical data file: ../../Data/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv.</p>
+<p><a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.bonf.tsv>Here is the table in tsv format, to be loaded to excel</a></p>
+
+<p>###These are for intersection of the Wilcoxon-based and the Fisher-based list:</p>
+
+<p><a href=./DM.vistaEnhancers.stat.bonf.and.html>Here is the table in html format</a></p>
+
+<p><a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.bonf.and.tsv>Here is the table in tsv format, to be loaded to excel</a></p>
+
+<h2>The same tables for FDR&lt;0.1</h2>
+
+<p>###These resuls are for union of the Wilcoxon-based and the Fisher-based list:</p>
+
+<p><a href=./DM.vistaEnhancers.stat.fdr.html>Here is the table in html format</a></p>
+
+<p><a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.fdr.tsv>Here is the table in tsv format, to be loaded to excel</a></p>
+
+<p>###These are for intersection of the Wilcoxon-based and the Fisher-based list:
+<a href=./DM.vistaEnhancers.stat.fdr.and.html>Here is the table in html format</a></p>
+
+<p><a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.fdr.and.tsv>Here is the table in tsv format, to be loaded to excel</a></p>
+
+<h2>And, the same for uncorrected p-value&lt;0.05</h2>
+
+<p>###These resuls are for union of the Wilcoxon-based and the Fisher-based list:</p>
+
+<p><a href=./DM.vistaEnhancers.stat.uncorr.html>Here is the table in html format</a></p>
+
+<p><a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.uncorr.tsv>Here is the table in tsv format, to be loaded to excel</a></p>
+
+<p>###These are for intersection of the Wilcoxon-based and the Fisher-based list:</p>
+
+<p><a href=./DM.vistaEnhancers.stat.uncorr.and.html>Here is the table in html format</a></p>
+
+<p><a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.uncorr.and.tsv>Here is the table in tsv format, to be loaded to excel</a></p>
+
+<h3>Technical info</h3>
+
+<hr/>
+
+<p>Clinical data file: ../../Data/Clinical/2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv.</p>
 
 <p>Its size and modification time: </p>
 
-<pre><code>##                                                                    size               mtime
-## ../../Data/Clinical/2014-02-06_RO1_Batch1-4_ClinicalData_DeID.csv 11206 2014-03-11 10:14:09
+<pre><code>##                                                                             size
+## ../../Data/Clinical/2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv 14084
+##                                                                                          mtime
+## ../../Data/Clinical/2014-10-07_DiscoveryCohort_ClinicalData-Final_DeID.csv 2014-10-27 11:54:21
 </code></pre>
 
-<p>Number of records is 56</p>
+<p>Number of records is 79</p>
 
 <p>Bed files:</p>
 
 <pre><code>##  [1] &quot;002_38623_Enrich_hg19.combined_vs_001_38623_Total_hg19.combined.50_peaks.bed&quot;                       
 ##  [2] &quot;004_38676_Enrich_hg19.combined_vs_003_38676_Total_hg19.combined.50_peaks.bed&quot;                       
-##  [3] &quot;005_31415_Enrich_hg19.combined_vs_016_31415_Total_hg19.combined.50_peaks.bed&quot;                       
-##  [4] &quot;006_34440_Enrich_hg19.combined_vs_017_34440_Total_hg19.combined.50_peaks.bed&quot;                       
-##  [5] &quot;008_27743_Enrich_hg19.combined_vs_014_27743_Total_hg19.combined.50_peaks.bed&quot;                       
-##  [6] &quot;009_39477_enrich_hg19.combined_vs_001_39477_total_hg19.combined.50_peaks.bed&quot;                       
-##  [7] &quot;010_34432_enrich_hg19.combined_vs_003_34432_total_hg19.combined.50_peaks.bed&quot;                       
-##  [8] &quot;011_3669_TDNA_enrich_hg19.combined_vs_002_3669_TDNA_total_hg19.combined.50_peaks.bed&quot;               
-##  [9] &quot;012_39451_enrich_hg19.combined_vs_004_39451_total_hg19.combined.50_peaks.bed&quot;                       
-## [10] &quot;013_25116_enrich_hg19.combined_vs_005_25116_total_hg19.combined.50_peaks.bed&quot;                       
-## [11] &quot;014_5006_enrich_hg19.combined_vs_006_5006_total_hg19.combined.50_peaks.bed&quot;                         
-## [12] &quot;015_27254_Enrich_hg19.combined_vs_013_27254_Total_hg19.combined.50_peaks.bed&quot;                       
-## [13] &quot;015_27773_enrich_hg19.combined_vs_007_27773_total_hg19.combined.50_peaks.bed&quot;                       
-## [14] &quot;016_34346_enrich_hg19.combined_vs_008_34346_total_hg19.combined.50_peaks.bed&quot;                       
-## [15] &quot;021_37960_Enrich_hg19.combined_vs_007_37960_Total_hg19.combined.50_peaks.bed&quot;                       
-## [16] &quot;024_38698_Enrich_hg19.combined_vs_023_38698_Total_hg19.combined.50_peaks.bed&quot;                       
-## [17] &quot;025_3366_Enrich_hg19.combined_vs_009_3366_Total_hg19.combined.50_peaks.bed&quot;                         
-## [18] &quot;026_23749_Enrich_hg19.combined_vs_010_23749_Total_hg19.combined.50_peaks.bed&quot;                       
-## [19] &quot;027_23896_Enrich_hg19.combined_vs_011_23896_Total_hg19.combined.50_peaks.bed&quot;                       
-## [20] &quot;028_23947_Enrich_hg19.combined_vs_012_23947_Total_hg19.combined.50_peaks.bed&quot;                       
-## [21] &quot;029_34448_Enrich_hg19_vs_018_34448_Total_hg19.combined.50_peaks.bed&quot;                                
-## [22] &quot;030_35639_Enrich_hg19.combined_vs_020_35639_Total_hg19.combined.50_peaks.bed&quot;                       
-## [23] &quot;031_38667_Enrich_hg19.combined_vs_022_38667_Total_hg19.combined.50_peaks.bed&quot;                       
-## [24] &quot;032_34471_Enrich_hg19.combined_vs_019_34471_Total_hg19.combined.50_peaks.bed&quot;                       
-## [25] &quot;18732_enrich.combined.removeDuplicates_vs_18732_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [26] &quot;25441_enrich.combined.removeDuplicates_vs_25441_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [27] &quot;27279_enrich.combined.removeDuplicates_vs_27279_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [28] &quot;27281_enrich.combined.removeDuplicates_vs_27281_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [29] &quot;30018_enrich.combined.removeDuplicates_vs_30018_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [30] &quot;30553_enrich.combined.removeDuplicates_vs_30553_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [31] &quot;30577_enrich.combined.removeDuplicates_vs_30577_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [32] &quot;30580_enrich.combined.removeDuplicates_vs_30580_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [33] &quot;30596_enrich.combined.removeDuplicates_vs_30596_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [34] &quot;31124_enrich.combined.removeDuplicates_vs_31124_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [35] &quot;32913_enrich.combined.removeDuplicates_vs_32913_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [36] &quot;35663_enrich.combined.removeDuplicates_vs_35663_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [37] &quot;35667_enrich.combined.removeDuplicates_vs_35667_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [38] &quot;35675_enrich.combined.removeDuplicates_vs_35675_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [39] &quot;37941_enrich.combined.removeDuplicates_vs_37941_total.combined.removeDuplicates.50_peaks.bed&quot;       
-## [40] &quot;4931_enrich.combined.removeDuplicates_vs_4931_total.combined.removeDuplicates.50_peaks.bed&quot;         
-## [41] &quot;JHUJC01002_001_37920_enrich_hg19.combined_vs_JHUJC01002_002_37920_total.combined.50_peaks.bed&quot;      
-## [42] &quot;JHUJC01002_003_3680TDNA_enrich_hg19.combined_vs_JHUJC01002_004_3680TDNA_total.combined.50_peaks.bed&quot;
-## [43] &quot;JHUJC01002_005_24366_enrich.combined_vs_JHUJC01002_006_24366_total.combined.50_peaks.bed&quot;           
-## [44] &quot;JHUJC01002_007_2934TDNA_enrich.combined_vs_JHUJC01002_008_2934TDNA_total.combined.50_peaks.bed&quot;     
-## [45] &quot;JHUJC01002_009_32085_enrich.combined_vs_JHUJC01002_010_32085_total.combined.50_peaks.bed&quot;           
-## [46] &quot;JHUJC01002_011_27239_enrich.combined_vs_JHUJC01002_012_27239_total.combined.50_peaks.bed&quot;           
-## [47] &quot;JHUJC01002_013_24866_enrich.combined_vs_JHUJC01002_014_24866_total.combined.50_peaks.bed&quot;           
-## [48] &quot;JHUJC01002_015_30599_enrich.combined_vs_JHUJC01002_016_30599_total.combined.50_peaks.bed&quot;           
-## [49] &quot;JHUJC01002_017_30593_enrich.combined.bam.JHUJC01002_018_30593_total.combined.bam_peaks.bed&quot;         
-## [50] &quot;JHUJC01002_019_1342_enrich.combined.bam.JHUJC01002_020_1342_total.combined.bam_peaks.bed&quot;           
-## [51] &quot;JHUJC01002_021_30588_enrich.combined.bam.JHUJC01002_022_30588_total.combined.bam_peaks.bed&quot;         
-## [52] &quot;JHUJC01002_023_30551_enrich.combined.bam.JHUJC01002_024_30551_total.combined.bam_peaks.bed&quot;         
-## [53] &quot;JHUJC01002_025_30555_enrich.combined.bam.JHUJC01002_026_30555_total.combined.bam_peaks.bed&quot;         
-## [54] &quot;JHUJC01002_027_30539_enrich.combined.bam.JHUJC01002_028_30539_total.combined.bam_peaks.bed&quot;         
-## [55] &quot;JHUJC01002_029_30648_enrich.combined.bam.JHUJC01002_030_30648_total.combined.bam_peaks.bed&quot;         
-## [56] &quot;JHUJC01002_031_2675TDNA_enrich.combined.bam.JHUJC01002_032_2675TDNA_total.combined.bam_peaks.bed&quot;
+##  [3] &quot;004_41505_enrich_hg19.combined_vs_003_41505_total_hg19.combined.50_peaks.bed&quot;                       
+##  [4] &quot;005_31415_Enrich_hg19.combined_vs_016_31415_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [5] &quot;006_34440_Enrich_hg19.combined_vs_017_34440_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [6] &quot;006_39713_enrich_hg19.combined_vs_005_39713_total_hg19.combined.50_peaks.bed&quot;                       
+##  [7] &quot;008_27743_Enrich_hg19.combined_vs_014_27743_Total_hg19.combined.50_peaks.bed&quot;                       
+##  [8] &quot;008_41791_enrich_hg19.combined_vs_007_41791_total_hg19.combined.50_peaks.bed&quot;                       
+##  [9] &quot;009_39477_enrich_hg19.combined_vs_001_39477_total_hg19.combined.50_peaks.bed&quot;                       
+## [10] &quot;009_40913_enrich_hg19.combined_vs_001_40913_total_hg19.combined.50_peaks.bed&quot;                       
+## [11] &quot;010_34432_enrich_hg19.combined_vs_003_34432_total_hg19.combined.50_peaks.bed&quot;                       
+## [12] &quot;010_SCC_090_enrich_hg19.combined_vs_002_SCC_090_total_hg19.combined.50_peaks.bed&quot;                   
+## [13] &quot;011_25320_enrich_hg19.combined_vs_003_25320_total_hg19.combined.50_peaks.bed&quot;                       
+## [14] &quot;011_3669_TDNA_enrich_hg19.combined_vs_002_3669_TDNA_total_hg19.combined.50_peaks.bed&quot;               
+## [15] &quot;012_39451_enrich_hg19.combined_vs_004_39451_total_hg19.combined.50_peaks.bed&quot;                       
+## [16] &quot;012_40673_enrich_hg19.combined_vs_004_40673_total_hg19.combined.50_peaks.bed&quot;                       
+## [17] &quot;012_41522_enrich_hg19.combined_vs_011_41522_total_hg19.combined.50_peaks.bed&quot;                       
+## [18] &quot;013_25116_enrich_hg19.combined_vs_005_25116_total_hg19.combined.50_peaks.bed&quot;                       
+## [19] &quot;013_3714_TDNA_enrich_hg19.combined_vs_005_3714_TDNA_total_hg19.combined.50_peaks.bed&quot;               
+## [20] &quot;013_42133_enrich_hg19.combined_vs_014_42133_total_hg19.combined.50_peaks.bed&quot;                       
+## [21] &quot;014_25154_enrich_hg19.combined_vs_006_25154_total_hg19.combined.50_peaks.bed&quot;                       
+## [22] &quot;014_43684_rpt2_enrich_hg19.combined_vs_013_43684_rpt2_total_hg19.combined.50_peaks.bed&quot;             
+## [23] &quot;014_5006_enrich_hg19.combined_vs_006_5006_total_hg19.combined.50_peaks.bed&quot;                         
+## [24] &quot;015_27254_Enrich_hg19.combined_vs_013_27254_Total_hg19.combined.50_peaks.bed&quot;                       
+## [25] &quot;015_27773_enrich_hg19.combined_vs_007_27773_total_hg19.combined.50_peaks.bed&quot;                       
+## [26] &quot;015_40907_enrich_hg19.combined_vs_007_40907_total_hg19.combined.50_peaks.bed&quot;                       
+## [27] &quot;016_2704_TDNA_enrich_hg19.combined_vs_008_2704_TDNA_total_hg19.combined.50_peaks.bed&quot;               
+## [28] &quot;016_34346_enrich_hg19.combined_vs_008_34346_total_hg19.combined.50_peaks.bed&quot;                       
+## [29] &quot;016_40908_enrich_hg19.combined_vs_015_40908_total_hg19.combined.50_peaks.bed&quot;                       
+## [30] &quot;016_41790_rpt2_enrich_hg19.combined_vs_015_41790_rpt2_total_hg19.combined.50_peaks.bed&quot;             
+## [31] &quot;018_SCC_047_2_rpt2_enrich_hg19.combined_vs_017_SCC_047_2_rpt2_total_hg19.combined.50_peaks.bed&quot;     
+## [32] &quot;020_43281_rpt2_enrich_hg19.combined_vs_019_43281_rpt2_total_hg19.combined.50_peaks.bed&quot;             
+## [33] &quot;021_37960_Enrich_hg19.combined_vs_007_37960_Total_hg19.combined.50_peaks.bed&quot;                       
+## [34] &quot;022_43250_rpt2_enrich_hg19.combined_vs_021_43250_rpt2_total_hg19.combined.50_peaks.bed&quot;             
+## [35] &quot;024_38698_Enrich_hg19.combined_vs_023_38698_Total_hg19.combined.50_peaks.bed&quot;                       
+## [36] &quot;024_43236_rpt2_enrich_hg19.combined_vs_023_43236_rpt2_total_hg19.combined.50_peaks.bed&quot;             
+## [37] &quot;025_3366_Enrich_hg19.combined_vs_009_3366_Total_hg19.combined.50_peaks.bed&quot;                         
+## [38] &quot;025_38690_enrich_hg19.combined_vs_017_38690_total_hg19.combined.50_peaks.bed&quot;                       
+## [39] &quot;026_23749_Enrich_hg19.combined_vs_010_23749_Total_hg19.combined.50_peaks.bed&quot;                       
+## [40] &quot;027_23896_Enrich_hg19.combined_vs_011_23896_Total_hg19.combined.50_peaks.bed&quot;                       
+## [41] &quot;027_40666_enrich_hg19.combined_vs_019_40666_total_hg19.combined.50_peaks.bed&quot;                       
+## [42] &quot;028_23947_Enrich_hg19.combined_vs_012_23947_Total_hg19.combined.50_peaks.bed&quot;                       
+## [43] &quot;028_25304_enrich_hg19.combined_vs_020_25304_total_hg19.combined.50_peaks.bed&quot;                       
+## [44] &quot;029_34448_Enrich_hg19_vs_018_34448_Total_hg19.combined.50_peaks.bed&quot;                                
+## [45] &quot;029_38851_enrich_hg19.combined_vs_021_38851_total_hg19.combined.50_peaks.bed&quot;                       
+## [46] &quot;030_35639_Enrich_hg19.combined_vs_020_35639_Total_hg19.combined.50_peaks.bed&quot;                       
+## [47] &quot;031_38667_Enrich_hg19.combined_vs_022_38667_Total_hg19.combined.50_peaks.bed&quot;                       
+## [48] &quot;032_34471_Enrich_hg19.combined_vs_019_34471_Total_hg19.combined.50_peaks.bed&quot;                       
+## [49] &quot;18732_enrich.combined.removeDuplicates_vs_18732_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [50] &quot;25441_enrich.combined.removeDuplicates_vs_25441_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [51] &quot;27279_enrich.combined.removeDuplicates_vs_27279_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [52] &quot;27281_enrich.combined.removeDuplicates_vs_27281_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [53] &quot;30018_enrich.combined.removeDuplicates_vs_30018_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [54] &quot;30553_enrich.combined.removeDuplicates_vs_30553_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [55] &quot;30577_enrich.combined.removeDuplicates_vs_30577_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [56] &quot;30580_enrich.combined.removeDuplicates_vs_30580_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [57] &quot;30596_enrich.combined.removeDuplicates_vs_30596_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [58] &quot;31124_enrich.combined.removeDuplicates_vs_31124_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [59] &quot;32913_enrich.combined.removeDuplicates_vs_32913_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [60] &quot;35663_enrich.combined.removeDuplicates_vs_35663_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [61] &quot;35667_enrich.combined.removeDuplicates_vs_35667_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [62] &quot;35675_enrich.combined.removeDuplicates_vs_35675_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [63] &quot;37941_enrich.combined.removeDuplicates_vs_37941_total.combined.removeDuplicates.50_peaks.bed&quot;       
+## [64] &quot;4931_enrich.combined.removeDuplicates_vs_4931_total.combined.removeDuplicates.50_peaks.bed&quot;         
+## [65] &quot;JHUJC01002_001_37920_enrich_hg19.combined_vs_JHUJC01002_002_37920_total.combined.50_peaks.bed&quot;      
+## [66] &quot;JHUJC01002_003_3680TDNA_enrich_hg19.combined_vs_JHUJC01002_004_3680TDNA_total.combined.50_peaks.bed&quot;
+## [67] &quot;JHUJC01002_005_24366_enrich.combined_vs_JHUJC01002_006_24366_total.combined.50_peaks.bed&quot;           
+## [68] &quot;JHUJC01002_007_2934TDNA_enrich.combined_vs_JHUJC01002_008_2934TDNA_total.combined.50_peaks.bed&quot;     
+## [69] &quot;JHUJC01002_009_32085_enrich.combined_vs_JHUJC01002_010_32085_total.combined.50_peaks.bed&quot;           
+## [70] &quot;JHUJC01002_011_27239_enrich.combined_vs_JHUJC01002_012_27239_total.combined.50_peaks.bed&quot;           
+## [71] &quot;JHUJC01002_013_24866_enrich.combined_vs_JHUJC01002_014_24866_total.combined.50_peaks.bed&quot;           
+## [72] &quot;JHUJC01002_015_30599_enrich.combined_vs_JHUJC01002_016_30599_total.combined.50_peaks.bed&quot;           
+## [73] &quot;JHUJC01002_017_30593_enrich.combined.bam.JHUJC01002_018_30593_total.combined.bam_peaks.bed&quot;         
+## [74] &quot;JHUJC01002_019_1342_enrich.combined.bam.JHUJC01002_020_1342_total.combined.bam_peaks.bed&quot;           
+## [75] &quot;JHUJC01002_021_30588_enrich.combined.bam.JHUJC01002_022_30588_total.combined.bam_peaks.bed&quot;         
+## [76] &quot;JHUJC01002_023_30551_enrich.combined.bam.JHUJC01002_024_30551_total.combined.bam_peaks.bed&quot;         
+## [77] &quot;JHUJC01002_025_30555_enrich.combined.bam.JHUJC01002_026_30555_total.combined.bam_peaks.bed&quot;         
+## [78] &quot;JHUJC01002_027_30539_enrich.combined.bam.JHUJC01002_028_30539_total.combined.bam_peaks.bed&quot;         
+## [79] &quot;JHUJC01002_029_30648_enrich.combined.bam.JHUJC01002_030_30648_total.combined.bam_peaks.bed&quot;         
+## [80] &quot;JHUJC01002_031_2675TDNA_enrich.combined.bam.JHUJC01002_032_2675TDNA_total.combined.bam_peaks.bed&quot;
 </code></pre>
 
-<p>DNAIds not in beds:</p>
+<p>Beds not used:</p>
 
-<pre><code>## character(0)
+<pre><code>## [1] &quot;010_SCC_090_enrich_hg19.combined_vs_002_SCC_090_total_hg19.combined.50_peaks.bed&quot;              
+## [2] &quot;013_42133_enrich_hg19.combined_vs_014_42133_total_hg19.combined.50_peaks.bed&quot;                  
+## [3] &quot;014_43684_rpt2_enrich_hg19.combined_vs_013_43684_rpt2_total_hg19.combined.50_peaks.bed&quot;        
+## [4] &quot;018_SCC_047_2_rpt2_enrich_hg19.combined_vs_017_SCC_047_2_rpt2_total_hg19.combined.50_peaks.bed&quot;
+## [5] &quot;25441_enrich.combined.removeDuplicates_vs_25441_total.combined.removeDuplicates.50_peaks.bed&quot;
 </code></pre>
 
-<p>Beds no in DNAids:</p>
+<p>Version of Homo.sapiens is: 1.1.2</p>
 
-<pre><code>## character(0)
-</code></pre>
+<p>Version of org.Hs.eg.db is: 3.0.0</p>
+
+<p>Version of differential.coverage is: 0.0.8</p>
 
 </body>
 

@@ -1,4 +1,11 @@
-Which Vista enhancers are differentially methylated in the 2014-02-06_RO1_Batch1-4_ClinicalData_DeID data?
+`r opts_chunk$set(echo=F,message=F,cache=F,warning=F)`
+<!-- cache is off, we save all the neccessary things in Rda -->
+
+```{r load and calculate}
+source('vistaEnhancersDM.R')
+```
+
+Which Vista enhancers are differentially methylated in the `r clinFileName` data?
 ========================================================
 
 Alexander Favorov  
@@ -6,29 +13,63 @@ Alexander Favorov
 
 ### `r format(Sys.Date(), "%d %b %Y")` 
 
-`r opts_chunk$set(echo=F,message=F,cache=F,warning=F)`
-<!-- cache is off, we save all the neccessary things in Rda -->
+We load the Vista Enhancers list from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server (`r vista.enhancers.timestamp`) and we load our MACS as described in <a href=`r clinFile`> `r clinFileName` </a> file. 
 
-We load the list of Vista enhancers from <a href=http://genome.ucsc.edu/>UCSC</a> DAS server and we load our MACS as described in <a href=..\2014-02-06_RO1_Batch1-4_ClinicalData_DeID.html>2014-02-06_RO1_Batch1-4_ClinicalData_DeID.xls.csv</a> file. 
-
-Then, for each Vista enhancer we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the enhancer in each of the samples.
-
-```{r load and calculate}
-options(width=140)
-source('vistaEnhancersDM.R')
-```
-
-Thus, for each interval (enhancer) we have a methylated length (coverage) for each sample).
-Then, we calculate the Wilcoxon p-value for each enhancer's tumor and normal DM coverages.
-We think that an enhancer is differentyally methylated if the p-value is <=0.05. 
+Then, for each island we calculate the net length of methylated regions (we read them from to MACS bedfiles) that ovelap with the island in each of the samples.
 
 
-### And, here is the list of differentially methylated Vista enhancers with Bonferroni correction
-```{r print, with Bonferroni} 
-print.data.frame(DM.vistaEnhancers.stat,row.names=FALSE)
-```
+Thus, for each island we have a methylated length (coverage) for each sample).
+Then, we calculate the Wilcoxon p-value for each island's tumor and normal DM coverages.
+We think that an island is differentially methylated if the p-value is <=0.05.
+We do the same for Fisher's test.
 
-Technical info
+## Here is the list of all differentially methylated (p<=0.05) CpG with Bonferroni correction
+
+In the table: 
+The DM CpG islands coords and the methylation status description; Fisher's test results cytoband information; TSS near is the closest start of a HGNC gene (according to Ensemble coords as represented in Homo.sapiens and org.Hs.eg.db) to the island, position and strand are of the gene. Distance is the distance from the middle of the island to TSS, negative means that the island is in the upstream.
+We show Wilcoxon and Fisher's p-values for each island as well as OR and the CI for OR.
+We also show all the HGNC's genes TSS that ovelap the island +- 7000 bp.
+
+### These resuls are for union of the Wilcoxon-based and the Fisher-based list:
+
+<a href=./DM.vistaEnhancers.stat.bonf.html>Here is the table in html format</a>
+
+<a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.bonf.tsv>Here is the table in tsv format, to be loaded to excel</a>
+
+### These are for intersection of the Wilcoxon-based and the Fisher-based list:
+
+<a href=./DM.vistaEnhancers.stat.bonf.and.html>Here is the table in html format</a>
+
+<a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.bonf.and.tsv>Here is the table in tsv format, to be loaded to excel</a>
+
+## The same tables for FDR<0.1
+
+### These resuls are for union of the Wilcoxon-based and the Fisher-based list:
+
+<a href=./DM.vistaEnhancers.stat.fdr.html>Here is the table in html format</a>
+
+<a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.fdr.tsv>Here is the table in tsv format, to be loaded to excel</a>
+
+### These are for intersection of the Wilcoxon-based and the Fisher-based list:
+<a href=./DM.vistaEnhancers.stat.fdr.and.html>Here is the table in html format</a>
+
+<a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.fdr.and.tsv>Here is the table in tsv format, to be loaded to excel</a>
+
+## And, the same for uncorrected p-value<0.05
+
+### These resuls are for union of the Wilcoxon-based and the Fisher-based list:
+
+<a href=./DM.vistaEnhancers.stat.uncorr.html>Here is the table in html format</a>
+
+<a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.uncorr.tsv>Here is the table in tsv format, to be loaded to excel</a>
+
+### These are for intersection of the Wilcoxon-based and the Fisher-based list:
+
+<a href=./DM.vistaEnhancers.stat.uncorr.and.html>Here is the table in html format</a>
+
+<a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/vistaEnhancers/DM.vistaEnhancers.stat.uncorr.and.tsv>Here is the table in tsv format, to be loaded to excel</a>
+
+### Technical info
 -------------------------------
 Clinical data file: `r clinFile`.
 
@@ -39,15 +80,15 @@ file.info(clinFile)[,c('size','mtime')]
 Number of records is `r nrow(Clinical)`
 
 Bed files:
-```{r bed files}
-beds
+```{r bedsinfolder}
+bedsinfolder
 ```
-DNAIds not in beds:
-```{r not in beds}
-DNAids[!bed_available]
-```
-Beds no in DNAids:
+Beds not used:
 ```{r not in DNAids}
-beds[!bed_used]
+bedsinfolder[!bed.used]
 ```
+Version of Homo.sapiens is: `r packageVersion('Homo.sapiens')`
 
+Version of org.Hs.eg.db is: `r packageVersion('org.Hs.eg.db')`
+
+Version of differential.coverage is: `r packageVersion('differential.coverage')`

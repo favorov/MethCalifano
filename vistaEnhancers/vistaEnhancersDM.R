@@ -1,3 +1,16 @@
+if (!suppressWarnings(require('differential.coverage')))
+{
+	if (!suppressWarnings(require('devtools')))
+	{
+		source("http://bioconductor.org/biocLite.R")
+		biocLite("devtools")
+		library("devtools")
+	}
+	install_github('favorov/differential.coverage')
+	#load_all('../../../../differential.coverage/')
+	library('differential.coverage')
+}
+
 if (!suppressWarnings(require('rtracklayer')))
 {
 	source("http://bioconductor.org/biocLite.R")
@@ -10,120 +23,238 @@ if (!suppressWarnings(require('DASiR')))
 	biocLite("DASiR")
 }
 
-vistaEnhancers.with.methylation.loaded<-FALSE
-# we can the whole thing to vistaEnhancers.with.methylation.Rda
-if(file.exists('vistaEnhancers.with.methylation.Rda'))
-	if ('vistaEnhancers.with.methylation' %in% load('vistaEnhancers.with.methylation.Rda'))
-		if (class(vistaEnhancers.with.methylation)=='data.frame')
-			vistaEnhancers.with.methylation.loaded<-TRUE
+if(!require('xtable'))
+{
+  source("http://bioconductor.org/biocLite.R")
+  biocLite("xtable")
+  library("xtable")  
+}
 
-if (!vistaEnhancers.with.methylation.loaded)
+source('../common/load_or_read_vista_enhancers.R')
+
+
+vistaEnhancers.methylation.loaded<-FALSE
+# we can the whole thing to vistaEnhancers.methylation.Rda
+if(file.exists('vistaEnhancers.methylation.Rda'))
+	if ('vistaEnhancers.methylation' %in% load('vistaEnhancers.methylation.Rda'))
+		if (class(vistaEnhancers.methylation)=='dgCMatrix' || 
+				class(vistaEnhancers.methylation)=='matrix')
+			vistaEnhancers.methylation.loaded<-TRUE
+
+
+if (!vistaEnhancers.methylation.loaded)
 {
 	source('../common/read_clinical.R')
 	#Clinical prepared.
-
+	source('../common/prepare_beds_and_contrast.R')
+	#beds and contrast is ready
+	vistaEnhancers.methylation<-count.coverage.of.noodles(vistaEnhancers,bedfilenames,DNAids)
 	#it is folder with bed files
-	peakbedsfolder<-paste0(dataFolder,'/PeakCalls/bedfiles/')
+	message('Saving...\n')
+	save(file='vistaEnhancers.methylation.Rda',list=c('vistaEnhancers.methylation','Clinical','clinFile','clinFileName','bedsinfolder','bed.used','tumors','normals','contrast','DNAids'))
+}
 
-	beds<-list.files(peakbedsfolder)
+vistaEnhancers.wilcoxon.loaded<-FALSE
+# we can the whole thing to vistaEnhancers.with.methylation.Rda
+if(file.exists('vistaEnhancers.wilcoxon.Rda'))
+	if ('wilcoxon.p.values' %in% load('vistaEnhancers.wilcoxon.Rda'))
+			vistaEnhancers.wilcoxon.loaded<-TRUE
 
-	#reading vistaEnhancers
-	# we can the whole thing to vistaEnhancers.with.methylation.Rda
-	source('../common/load_or_read_vista_enhancers.R')
-	#print(vistaEnhancers)
-	#vistaEnhancers read fro DAS or loaded
-	vistaEnhancers.with.methylation<-as(vistaEnhancers,"data.frame")
+if(!vistaEnhancers.wilcoxon.loaded)
+{
+	message('Wilcoxon\n')
 
-	bed_available<-logical(0)
-	bed_used<-rep(FALSE,length(beds))
+	tests.number<-dim(vistaEnhancers.methylation)[1]
 
-	for (DNAid in DNAids)
+	expected.w.statistic<-(sum(normals)*sum(tumors))/2
+
+	wilcoxon.res<-apply(vistaEnhancers.methylation,1,function(row){
+			meth.values<-jitter(row)
+			w<-wilcox.test(meth.values[normals],meth.values[tumors])
+			c(w$p.value,(w[['statistic']]<expected.w.statistic))
+		})
+
+	wilcoxon.p.values<-wilcoxon.res[1,]
+	normals.are.less.methylated<-as.logical(wilcoxon.res[2,])
+
+	message('Saving...\n')
+	save(file='vistaEnhancers.wilcoxon.Rda',list=c('wilcoxon.p.values','normals.are.less.methylated','tests.number'))
+	message('done\n')
+}
+
+vistaEnhancers.fisher.loaded<-FALSE
+# we can the whole thing to vistaEnhancers.methylation.Rda
+if(file.exists('vistaEnhancers.fisher.Rda'))
+	if ('fisher.results' %in% load('vistaEnhancers.fisher.Rda') && 'data.frame' == class(fisher.results))
+			vistaEnhancers.fisher.loaded<-TRUE
+
+
+if(!vistaEnhancers.fisher.loaded)
+{
+	message('Fishering\n')
+	tests.number<-dim(vistaEnhancers.methylation)[1]
+
+	norm.no<-length(which(normals))
+	tumor.no<-length(which(tumors))
+
+	fishtabs<-as.matrix(prepare.tabulated.fisher(tumor.no,norm.no))
+
+	message('create result matrix')
+	fisher.noodles.result.mat<-matrix(fishtabs[1,],ncol=6,nrow=tests.number,byrow=TRUE)
+	
+	colnames(fisher.noodles.result.mat)<-c('fisher.p.values','meth.in.normals.ratio','meth.in.tumors.ratio','OR','CI_95_L','CI_95_H') 
+	
+	revcontrast<-!contrast
+	report.every<-tests.number %/% 100
+	message('fill result matrix')
+
+	for (rown in 1:tests.number) 	
 	{
-		DNAidKey<-strsplit(DNAid,',')[[1]][1]	#remove all after ,	
-		match<-grep(DNAidKey,beds)
-		if (!length(match)) 
-		{
-			DNAidKey<-paste0(strsplit(DNAid,'_')[[1]],collapse='') 
-			#remove _ from key; sometimes, it help
-			match<-grep(DNAidKey,beds)
-		}
-		if (!length(match)) 
-		{
-			bed_available<-c(bed_available,FALSE)
-			next
-		}
-		message(DNAidKey)
-		if (length(match)>1) stop(paste0("More than one match of DNAid ",DNAid," amonng the bed file names.\n"));
-		bedfilename<-paste0(peakbedsfolder,beds[match[1]]);
-		methylated.ranges<-as(import(bedfilename),"RangedData")
-		overlaps<-findOverlaps(vistaEnhancers,methylated.ranges)
-		methylcoverage=integer(0)
-		for(chr in names(vistaEnhancers))
-		#cycle by chromosome
-		{
-			list.of.ovelaps.in.this.chr<-as.list(overlaps[[chr]])
-			width.of.meth.ranges.in.this.chr<-width(methylated.ranges[chr])
-			methylcoverage.this.chr<-sapply(1:length(vistaEnhancers[chr][[1]]),function(band){
-				#attention: length(CpGIs[chr][[1]] supposes that there is column in datarange other than space and ranges (e.g., Id)
-				#otherwise, use  length(start(CpGIs[chr]))
-				sum(width.of.meth.ranges.in.this.chr[list.of.ovelaps.in.this.chr[[band]]])
-			})#list of methylated coverage per cytoband
-			methylcoverage<-c(methylcoverage,methylcoverage.this.chr)
-			#add to main list
-			#we need dual cycle because of the findOverlap return structure
-		}
-		message('done\n')
-		vistaEnhancers.with.methylation[[DNAid]]=methylcoverage
-		bed_used[match[1]]<-TRUE
-		bed_available<-c(bed_available,TRUE)
+		if (!(rown %% report.every)) message(rown)
+		metraw<-vistaEnhancers.methylation[rown,]
+		aslogic<-as.logical(metraw)
+		MY<-sum(aslogic & contrast)
+		MN<-sum(aslogic & revcontrast)
+		if (0==MN && 0==MY) next
+		fishres<-fishtabs[tab.fisher.row.no(tumor.no,norm.no,MY,MN),]
+		fisher.noodles.result.mat[rown,]<-fishres
 	}
-	message('Saving...')
-	save(file='vistaEnhancers.with.methylation.Rda',list=c('vistaEnhancers.with.methylation','Clinical','clinFile','beds','bed_available','bed_used','tumors','normals','DNAids'))
+
+	message('converting to dataframe')
+	fisher.results<-as.data.frame(fisher.noodles.result.mat)
+	message('done\n')
+	message('Saving...\n')
+	save(file='vistaEnhancers.fisher.Rda',list=c('fisher.results','tests.number','contrast'))
 }
 
-tests.number<-dim(vistaEnhancers.with.methylation)[1]
+load('../CytoBands/cytobands.DM.Rda')
 
-wilcoxon.p.values<-numeric(tests.number)
-normals.are.less.methylated<-logical(tests.number)
-
-expected.w.statistic<-(sum(normals[bed_available])*sum(tumors[bed_available]))/2
-
-for (rown in 1:tests.number)
+generate.DM.vistaEnhaners.report<-function(DM.vistaEnhancers.set,#indices
+												set.id) #variable part of the output file names
 {
-	meth.values<-jitter(as.numeric(vistaEnhancers.with.methylation[rown,][DNAids[bed_available]]))
-	w<-wilcox.test(meth.values[normals[bed_available]],meth.values[tumors[bed_available]])
-	wilcoxon.p.values[rown]<-w$p.value
-	normals.are.less.methylated[rown]<-(w[['statistic']]<expected.w.statistic)
-	#anova.result<-c(anova.result,anova(lm(meth.values~tumors))[1,'Pr(>F)'])
+	message('Generating report for ',set.id,'\n')
+	
+	DM.vistaEnhancers.stat<-data.frame(
+		'id'=elementMetadata(vistaEnhancers)$id[DM.vistaEnhancers.set],
+		'chr'=as.character(seqnames(vistaEnhancers))[DM.vistaEnhancers.set],
+		'start'=start(vistaEnhancers)[DM.vistaEnhancers.set],
+		'end'=end(vistaEnhancers)[DM.vistaEnhancers.set],
+		'wilcoxon.p.value'=wilcoxon.p.values[DM.vistaEnhancers.set],
+		'hyper?'=normals.are.less.methylated[DM.vistaEnhancers.set],
+		'fisher.p.value'=fisher.results$fisher.p.values[DM.vistaEnhancers.set],
+		'tmr.ratio'=fisher.results$meth.in.tumors.ratio[DM.vistaEnhancers.set],
+		'nor.ratio'=fisher.results$meth.in.normals.ratio[DM.vistaEnhancers.set],
+		'OR'=fisher.results$OR[DM.vistaEnhancers.set],
+		'CI_95_L'=fisher.results$CI_95_L[DM.vistaEnhancers.set],
+		'CI_95_H'=fisher.results$CI_95_H[DM.vistaEnhancers.set]
+	)
+
+	tsvfilename=paste0("DM.vistaEnhancers.stat.",set.id,".tsv")
+	htmlfilename=paste0("DM.vistaEnhancers.stat.",set.id,".html")
+
+	report.file.info<-file.info(c(tsvfilename,htmlfilename))
+
+	if ( !any(is.na(report.file.info$size)) && !any(report.file.info$size==0)) 
+	{
+		message(paste0('Both reports for ',set.id,' were already present; doing nothing\n'))
+		return(NA)
+	}
+	
+	rownames(DM.vistaEnhancers.stat)<-NULL
+
+	message('Mapping to karyotype...')
+	
+	DM.vistaEnhancers<-vistaEnhancers[DM.vistaEnhancers.set]
+
+	vistaEnhancers.to.karyotype<-findOverlaps(DM.vistaEnhancers,cytobands,type="within")
+
+	DM.vistaEnhancers.cytobands<-sapply(1:length(DM.vistaEnhancers),function(i)
+		{
+			cb<-subjectHits(vistaEnhancers.to.karyotype)[which(i==queryHits(vistaEnhancers.to.karyotype))]
+			c(cb,(cytobands.DM.statistics$'wilcoxon.p.values'[cb]<0.05))
+		}
+	)
+
+	DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,'cytoband'=cytobands$'name'[DM.vistaEnhancers.cytobands[1,]],'DM.band?'=as.logical(DM.vistaEnhancers.cytobands[2,]))
+	message('done\n')
+
+	message('Looking for closest genes')
+	DM.vistaEnhancers.closest.genes<-closest.gene.start.by.interval(DM.vistaEnhancers)
+
+	DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,elementMetadata(DM.vistaEnhancers.closest.genes)[,c('closest.TSS','pos','dir','dist')])
+
+	message('done')
+
+	message('Looking for overlapped genes')
+
+	flanks<-7000
+
+	DM.vistaEnhancers.ovelapped.genes<-genes.with.TSS.covered.by.interval(DM.vistaEnhancers,flanks=flanks)
+
+	DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,elementMetadata(DM.vistaEnhancers.ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
+
+	message('done\n')
+
+	DM.vistaEnhancers.stat$id<-substr(DM.vistaEnhancers.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
+
+	#now, we order it according to GRanges order
+
+	DM.vistaEnhancers.stat<-DM.vistaEnhancers.stat[order(DM.vistaEnhancers),]
+	
+
+	write.table(DM.vistaEnhancers.stat,file=tsvfilename,sep='\t',row.names=FALSE)
+
+
+	if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
+
+	print(xtable(DM.vistaEnhancers.stat,digits=c(0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0), display=c('d','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','s')), type="html", file=htmlfilename,include.rownames=FALSE)
+	
+	0
 }
 
-wilcoxon.p.values.bonferroni<-p.adjust(wilcoxon.p.values,'bonferroni')
-#wilcoxon.p.values.fdr<-p.adjust(wilcoxon.p.values,'fdr')
 
-DM.enhancers<-which(wilcoxon.p.values<=0.05)
-DM.enhancers.bonferroni<-which(wilcoxon.p.values.bonferroni<=0.05)
-#DM.enhancers.fdr<-which(wilcoxon.p.values.fdr<=0.05)
-#here, we form output statictics
-columns<-c('space','start','end','id','score')
-vistaEnhancers.stat<-cbind(vistaEnhancers.with.methylation[,columns],'p.value'=wilcoxon.p.values,'is.hyper'=normals.are.less.methylated)
-DM.vistaEnhancers.stat<-vistaEnhancers.stat[DM.enhancers.bonferroni,]
-message('Looking for closest genes')
+vistaEnhancers.DM.indices.loaded<-FALSE
+# we can the whole thing to vistaEnhancers.methylation.Rda
+if(file.exists('vistaEnhancers.DM.indices.Rda'))
+	if ('DM.vistaEnhancers' %in% load('vistaEnhancers.DM.indices.Rda')) vistaEnhancers.DM.indices.loaded<-TRUE
 
-source('../common/load_or_read_refseq_genes_with_HGNC_id.R')
-
-DM.vistaEnhancers.Ranges<-as(DM.vistaEnhancers.stat[,columns],'RangedData')
-
-downstream<-character(0)
-upstream<-character(0)
-
-for (chr in names(DM.vistaEnhancers.Ranges))
+if(!vistaEnhancers.DM.indices.loaded)
 {
-	upstream.indices<-precede(DM.vistaEnhancers.Ranges[chr]$ranges,refseqGenesWithHGNCids[chr]$ranges)
-	downstream.indices<-follow(DM.vistaEnhancers.Ranges[chr]$ranges,refseqGenesWithHGNCids[chr]$ranges)
-	upstream<-c(upstream,as.character(refseqGenesWithHGNCids[chr]$symbol)[upstream.indices])
-	downstream<-c(downstream,as.character(refseqGenesWithHGNCids[chr]$symbol)[downstream.indices])
+	#bonferroni 
+	DM.W.vistaEnhancers.Bonferroni<-which(p.adjust(wilcoxon.p.values,method='bonferroni')<=0.05)
+	DM.F.vistaEnhancers.Bonferroni<-which(p.adjust(fisher.results$fisher.p.values,method='bonferroni')<=0.05)
+	DM.vistaEnhancers.Bonferroni<-sort(union(DM.W.vistaEnhancers.Bonferroni,DM.F.vistaEnhancers.Bonferroni))
+	DM.vistaEnhancers.Bonferroni.and<-sort(intersect(DM.W.vistaEnhancers.Bonferroni,DM.F.vistaEnhancers.Bonferroni))
+
+
+	#fdr 
+	DM.W.vistaEnhancers.FDR<-which(p.adjust(wilcoxon.p.values,method='fdr')<=0.1)
+	DM.F.vistaEnhancers.FDR<-which(p.adjust(fisher.results$fisher.p.values,method='fdr')<=0.1)
+	DM.vistaEnhancers.FDR<-sort(union(DM.W.vistaEnhancers.FDR,DM.F.vistaEnhancers.FDR))
+	DM.vistaEnhancers.FDR.and<-sort(intersect(DM.W.vistaEnhancers.FDR,DM.F.vistaEnhancers.FDR))
+
+	#uncorr
+	DM.W.vistaEnhancers<-which(wilcoxon.p.values<=0.05)
+	DM.F.vistaEnhancers<-which(fisher.results$fisher.p.values<=0.05)
+	DM.vistaEnhancers<-sort(union(DM.W.vistaEnhancers,DM.F.vistaEnhancers))
+	DM.vistaEnhancers.and<-sort(intersect(DM.W.vistaEnhancers,DM.F.vistaEnhancers))
+
+	save(file='vistaEnhancers.DM.indices.Rda',
+		list=c(
+			'DM.vistaEnhancers.Bonferroni',
+			'DM.vistaEnhancers.FDR',
+			'DM.vistaEnhancers',
+			'DM.vistaEnhancers.Bonferroni.and',
+			'DM.vistaEnhancers.FDR.and',
+			'DM.vistaEnhancers.and'))
 }
+#we generate the reports
+message('Generating reports')
+generate.DM.vistaEnhaners.report(DM.vistaEnhancers.Bonferroni,'bonf')
+generate.DM.vistaEnhaners.report(DM.vistaEnhancers.FDR,'fdr')
+generate.DM.vistaEnhaners.report(DM.vistaEnhancers,'uncorr')
+generate.DM.vistaEnhaners.report(DM.vistaEnhancers.Bonferroni.and,'bonf.and')
+generate.DM.vistaEnhaners.report(DM.vistaEnhancers.FDR.and,'fdr.and')
+generate.DM.vistaEnhaners.report(DM.vistaEnhancers.and,'uncorr.and')
 message('done\n')
-
-DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,'upsream'=upstream,'downstream'=downstream)
 
