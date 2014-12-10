@@ -87,37 +87,25 @@ closest.genes<-closest.gene.start.by.interval(report.noodles)
 
 message('done')
 
-#message('Looking for overlapped genes')
-
-#too loongloongloong time
-
-#flanks<-7000
-
-#ovelapped.genes<-genes.with.TSS.covered.by.interval(report.noodles,flanks=flanks)
-#message('done')
 
 message('combining')
-#report.frame<-cbind(report.frame,elementMetadata(closest.genes)[,c('closest.TSS','pos','dir','dist')],elementMetadata(ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
+
 report.frame<-cbind(report.frame,elementMetadata(closest.genes)[,c('closest.TSS','pos','dir','dist')])
 message('done\n')
 
 #prepared
 
-message('Prepare the huge 0-1 matrix')
-meth.mat<-ifelse(as.matrix(noodles.C.methylation[report.interval,]),1,0)
-rownames(meth.mat)<-rownames(report.frame)
-message('done')
+save(file='huge.Rda',list=c('report.frame'))
 
-save(file='huge.Rda',list=c('report.frame','meth.mat'))
+sink('noodles.C.complete.annotaion.tsv')
 
-message('merging')
-report.frame<-cbind(report.frame,meth.mat)
-message('done')
+#header
+cat(paste0(colnames(report.frame),collapse='\t'),'\t',paste0(colnames(noodles.C.methylation),collapse='\t'),'\n')
+#body
+for (rown in 1:rows.no)
+	cat(paste0(report.frame[rown,],collapse='\t'),'\t',paste0(ifelse(noodles.C.methylation[rown,],1,0),collapse='\t'),'\n')
 
-save(file='huge-merged.Rda',list=c('report.frame'))
-#sink('noodles.C.complete.annotaion.tsv')
-
-#sink()
+sink()
 
 #write.table(report.frame,file=tsvfilename,sep='\t',row.names=TRUE)
 
