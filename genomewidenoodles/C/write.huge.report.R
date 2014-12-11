@@ -27,6 +27,7 @@ if(!all.the.all.loaded)
 rows.no<-dim(fisher.noodles.C.result)[1]
 report.interval<-1:rows.no
 
+
 huge.loaded<-FALSE
 if(file.exists('huge.Rda'))
 	if ('report.frame' %in% load('huge.Rda'))
@@ -38,10 +39,6 @@ if(!huge.loaded)
 	report.noodles<-noodles.C[report.interval,]
 	report.fisher<-fisher.noodles.C.result[report.interval,]
 	#actually, it is to develop for little tests.no
-
-	tsvfilename="noodles.C.complete.annotaion.tsv"
-	#YesNofilename="noodles.C.methylation.tsv"
-
 
 	#prepare dataframe
 	message('init dataframe')
@@ -108,10 +105,7 @@ if(!huge.loaded)
 
 message('writing')
 
-#header
-#writeLines(paste0(c(colnames(report.frame),colnames(noodles.C.methylation)),collapse='\t'),sep='\n',con=tsvfilename)
-
-
+tsvfilename="noodles.C.complete.annotaion.tsv"
 fragments.to.out<-50
 step<-rows.no %/% fragments.to.out + ifelse(rows.no %% fragments.to.out > 0,1,0) #if remainder is zero, / is ok 
 
