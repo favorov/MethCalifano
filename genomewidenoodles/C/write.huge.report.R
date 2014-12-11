@@ -40,7 +40,7 @@ if(!huge.loaded)
 	#actually, it is to develop for little tests.no
 
 	tsvfilename="noodles.C.complete.annotaion.tsv"
-	YesNofilename="noodles.C.methylation.tsv"
+	#YesNofilename="noodles.C.methylation.tsv"
 
 
 	#prepare dataframe
@@ -106,25 +106,29 @@ if(!huge.loaded)
 	save(file='huge.Rda',list=c('report.frame'))
 }
 
-message('creatin 0-1 meth')
-meth<-Matrix(0,ncol=dim(noodles.C.methylation)[2],nrow=rows.no,sparse = TRUE)
-colnames(meth)<-colnames(noodles.C.methylation)
-meth[noodles.C.methylation[report.interval,]>0]=1
-message('done')
-
-sink('noodles.C.complete.annotaion.tsv')
-
-
+message('writing')
 
 #header
-cat(paste0(colnames(report.frame),collapse='\t'),'\t',paste0(colnames(noodles.C.methylation),collapse='\t'),'\n')
-#body
-for (rown in 1:rows.no)
-	cat(paste0(report.frame[rown,],collapse='\t'),'\t',paste0(meth[rown,],collapse='\t'),'\n')
+#writeLines(paste0(c(colnames(report.frame),colnames(noodles.C.methylation)),collapse='\t'),sep='\n',con=tsvfilename)
 
-sink()
 
-#write.table(report.frame,file=tsvfilename,sep='\t',row.names=TRUE)
+fragments.to.out<-50
+step<-rows.no %/% fragments.to.out + ifelse(rows.no %% fragments.to.out > 0,1,0) #if remainder is zero, / is ok 
 
-#write.table(met.mat,file=YesNofilename,sep='\t',row.names=TRUE,col.names=TRUE)
+for(fragment in 1:fragments.to.out)
+{	
+	message(paste0('Fragment ',fragment, ' of ',fragments.to.out))
+	fragment.start <- 1 + step*(fragment-1)
+	fragment.end <- min(fragment.start+step-1,rows.no)
+	fragment.range<-fragment.start:fragment.end
+	report.framere<-report.frame[fragment.range,]
+	rownames(report.framere)=rownames(report.frame)[fragment.range]
+	meth.framere<-matrix(0,nrow=fragment.end-fragment.start+1,ncol=dim(noodles.C.methylation)[2])
+	colnames(meth.framere)<-colnames(noodles.C.methylation)
+	meth.framere[noodles.C.methylation[fragment.range,]>0]=1
+	report.framere<-cbind(report.framere,meth.framere)
+	write.table(report.framere,file=tsvfilename,sep='\t',quote=FALSE,row.names=TRUE,append=(fragment!=1),col.names=(fragment==1))
+	#header for first fragment
+	#append for others
+}
 
