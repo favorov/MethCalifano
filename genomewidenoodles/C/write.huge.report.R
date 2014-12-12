@@ -11,6 +11,14 @@ if (!suppressWarnings(require('differential.coverage')))
 	library('differential.coverage')
 }
 
+if (!suppressWarnings(require('Matrix')))
+{
+	source("http://bioconductor.org/biocLite.R")
+	biocLite("Matrix")
+	library("Matrix")
+}
+
+
 if(!('all.the.all.loaded' %in% ls()) || is.na(all.the.all.loaded)) all.the.all.loaded<-FALSE
 #for quick-develop
 if(!all.the.all.loaded)

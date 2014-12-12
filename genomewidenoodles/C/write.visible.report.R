@@ -18,6 +18,12 @@ if (!suppressWarnings(require('xtable')))
 	library("xtable")
 }
 
+if (!suppressWarnings(require('Matrix')))
+{
+	source("http://bioconductor.org/biocLite.R")
+	biocLite("Matrix")
+	library("Matrix")
+}
 
 if(!('all.the.all.loaded' %in% ls()) || is.na(all.the.all.loaded)) all.the.all.loaded<-FALSE
 #for quick-develop
