@@ -26,6 +26,7 @@ if(!all.the.all.loaded)
 	message('loading..')
 	load('noodles.C.Rda')
 	load('noodles.C.fisher.results.Rda')
+	load('noodles.C.normals.read.coverage.Rda')
 	load('../../CytoBands/cytobands.DM.Rda')
 	load('../../CpGIs/CpGIs.Rda')
 	load('../../CpGIs/CpGIs.DM.indices.Rda')
@@ -107,15 +108,25 @@ generate.noodles.C.report<-function(report.set,#indices
 
 	message('done')
 
+	
+	message('Normal read stats')
+	
+	norm.read.stats.frame<-t(apply(noodles.C.normals.read.coverage[report.set,],1,quantile))
+
+	colnames(norm.read.stats.frame)<-c('norm.reads.min','norm.reads.25q','norm.reads.med','norm.reads.75q','norm.reads.max')
+
+	report.frame<-cbind(report.frame,norm.read.stats.frame)
+
+	message('done')
 	#prepared
 	
 	save(file=paste0('noodles.C.annotation.',set.id,'.Rda'),list=c('report.frame'))
 	
-	write.table(report.frame,file=tsvfilename,sep='\t',row.names=FALSE)
+	write.table(report.frame,file=tsvfilename,sep='\t',row.names=FALSE,quote=FALSE)
 
 	if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
 
-	print(xtable(report.frame,digits=c(0,0,0,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','d','d','g','f','f','f','f','f','s','s','s','s','s','d','s','d','s','s','s')), type="html", file=htmlfilename, include.rownames=FALSE)
+	print(xtable(report.frame,digits=c(0,0,0,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','d','d','g','f','f','f','f','f','s','s','s','s','s','d','s','d','s','s','s','d','d','d','d','d')), type="html", file=htmlfilename, include.rownames=FALSE)
 #digits and display are to be +1 because of rows# that we do not print
 }
 
