@@ -18,6 +18,7 @@ if(!all.the.all.loaded)
 	message('loading..')
 	load('noodles.C.Rda')
 	load('noodles.C.fisher.results.Rda')
+	load('noodles.C.normals.read.coverage.Rda')
 	load('../../CytoBands/cytobands.DM.Rda')
 	load('../../CpGIs/CpGIs.Rda')
 	load('../../CpGIs/CpGIs.DM.indices.Rda')
@@ -98,6 +99,15 @@ if(!huge.loaded)
 	report.frame<-cbind(report.frame,elementMetadata(closest.genes)[,c('closest.TSS','pos','dir','dist')])
 	message('done\n')
 
+	message('Normal read stats')
+	
+	norm.read.stats.frame<-t(apply(noodles.C.normals.read.coverage[report.interval,],1,quantile))
+
+	colnames(norm.read.stats.frame)<-c('norm.reads.min','norm.reads.25q','norm.reads.med','norm.reads.75q','norm.reads.max')
+
+	report.frame<-cbind(report.frame,norm.read.stats.frame)
+
+	message('done')
 	#prepared
 
 	save(file='huge.Rda',list=c('report.frame'))
