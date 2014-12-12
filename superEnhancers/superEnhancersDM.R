@@ -64,6 +64,9 @@ if(!superEnhancers.wilcoxon.loaded)
 {
 	message('Wilcoxon\n')
 
+	set.seed(1248312)
+	#to avoid different jittr result in different runs
+
 	tests.number<-dim(superEnhancers.methylation)[1]
 
 	expected.w.statistic<-(sum(normals)*sum(tumors))/2
