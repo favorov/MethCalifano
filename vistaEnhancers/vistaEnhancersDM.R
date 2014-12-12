@@ -64,6 +64,9 @@ if(!vistaEnhancers.wilcoxon.loaded)
 {
 	message('Wilcoxon\n')
 
+	set.seed(1248312)
+	#to avoid different jittr result in different runs
+
 	tests.number<-dim(vistaEnhancers.methylation)[1]
 
 	expected.w.statistic<-(sum(normals)*sum(tumors))/2
@@ -129,90 +132,6 @@ if(!vistaEnhancers.fisher.loaded)
 
 load('../CytoBands/cytobands.DM.Rda')
 
-generate.DM.vistaEnhaners.report<-function(DM.vistaEnhancers.set,#indices
-												set.id) #variable part of the output file names
-{
-	message('Generating report for ',set.id,'\n')
-	
-	DM.vistaEnhancers.stat<-data.frame(
-		'id'=elementMetadata(vistaEnhancers)$id[DM.vistaEnhancers.set],
-		'type'=elementMetadata(vistaEnhancers)$type[DM.vistaEnhancers.set],
-		'chr'=as.character(seqnames(vistaEnhancers))[DM.vistaEnhancers.set],
-		'start'=start(vistaEnhancers)[DM.vistaEnhancers.set],
-		'end'=end(vistaEnhancers)[DM.vistaEnhancers.set],
-		'wilcoxon.p.value'=wilcoxon.p.values[DM.vistaEnhancers.set],
-		'hyper?'=normals.are.less.methylated[DM.vistaEnhancers.set],
-		'fisher.p.value'=fisher.results$fisher.p.values[DM.vistaEnhancers.set],
-		'tmr.ratio'=fisher.results$meth.in.tumors.ratio[DM.vistaEnhancers.set],
-		'nor.ratio'=fisher.results$meth.in.normals.ratio[DM.vistaEnhancers.set],
-		'OR'=fisher.results$OR[DM.vistaEnhancers.set],
-		'CI_95_L'=fisher.results$CI_95_L[DM.vistaEnhancers.set],
-		'CI_95_H'=fisher.results$CI_95_H[DM.vistaEnhancers.set]
-	)
-
-	tsvfilename=paste0("DM.vistaEnhancers.stat.",set.id,".tsv")
-	htmlfilename=paste0("DM.vistaEnhancers.stat.",set.id,".html")
-
-	report.file.info<-file.info(c(tsvfilename,htmlfilename))
-
-	if ( !any(is.na(report.file.info$size)) && !any(report.file.info$size==0)) 
-	{
-		message(paste0('Both reports for ',set.id,' were already present; doing nothing\n'))
-		return(NA)
-	}
-	
-	rownames(DM.vistaEnhancers.stat)<-NULL
-
-	message('Mapping to karyotype...')
-	
-	DM.vistaEnhancers<-vistaEnhancers[DM.vistaEnhancers.set]
-
-	vistaEnhancers.to.karyotype<-findOverlaps(DM.vistaEnhancers,cytobands,type="within")
-
-	DM.vistaEnhancers.cytobands<-sapply(1:length(DM.vistaEnhancers),function(i)
-		{
-			cb<-subjectHits(vistaEnhancers.to.karyotype)[which(i==queryHits(vistaEnhancers.to.karyotype))]
-			c(cb,(cytobands.DM.statistics$'wilcoxon.p.values'[cb]<0.05))
-		}
-	)
-
-	DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,'cytoband'=cytobands$'name'[DM.vistaEnhancers.cytobands[1,]],'DM.band?'=as.logical(DM.vistaEnhancers.cytobands[2,]))
-	message('done\n')
-
-	message('Looking for closest genes')
-	DM.vistaEnhancers.closest.genes<-closest.gene.start.by.interval(DM.vistaEnhancers)
-
-	DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,elementMetadata(DM.vistaEnhancers.closest.genes)[,c('closest.TSS','pos','dir','dist')])
-
-	message('done')
-
-	message('Looking for overlapped genes')
-
-	flanks<-7000
-
-	DM.vistaEnhancers.ovelapped.genes<-genes.with.TSS.covered.by.interval(DM.vistaEnhancers,flanks=flanks)
-
-	DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,elementMetadata(DM.vistaEnhancers.ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
-
-	message('done\n')
-
-	DM.vistaEnhancers.stat$id<-substr(DM.vistaEnhancers.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
-
-	#now, we order it according to GRanges order
-
-	DM.vistaEnhancers.stat<-DM.vistaEnhancers.stat[order(DM.vistaEnhancers),]
-	
-
-	write.table(DM.vistaEnhancers.stat,file=tsvfilename,sep='\t',row.names=FALSE)
-
-
-	if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
-
-	print(xtable(DM.vistaEnhancers.stat,digits=c(0,0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0), display=c('d','s','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','s')), type="html", file=htmlfilename,include.rownames=FALSE)
-	
-	0
-}
-
 
 vistaEnhancers.DM.indices.loaded<-FALSE
 # we can the whole thing to vistaEnhancers.methylation.Rda
@@ -257,6 +176,95 @@ if(!vistaEnhancers.DM.indices.loaded)
 }
 #we generate the reports
 message('Generating reports')
+
+generate.DM.vistaEnhaners.report<-function(DM.vistaEnhancers.set,#indices
+												set.id) #variable part of the output file names
+{
+	message('Generating report for ',set.id,'\n')
+	
+	DM.vistaEnhancers.stat<-data.frame(
+		'id'=elementMetadata(vistaEnhancers)$id[DM.vistaEnhancers.set],
+		'type'=elementMetadata(vistaEnhancers)$type[DM.vistaEnhancers.set],
+		'chr'=as.character(seqnames(vistaEnhancers))[DM.vistaEnhancers.set],
+		'start'=start(vistaEnhancers)[DM.vistaEnhancers.set],
+		'end'=end(vistaEnhancers)[DM.vistaEnhancers.set],
+		'wilcoxon.p.value'=wilcoxon.p.values[DM.vistaEnhancers.set],
+		'hyper?'=normals.are.less.methylated[DM.vistaEnhancers.set],
+		'fisher.p.value'=fisher.results$fisher.p.values[DM.vistaEnhancers.set],
+		'tmr.ratio'=fisher.results$meth.in.tumors.ratio[DM.vistaEnhancers.set],
+		'nor.ratio'=fisher.results$meth.in.normals.ratio[DM.vistaEnhancers.set],
+		'OR'=fisher.results$OR[DM.vistaEnhancers.set],
+		'CI_95_L'=fisher.results$CI_95_L[DM.vistaEnhancers.set],
+		'CI_95_H'=fisher.results$CI_95_H[DM.vistaEnhancers.set]
+	)
+
+	tsvfilename=paste0("DM.vistaEnhancers.stat.",set.id,".tsv")
+	htmlfilename=paste0("DM.vistaEnhancers.stat.",set.id,".html")
+
+	report.file.info<-file.info(c(tsvfilename,htmlfilename))
+
+	if ( !any(is.na(report.file.info$size)) && !any(report.file.info$size==0)) 
+	{
+		message(paste0('Both reports for ',set.id,' were already present; doing nothing\n'))
+		return(NA)
+	}
+	
+	rownames(DM.vistaEnhancers.stat)<-NULL
+
+	message('Mapping to karyotype...')
+	
+	DM.vistaEnhancers<-vistaEnhancers[DM.vistaEnhancers.set]
+
+	vistaEnhancers.to.karyotype<-findOverlaps(DM.vistaEnhancers,cytobands,type="within")
+
+	DM.vistaEnhancers.cytobands<- 
+			sapply(1:length(DM.vistaEnhancers),	function(i)
+			{
+				cb.index<-which(i==queryHits(vistaEnhancers.to.karyotype))
+				#it could be 1 or 0, because of 'whthin'
+				if (length(cb.index)==0) return (c(NA,NA))	
+				cb<-subjectHits(vistaEnhancers.to.karyotype)[cb.index]
+				c(cb,(cytobands.DM.statistics$'wilcoxon.p.values'[cb]<0.05))
+			}
+		)
+	
+	DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,'cytoband'=cytobands$'name'[DM.vistaEnhancers.cytobands[1,]],'DM.band?'=as.logical(DM.vistaEnhancers.cytobands[2,]))
+	message('done\n')
+
+	message('Looking for closest genes')
+	DM.vistaEnhancers.closest.genes<-closest.gene.start.by.interval(DM.vistaEnhancers)
+
+	DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,elementMetadata(DM.vistaEnhancers.closest.genes)[,c('closest.TSS','pos','dir','dist')])
+
+	message('done')
+
+	message('Looking for overlapped genes')
+
+	flanks<-7000
+
+	DM.vistaEnhancers.ovelapped.genes<-genes.with.TSS.covered.by.interval(DM.vistaEnhancers,flanks=flanks)
+
+	DM.vistaEnhancers.stat<-cbind(DM.vistaEnhancers.stat,elementMetadata(DM.vistaEnhancers.ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
+
+	message('done\n')
+
+	DM.vistaEnhancers.stat$id<-substr(DM.vistaEnhancers.stat$id,6,1000) # 1000 'any'; we strip first 'CpGi: ' from the id
+
+	#now, we order it according to GRanges order
+
+	DM.vistaEnhancers.stat<-DM.vistaEnhancers.stat[order(DM.vistaEnhancers),]
+	
+
+	write.table(DM.vistaEnhancers.stat,file=tsvfilename,sep='\t',row.names=FALSE,quote=FALSE)
+
+
+	if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
+
+	print(xtable(DM.vistaEnhancers.stat,digits=c(0,0,0,0,0,0,8,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0), display=c('d','s','s','s','d','d','g','s','g','f','f','f','f','f','s','s','s','d','s','d','s','s','s')), type="html", file=htmlfilename,include.rownames=FALSE)
+	
+	0
+}
+
 generate.DM.vistaEnhaners.report(DM.vistaEnhancers.Bonferroni,'bonf')
 generate.DM.vistaEnhaners.report(DM.vistaEnhancers.FDR,'fdr')
 generate.DM.vistaEnhaners.report(DM.vistaEnhancers,'uncorr')
