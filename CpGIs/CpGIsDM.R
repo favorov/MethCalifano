@@ -62,6 +62,9 @@ if(!CpGIs.wilcoxon.loaded)
 {
 	message('Wilcoxon\n')
 
+	set.seed(1248312)
+	#to avoid different jittr result in different runs
+	
 	tests.number<-dim(CpGIs.methylation)[1]
 
 	expected.w.statistic<-(sum(normals)*sum(tumors))/2
@@ -135,6 +138,16 @@ generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 												set.id) #variable part of the output file names
 {
 	message('Generating report for ',set.id,'\n')
+	tsvfilename=paste0("DM.CpGIs.stat.",set.id,".tsv")
+	htmlfilename=paste0("DM.CpGIs.stat.",set.id,".html")
+
+	report.file.info<-file.info(c(tsvfilename,htmlfilename))
+
+	if ( !any(is.na(report.file.info$size)) && !any(report.file.info$size==0)) 
+	{
+		message(paste0('Both reports for ',set.id,' were already present; doing nothing\n'))
+		return(NA)
+	}
 	
 	DM.CpGIs.stat<-data.frame(
 		'id'=elementMetadata(CpGIs)$id[DM.CpGIslands.set],
@@ -161,7 +174,10 @@ generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 
 	DM.CpGIs.cytobands<-sapply(1:length(DM.CpGIs),function(i)
 		{
-			cb<-subjectHits(CpGIs.to.karyotype)[which(i==queryHits(CpGIs.to.karyotype))]
+			cb.index<-which(i==queryHits(CpGIs.to.karyotype))
+			#it could be 1 or 0, because of 'whthin'
+			if (length(cb.index)==0) return (c(NA,NA))	
+			cb<-subjectHits(CpGIs.to.karyotype)[cb.index]
 			c(cb,(cytobands.DM.statistics$'wilcoxon.p.values'[cb]<0.05))
 		}
 	)
@@ -192,11 +208,7 @@ generate.DM.CpGi.report<-function(DM.CpGIslands.set,#indices
 
 	DM.CpGIs.stat<-DM.CpGIs.stat[order(DM.CpGIs),]
 	
-	tsvfilename=paste0("DM.CpGIs.stat.",set.id,".tsv")
-
-	write.table(DM.CpGIs.stat,file=tsvfilename,sep='\t',row.names=FALSE)
-
-	htmlfilename=paste0("DM.CpGIs.stat.",set.id,".html")
+	write.table(DM.CpGIs.stat,file=tsvfilename,sep='\t',row.names=FALSE,quote=FALSE)
 
 	if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
 

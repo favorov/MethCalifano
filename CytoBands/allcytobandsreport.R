@@ -1,4 +1,6 @@
 load('cytobands.DM.Rda')
+library(methods)
+
 cytoba<-as(cytobands,'data.frame')
 
 expected.w.statistic<-(sum(normals)*sum(tumors))/2
@@ -32,5 +34,5 @@ tumor.meth.rate<-methmeans[2,]/width(cytobands)
 cytoba<-cbind(cytoba,'norm.rate'=norm.meth.rate,'tumor.rate'=tumor.meth.rate)
 
 
-write.table(cytoba,file='cytobands.review.tsv',sep='\t',row.names=FALSE,col.names=TRUE)
+write.table(cytoba,file='cytobands.review.tsv',sep='\t',row.names=FALSE,col.names=TRUE,quote=FALSE)
 
