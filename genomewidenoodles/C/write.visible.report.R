@@ -25,6 +25,13 @@ if (!suppressWarnings(require('Matrix')))
 	library("Matrix")
 }
 
+if (!suppressWarnings(require('caTools')))
+{
+	source("http://bioconductor.org/biocLite.R")
+	biocLite("caTools")
+	library("caTools")
+}
+
 if(!('all.the.all.loaded' %in% ls()) || is.na(all.the.all.loaded)) all.the.all.loaded<-FALSE
 #for quick-develop
 if(!all.the.all.loaded)
@@ -116,8 +123,15 @@ generate.noodles.C.report<-function(report.set,#indices
 
 	
 	message('Normal read stats')
+
+	spaghetti.size.in.noodles<-7
 	
-	norm.read.stats.frame<-t(apply(noodles.C.normals.read.coverage[report.set,],1,quantile))
+	spaghetti.C.normals.read.coverage<-
+		spaghetti.size.in.noodles*
+		caTools::runmean(noodles.C.normals.read.coverage,spaghetti.size.in.noodles,alg='fast')
+	#running mean*window.size is running sum
+	#S4Vectors::runmean tries to shade the caTools::runmean
+	norm.read.stats.frame<-t(apply(spaghetti.C.normals.read.coverage[report.set,],1,quantile))
 
 	colnames(norm.read.stats.frame)<-c('norm.reads.min','norm.reads.25q','norm.reads.med','norm.reads.75q','norm.reads.max')
 
