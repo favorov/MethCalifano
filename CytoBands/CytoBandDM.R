@@ -28,6 +28,10 @@ if (!cytobands.DM.loaded)
 	#bedfiles are ready
 	cytobands<-get.cytoband.ranges()
 	#cytobands ready
+	
+	set.seed(1248312)
+	#to avoid different jittr result in different runs
+	
 	SNPchip.version=package.version('SNPchip')
 	cytobands.methylation<-count.coverage.of.noodles(cytobands,bedfilenames,DNAids)
 	#it is folder with bed files
