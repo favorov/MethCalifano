@@ -1,35 +1,33 @@
-if (!suppressWarnings(require('differential.coverage')))
-{
-	if (!suppressWarnings(require('devtools')))
-	{
-		source("http://bioconductor.org/biocLite.R")
-		biocLite("devtools")
-		library("devtools")
-	}
-	install_github('favorov/differential.coverage')
-	#load_all('../../../../differential.coverage/')
-	library('differential.coverage')
-}
-#we form RDA file name for any spahetti as spaghetti name.Rda
-noodle.C.7.spaghetti.loaded<-FALSE
-# we can the whole thing to noodles.M.Rda
 if(file.exists('noodles.C.7.spaghetti.Rda'))
 {
-	loaded<-load('noodles.C.7.spaghetti.Rda')
-		if ('noodles.C.7.spaghetti' %in% loaded)
-				if(class(noodles.C)=='GRanges')
-			noodles.C.7.spaghetti.loaded<-TRUE
-}
-
-if(!noodles.C.7.spaghetti.loaded)
+	message('the file exists')
+} else
 {
-	noodle.length<-700
-	chrs<-nucl.chromosomes.hg19()
-	noodles.C.7.spaghetti<-prepare.covering.noodles(chrs,noodle.length)
-	add.spagthetti<-GRanges()
-	
-	
-	save(file='noodles.C.7.spaghetti.Rda',list=c('noodles.C.7.spaghetti.Rda','noodle.length'))
-	
-}
+
+	if (!suppressWarnings(require('differential.coverage')))
+	{
+		if (!suppressWarnings(require('devtools')))
+		{
+			source("http://bioconductor.org/biocLite.R")
+			biocLite("devtools")
+			library("devtools")
+		}
+		install_github('favorov/differential.coverage')
+		#load_all('../../../../differential.coverage/')
+		library('differential.coverage')
+	}
+
+	flanks<-300
+
+	if (!'noodles.C' %in% ls()) load('../noodles.C.Rda')
+
+	noodles.C.7.spaghetti<-noodles.C
+
+	#inflate spahetti 
+	start(noodles.C.7.spaghetti)<-pmax(1,start(noodles.C)-flanks)
+	end(noodles.C.7.spaghetti)<-pmin(end(noodles.C)+flanks,as.integer(seqlengths(noodles.C)[as.character(seqnames(noodles.C))]))
+	#inflated
+
+	save(file='noodles.C.7.spaghetti.Rda',list=c('noodles.C.7.spaghetti'))
+}		
 
