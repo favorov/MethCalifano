@@ -12,6 +12,8 @@ resultfilename<-paste0(result,'.Rda')
 library('Matrix')
 library('rtracklayer')
 
+load('../noodles.C.Rda') #for dnaids, etc
+
 if (!noodles %in% ls()) load (noodles.Rda.file)
 
 bamsinfolder<-list.files(BAM.folder,pattern='bam$')
