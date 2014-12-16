@@ -34,7 +34,7 @@ if(file.exists(resultfilename))
 if(!result.loaded)
 {
 	if (!(file.exists(noodles.bed.file) && (file.info(noodles.bed.file)$size>0)))
-		export(get(noodles,con=noodles.bed.file,format='bed'))
+		export(get(noodles),con=noodles.bed.file,format='bed')
 
 	message('scanning bam file names')
 	normal.bam.names<-unlist(lapply(normal.ids,function(id){
