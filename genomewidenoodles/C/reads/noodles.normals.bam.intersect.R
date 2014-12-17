@@ -54,7 +54,7 @@ if(!result.loaded)
 		message(normal.ids[sample.no])
 		bamfilename<-normal.bam.names[sample.no]
 		countfilename<-paste0(bamfilename,'.count')
-		if(!(file.exists(countfilename) && file.info$size(countfilename)>0))
+		if(!(file.exists(countfilename) && file.info(countfilename)$size>0))
 		{
 			bamfilefullpath<-paste0(BAM.folder,bamfilename)
 			bambedfilename<-paste0(bamfilename,'.bed')
