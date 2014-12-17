@@ -9,7 +9,7 @@ noodles.Rda.file<-paste0(noodles.Rda.folder,noodles,'.Rda')
 result<-paste0(noodles,'.normals.read.coverage')
 resultfilename<-paste0(result,'.Rda')
 
-library('Matrix')
+#library('Matrix')
 library('rtracklayer')
 
 load('../noodles.C.Rda') #for dnaids, etc
@@ -44,26 +44,31 @@ if(!result.loaded)
 		}))
 	message('done')
 
-	resultmatrix<-Matrix(0,ncol=length(normal.ids),nrow=length(get(noodles)),sparse = TRUE)
+ 	resultmatrix<-matrix(nrow=length(noodles),ncol=0)
 
-	colnames(resultmatrix)<-normal.ids
+	#resultmatrix<-matrix(0,ncol=length(normal.ids),nrow=length(get(noodles)),sparse = TRUE)
+
 
 	for (sample.no in 1:length(normal.ids))
 	{
 		message(normal.ids[sample.no])
 		bamfilename<-normal.bam.names[sample.no]
-		bamfilefullpath<-paste0(BAM.folder,bamfilename)
-		bambedfilename<-paste0(bamfilename,'.bed')
 		countfilename<-paste0(bamfilename,'.count')
-		bed.create.command<-paste0('bedtools bamtobed -i ',bamfilefullpath,' > ',bambedfilename)
-		message(bed.create.command)
-		shell(bed.create.command)
-		intersect.command<-paste0('bedtools intersect -c -a ',noodles.bed.file,' -b ', bambedfilename, ' | cut -f7 > ',countfilename)
-		message(intersect.command)
-		shell(intersect.command)
-		resultmatrix[,sample.no]=unlist(read.table(countfilename))
-		unlink(c(bambedfilename,countfilename))
+		if(!(file.exists(countfilename) && file.info$size(countfilename)>0))
+		{
+			bamfilefullpath<-paste0(BAM.folder,bamfilename)
+			bambedfilename<-paste0(bamfilename,'.bed')
+			bed.create.command<-paste0('bedtools bamtobed -i ',bamfilefullpath,' > ',bambedfilename)
+			message(bed.create.command)
+			shell(bed.create.command)
+			intersect.command<-paste0('bedtools intersect -c -a ',noodles.bed.file,' -b ', bambedfilename, ' | cut -f7 > ',countfilename)
+			message(intersect.command)
+			shell(intersect.command)
+		}
+		resultmatrix=cbind(resultmatrix,read.table(countfilename,nrows=length(noodles),colClasses=c('numeric')))
+		#unlink(c(bambedfilename,countfilename))
 	}
+	colnames(resultmatrix)<-normal.ids
 	assign(result,resultmatrix)
 	save(file=resultfilename,list=c(result,'noodles','normal.bam.names','BAM.folder'))
 }
