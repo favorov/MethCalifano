@@ -36,8 +36,6 @@ We also show all the HGNC's genes TSS that ovelap the island +- 7000 bp.
 
 ### The same for uncorrected p-value<0.05
 
-<a href=./noodles.C.annotation.uncorr.html>Here is the table in html format</a>
-
 <a download href=https://raw.githubusercontent.com/favorov/MethSeqCalifano/master/genomewidenoodles/C/noodles.C.annotation.uncorr.tsv>Here is the table in tsv format, to be loaded to excel</a>
 
 ### Technical info
