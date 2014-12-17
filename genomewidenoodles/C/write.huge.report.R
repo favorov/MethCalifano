@@ -18,12 +18,12 @@ if (!suppressWarnings(require('Matrix')))
 	library("Matrix")
 }
 
-if (!suppressWarnings(require('caTools')))
-{
-	source("http://bioconductor.org/biocLite.R")
-	biocLite("caTools")
-	library("caTools")
-}
+#if (!suppressWarnings(require('caTools')))
+#{
+#	source("http://bioconductor.org/biocLite.R")
+#	biocLite("caTools")
+#	library("caTools")
+#}
 
 if(!('all.the.all.loaded' %in% ls()) || is.na(all.the.all.loaded)) all.the.all.loaded<-FALSE
 #for quick-develop
@@ -115,17 +115,17 @@ if(!huge.loaded)
 
 	message('Normal read stats')
 	
-	spaghetti.size.in.noodles<-7
+	#spaghetti.size.in.noodles<-7
 	
-	spaghetti.C.normals.read.coverage<-
-		spaghetti.size.in.noodles*
-		caTools::runmean(noodles.C.normals.read.coverage,spaghetti.size.in.noodles,alg='fast')
+	#spaghetti.C.normals.read.coverage<-
+	#	spaghetti.size.in.noodles*
+	#	caTools::runmean(noodles.C.normals.read.coverage,spaghetti.size.in.noodles,alg='fast')
 	#running mean*window.size is running sum
 	#S4Vectors::runmean tries to shade the caTools::runmean
 
-	norm.read.stats.frame<-t(apply(spaghetti.C.normals.read.coverage[report.interval,],1,quantile))
+	norm.read.stats.frame<-t(apply(noodles.C.7.spaghetti.normals.read.coverage[report.set,],1,quantile))
 
-	colnames(norm.read.stats.frame)<-c('norm.reads.min','norm.reads.25q','norm.reads.med','norm.reads.75q','norm.reads.max')
+	colnames(norm.read.stats.frame)<-c('norm.700.reads.min','norm.700.reads.25q','norm.700.reads.med','norm.700.reads.75q','norm.700.reads.max')
 
 	report.frame<-cbind(report.frame,norm.read.stats.frame)
 
@@ -153,6 +153,7 @@ for(fragment in 1:fragments.to.out)
 	colnames(meth.framere)<-colnames(noodles.C.methylation)
 	meth.framere[noodles.C.methylation[fragment.range,]>0]=1
 	report.framere<-cbind(report.framere,meth.framere)
+	report.framere<-cbind(report.framere,noodles.C.7.spaghetti.normals.read.coverage[fragment.range])
 	write.table(report.framere,file=tsvfilename,sep='\t',quote=FALSE,row.names=TRUE,append=(fragment!=1),col.names=(fragment==1))
 	#header for first fragment
 	#append for others
