@@ -44,7 +44,7 @@ if(!result.loaded)
 		}))
 	message('done')
 
- 	resultmatrix<-matrix(nrow=length(noodles),ncol=0)
+ 	resultmatrix<-matrix(nrow=length(get(noodles)),ncol=0)
 
 	#resultmatrix<-matrix(0,ncol=length(normal.ids),nrow=length(get(noodles)),sparse = TRUE)
 
@@ -65,7 +65,7 @@ if(!result.loaded)
 			message(intersect.command)
 			shell(intersect.command)
 		}
-		resultmatrix=cbind(resultmatrix,read.table(countfilename,nrows=length(noodles),colClasses=c('numeric')))
+		resultmatrix=cbind(resultmatrix,read.table(countfilename,nrows=length(get(noodles)),colClasses=c('numeric')))
 		#unlink(c(bambedfilename,countfilename))
 	}
 	colnames(resultmatrix)<-normal.ids
