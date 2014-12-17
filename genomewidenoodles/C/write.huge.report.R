@@ -123,7 +123,7 @@ if(!huge.loaded)
 	#running mean*window.size is running sum
 	#S4Vectors::runmean tries to shade the caTools::runmean
 
-	norm.read.stats.frame<-t(apply(noodles.C.7.spaghetti.normals.read.coverage[report.set,],1,quantile))
+	norm.read.stats.frame<-t(apply(noodles.C.7.spaghetti.normals.read.coverage[report.interval,],1,quantile))
 
 	colnames(norm.read.stats.frame)<-c('norm.700.reads.min','norm.700.reads.25q','norm.700.reads.med','norm.700.reads.75q','norm.700.reads.max')
 
