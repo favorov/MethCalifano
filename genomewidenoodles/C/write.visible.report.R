@@ -39,7 +39,7 @@ if(!all.the.all.loaded)
 	message('loading..')
 	load('noodles.C.Rda')
 	load('noodles.C.fisher.results.Rda')
-	load('noodles.C.normals.read.coverage.Rda')
+	load('reads/noodles.C.7.spaghetti.normals.read.coverage.Rda')
 	load('../../CytoBands/cytobands.DM.Rda')
 	load('../../CpGIs/CpGIs.Rda')
 	load('../../CpGIs/CpGIs.DM.indices.Rda')
@@ -124,16 +124,16 @@ generate.noodles.C.report<-function(report.set,#indices
 	
 	message('Normal read stats')
 
-	spaghetti.size.in.noodles<-7
+	#spaghetti.size.in.noodles<-7
 	
-	spaghetti.C.normals.read.coverage<-
-		spaghetti.size.in.noodles*
-		caTools::runmean(noodles.C.normals.read.coverage,spaghetti.size.in.noodles,alg='fast')
+	#spaghetti.C.normals.read.coverage<-
+	#	spaghetti.size.in.noodles*
+	#	caTools::runmean(noodles.C.normals.read.coverage,spaghetti.size.in.noodles,alg='fast')
 	#running mean*window.size is running sum
 	#S4Vectors::runmean tries to shade the caTools::runmean
-	norm.read.stats.frame<-t(apply(spaghetti.C.normals.read.coverage[report.set,],1,quantile))
+	norm.read.stats.frame<-t(apply(noodles.C.7.spaghetti.normals.read.coverage[report.set,],1,quantile))
 
-	colnames(norm.read.stats.frame)<-c('norm.reads.min','norm.reads.25q','norm.reads.med','norm.reads.75q','norm.reads.max')
+	colnames(norm.read.stats.frame)<-c('norm.700.reads.min','norm.700.reads.25q','norm.700.reads.med','norm.700.reads.75q','norm.700.reads.max')
 
 	report.frame<-cbind(report.frame,norm.read.stats.frame)
 
