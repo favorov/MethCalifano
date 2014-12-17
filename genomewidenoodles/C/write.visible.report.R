@@ -48,7 +48,8 @@ if(!all.the.all.loaded)
 
 
 generate.noodles.C.report<-function(report.set,#indices
-												set.id) #variable part of the output file names
+												set.id, #variable part of the output file names
+												no.html=FALSE) 
 {
 	report.noodles<-noodles.C[report.set,]
 	report.fisher<-fisher.noodles.C.result[report.set,]
@@ -144,10 +145,13 @@ generate.noodles.C.report<-function(report.set,#indices
 	
 	write.table(report.frame,file=tsvfilename,sep='\t',row.names=FALSE,quote=FALSE)
 
-	if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
+	if(!no.html)
+	{
+		if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
 
-	print(xtable(report.frame,digits=c(0,0,0,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','d','d','g','f','f','f','f','f','s','s','s','s','s','d','s','d','s','s','s','d','d','d','d','d')), type="html", file=htmlfilename, include.rownames=FALSE)
+		print(xtable(report.frame,digits=c(0,0,0,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','d','d','g','f','f','f','f','f','s','s','s','s','s','d','s','d','s','s','s','d','d','d','d','d')), type="html", file=htmlfilename, include.rownames=FALSE)
 #digits and display are to be +1 because of rows# that we do not print
+	}
 }
 
 fish<-fisher.noodles.C.result$fisher.p.values
@@ -155,5 +159,5 @@ fish<-fisher.noodles.C.result$fisher.p.values
 generate.noodles.C.report(which(p.adjust(fish,method='bonferroni')<=0.05),'bonf')
 generate.noodles.C.report(which(p.adjust(fish,method='fdr')<=0.05),'fdr')
 
-generate.noodles.C.report(which(fish<0.05),'uncorr')
+generate.noodles.C.report(which(fish<0.05),'uncorr',no.html=TRUE)
 
