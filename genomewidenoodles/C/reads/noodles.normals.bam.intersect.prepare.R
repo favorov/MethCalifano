@@ -45,10 +45,6 @@ if(!result.loaded)
 		}))
 	message('done')
 
-	resultmatrix<-Matrix(0,ncol=length(normal.ids),nrow=length(get(noodles)),sparse = TRUE)
-
-	colnames(resultmatrix)<-normal.ids
-
 	for (sample.no in 1:length(normal.ids))
 	{
 		message(normal.ids[sample.no])
@@ -58,14 +54,11 @@ if(!result.loaded)
 		countfilename<-paste0(bamfilename,'.count')
 		bed.create.command<-paste0('bedtools bamtobed -i ',bamfilefullpath,' > ',bambedfilename)
 		message(bed.create.command)
-		#shell(bed.create.command)
 		intersect.command<-paste0('bedtools intersect -c -a ',noodles.bed.file,' -b ', bambedfilename, ' | cut -f7 > ',countfilename)
 		scriptname<-paste0('intersect',normal.ids[sample.no],'.sh')
 		scriptname=gsub(', ','_',scriptname)
 		sink(scriptname)
 		cat('#!/bin/bash\n',bed.create.command,'\n',intersect.command,'\n',sep='')
 		sink()
-		#shell(intersect.command)
-		#unlink(c(bambedfilename,countfilename))
 	}
 }
