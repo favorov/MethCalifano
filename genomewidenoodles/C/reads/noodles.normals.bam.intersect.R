@@ -12,7 +12,9 @@ resultfilename<-paste0(result,'.Rda')
 library('Matrix')
 library('rtracklayer')
 
+message('loading noodles')
 load('../noodles.C.Rda') #for dnaids, etc
+message('done')
 
 if (!noodles %in% ls()) load (noodles.Rda.file)
 
