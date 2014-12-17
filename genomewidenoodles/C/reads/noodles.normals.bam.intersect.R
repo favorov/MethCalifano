@@ -9,7 +9,7 @@ noodles.Rda.file<-paste0(noodles.Rda.folder,noodles,'.Rda')
 result<-paste0(noodles,'.normals.read.coverage')
 resultfilename<-paste0(result,'.Rda')
 
-#library('Matrix')
+library('Matrix')
 library('rtracklayer')
 
 load('../noodles.C.Rda') #for dnaids, etc
@@ -44,7 +44,7 @@ if(!result.loaded)
 		}))
 	message('done')
 
- 	resultmatrix<-matrix(nrow=length(get(noodles)),ncol=0)
+ 	resultmatrix<-Matrix(nrow=length(get(noodles)),ncol=0,sparse=TRUE)
 
 	#resultmatrix<-matrix(0,ncol=length(normal.ids),nrow=length(get(noodles)),sparse = TRUE)
 
@@ -65,7 +65,9 @@ if(!result.loaded)
 			message(intersect.command)
 			shell(intersect.command)
 		}
-		resultmatrix=cbind(resultmatrix,read.table(countfilename,nrows=length(get(noodles)),colClasses=c('numeric')))
+		data<-read.table(countfilename,nrows=length(get(noodles)),colClasses=c('numeric'),comment.char='')
+		if(dim(resultmatrix)[2]>0) resultmatrix=cBind(resultmatrix,Matrix(data[[1]],ncol=1,nrow=length(get(noodles)),sparse=TRUE))
+		else resultmatrix<-Matrix(data[[1]],ncol=1,nrow=length(get(noodles)),sparse=TRUE) #first time
 		#unlink(c(bambedfilename,countfilename))
 	}
 	colnames(resultmatrix)<-normal.ids
