@@ -153,7 +153,7 @@ for(fragment in 1:fragments.to.out)
 	colnames(meth.framere)<-colnames(noodles.C.methylation)
 	meth.framere[noodles.C.methylation[fragment.range,]>0]=1
 	report.framere<-cbind(report.framere,meth.framere)
-	readmat<-matrix(noodles.C.7.spaghetti.normals.read.coverage[fragment.range,])
+	readmat<-as.matrix(noodles.C.7.spaghetti.normals.read.coverage[fragment.range,])
 	colnames(readmat)<-
 		paste(colnames(noodles.C.7.spaghetti.normals.read.coverage),'.700.reads',sep='')
 	report.framere<-cbind(report.framere,readmat)
