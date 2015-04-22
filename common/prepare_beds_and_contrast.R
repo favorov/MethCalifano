@@ -10,6 +10,7 @@ DNAids<-Clinical$'Tumor/Tissue DNA HAND ID'[normals | tumors]
 codes<-rownames(Clinical)[normals | tumors]
 #we do not want to work with xeongraft & cell lines
 
+xDNAids<-Clinical$'Tumor/Tissue DNA HAND ID'[!normals & !tumors]
 
 contrast<-integer(0)
 
