@@ -23,20 +23,18 @@ if (!suppressWarnings(require('differential.coverage')))
 	library('differential.coverage')
 }
 
-noodles.C.loaded<-FALSE
+xeno.C.methylation.loaded<-FALSE
 # we can the whole thing to noodles.M.Rda
-if(file.exists('noodles.C.Rda'))
+if(file.exists('xeno.C.methylation.Rda'))
 {
-	loaded<-load('noodles.C.Rda')
-	if ('noodles.C.methylation' %in% loaded) 
-		if (class(noodles.C.methylation)=='dgCMatrix' || 
-				class(noodles.C.methylation)=='matrix')
-			if ('noodles.C' %in% loaded)
-				if(class(noodles.C)=='GRanges')
-			noodles.C.loaded<-TRUE
+	loaded<-load('xeno.C.methylation.Rda')
+	if ('xeno.C.methylation' %in% loaded) 
+		if (class(xeno.C.methylation)=='dgCMatrix' || 
+				class(xeno.C.methylation)=='matrix')
+			xeno.C.methylation.loaded<-TRUE
 }
 
-if(!noodles.C.loaded)
+if(!xeno.C.methylation.loaded)
 {
 	noodle.length<-100
 	chrs<-nucl.chromosomes.hg19()
@@ -54,14 +52,10 @@ if(!noodles.C.loaded)
 	#beds and contrast is ready
 	#it is folder with bed files
 
-	noodles.C.methylation<-CountCoverageOfNoodles(noodles.C,bedfilenames,DNAids)
-	save(file='noodles.C.Rda',list=c('noodles.C','noodles.C.methylation','DNAids','bedfilenames','contrast','noodle.length'))
+	xeno.C.methylation<-count.coverage.of.noodles(noodles.C,xbedfilenames,xDNAids)
+	save(file='xeno.C.methylation.Rda',list=c('xeno.C.methylation'))
 	
 	#
-	norm.no<-length(which(contrast==0))
-	tumor.no<-length(which(contrast==1))
-
-	prepare.tabulated.fisher(tumor.no,norm.no)
 	#this call prepares the file with matrix
 }
 
