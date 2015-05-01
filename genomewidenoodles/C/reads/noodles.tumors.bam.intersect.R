@@ -11,6 +11,7 @@ resultfilename<-paste0(result,'.Rda')
 
 library('Matrix')
 library('rtracklayer')
+library('data.table')
 
 message('loading noodles')
 load('../noodles.C.Rda') #for dnaids, etc
@@ -46,13 +47,15 @@ if(!result.loaded)
 		}))
 	message('done')
 
- 	resultmatrix<-Matrix(nrow=length(get(noodles)),ncol=0,sparse=TRUE)
+ 	resultmatrix<-data.table(empty<-rep(0,length(noodles.C.7.spaghetti)))
+	#Matrix(nrow=length(get(noodles)),ncol=0,sparse=TRUE)
 
 	#resultmatrix<-matrix(0,ncol=length(tumor.ids),nrow=length(get(noodles)),sparse = TRUE)
 
 
 	for (sample.no in 1:length(tumor.ids))
 	{
+		tumor.id<-tumor.ids[sample.no]
 		message(tumor.ids[sample.no])
 		bamfilename<-tumor.bam.names[sample.no]
 		countfilename<-paste0(bamfilename,'.count')
@@ -68,13 +71,11 @@ if(!result.loaded)
 			shell(intersect.command)
 		}
 		message('Reading...')
-		data<-read.table(countfilename,nrows=length(get(noodles)),colClasses=c('numeric'),comment.char='')
+		data<-fread(countfilename)
 		message('Binding...')
-		if(dim(resultmatrix)[2]>0) resultmatrix=cBind(resultmatrix,Matrix(data[[1]],ncol=1,nrow=length(get(noodles)),sparse=TRUE))
-		else resultmatrix<-Matrix(data[[1]],ncol=1,nrow=length(get(noodles)),sparse=TRUE) #first time
+		resultmatrix[,eval(as.name(tumor.id)):=data]
 		#unlink(c(bambedfilename,countfilename))
 	}
-	colnames(resultmatrix)<-tumor.ids
-	assign(result,resultmatrix)
+	result<-resultmatrix # ref-copy
 	save(file=resultfilename,list=c(result,'noodles','tumor.bam.names','BAM.folder'))
 }
