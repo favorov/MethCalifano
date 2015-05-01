@@ -67,7 +67,9 @@ if(!result.loaded)
 			message(intersect.command)
 			shell(intersect.command)
 		}
+		message('Reading...')
 		data<-read.table(countfilename,nrows=length(get(noodles)),colClasses=c('numeric'),comment.char='')
+		message('Binding...')
 		if(dim(resultmatrix)[2]>0) resultmatrix=cBind(resultmatrix,Matrix(data[[1]],ncol=1,nrow=length(get(noodles)),sparse=TRUE))
 		else resultmatrix<-Matrix(data[[1]],ncol=1,nrow=length(get(noodles)),sparse=TRUE) #first time
 		#unlink(c(bambedfilename,countfilename))
