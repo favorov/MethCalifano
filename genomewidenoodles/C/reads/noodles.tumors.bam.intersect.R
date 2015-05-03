@@ -78,5 +78,5 @@ if(!result.loaded)
 		#unlink(c(bambedfilename,countfilename))
 	}
 	result<-resultmatrix # ref-copy
-	save(file=resultfilename,list=c(result,'noodles','tumor.bam.names','BAM.folder'))
+	save(file=resultfilename,list=c('result','noodles','tumor.bam.names','BAM.folder'))
 }
