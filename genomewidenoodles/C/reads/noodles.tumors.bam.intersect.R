@@ -77,6 +77,7 @@ if(!result.loaded)
 		resultmatrix[,eval(as.name(tumor.id)):=data]
 		#unlink(c(bambedfilename,countfilename))
 	}
-	result<-resultmatrix # ref-copy
-	save(file=resultfilename,list=c('result','noodles','tumor.bam.names','BAM.folder'))
+	resultmatrix[,'V1':=NULL]
+	assign(result,resultmatrix) # ref-copy
+	save(file=resultfilename,list=c(result,'noodles','tumor.bam.names','BAM.folder'))
 }
