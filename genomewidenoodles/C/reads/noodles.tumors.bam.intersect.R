@@ -29,7 +29,7 @@ if(file.exists(resultfilename))
 {
 	loaded<-load(resultfilename)
 	if (result %in% loaded) 
-		if (class(get(result))=='data.table')
+		if ('data.table' %in% class(get(result)))
 			result.loaded<-TRUE
 } 
 
