@@ -42,6 +42,7 @@ if(!result.loaded)
 	message('scanning bam file names')
 	tumor.bam.names<-unlist(lapply(tumor.ids,function(id){
 		id<-strsplit(id,',')[[1]][1]	#remove all after ,	
+		id<-strsplit(id,'_')[[1]][1]	#remove all after _	
 		sample_files<-bamsinfolder[grep(id,bamsinfolder)]
 		enriched_sample_files<-sample_files[grep('nrich',sample_files)]
 		}))
