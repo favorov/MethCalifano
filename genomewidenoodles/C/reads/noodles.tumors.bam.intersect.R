@@ -29,8 +29,7 @@ if(file.exists(resultfilename))
 {
 	loaded<-load(resultfilename)
 	if (result %in% loaded) 
-		if (class(get(result))=='dgCMatrix' || 
-				class(get(result))=='matrix')
+		if (class(get(result))=='data.table')
 			result.loaded<-TRUE
 } 
 
