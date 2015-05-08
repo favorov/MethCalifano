@@ -40,6 +40,8 @@ if(!all.the.all.loaded)
 	load('noodles.C.Rda')
 	load('noodles.C.fisher.results.Rda')
 	load('reads/noodles.C.7.spaghetti.normals.read.coverage.Rda')
+	load('reads/noodles.C.7.spaghetti.tumors.read.quantiles.Rda')
+	load('xeno.C.methylation.Rda')
 	load('../../CytoBands/cytobands.DM.Rda')
 	load('../../CpGIs/CpGIs.Rda')
 	load('../../CpGIs/CpGIs.DM.indices.Rda')
@@ -137,6 +139,10 @@ generate.noodles.C.report<-function(report.set,#indices
 	colnames(norm.read.stats.frame)<-c('norm.700.reads.min','norm.700.reads.25q','norm.700.reads.med','norm.700.reads.75q','norm.700.reads.max')
 
 	report.frame<-cbind(report.frame,norm.read.stats.frame)
+	
+	colnames(tumor.read.stats.frame)<-c('tumor.700.reads.min','tumor.700.reads.25q','tumor.700.reads.med','tumor.700.reads.75q','tumor.700.reads.max')
+	
+	report.frame<-cbind(report.frame,tumor.read.stats.frame)
 
 	message('done')
 	#prepared
@@ -149,7 +155,7 @@ generate.noodles.C.report<-function(report.set,#indices
 	{
 		if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
 
-		print(xtable(report.frame,digits=c(0,0,0,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','d','d','g','f','f','f','f','f','s','s','s','s','s','d','s','d','s','s','s','d','d','d','d','d')), type="html", file=htmlfilename, include.rownames=FALSE)
+		print(xtable(report.frame,digits=c(0,0,0,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','d','d','g','f','f','f','f','f','s','s','s','s','s','d','s','d','s','s','s','d','d','d','d','d','d','d','d','d','d')), type="html", file=htmlfilename, include.rownames=FALSE)
 #digits and display are to be +1 because of rows# that we do not print
 	}
 }
