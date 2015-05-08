@@ -140,9 +140,10 @@ generate.noodles.C.report<-function(report.set,#indices
 
 	report.frame<-cbind(report.frame,norm.read.stats.frame)
 	
+	message('Tumor read stats')
 	colnames(tumor.read.stats.frame)<-c('tumor.700.reads.min','tumor.700.reads.25q','tumor.700.reads.med','tumor.700.reads.75q','tumor.700.reads.max')
 	
-	report.frame<-cbind(report.frame,tumor.read.stats.frame)
+	report.frame<-cbind(report.frame,tumor.read.stats.frame[report.set,])
 
 	message('done')
 	#prepared
