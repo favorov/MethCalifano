@@ -25,9 +25,9 @@ if (!suppressWarnings(require('Matrix')))
 	library("Matrix")
 }
 
-if(!('all.the.all.loaded' %in% ls()) || is.na(all.the.all.loaded)) all.the.all.loaded<-FALSE
+if(!('all.for.visible.dasha.report.loaded' %in% ls()) || is.na(all.for.visible.dasha.report.loaded)) all.for.visible.dasha.report.loaded<-FALSE
 #for quick-develop
-if(!all.the.all.loaded)
+if(!all.for.visible.dasha.report.loaded)
 {
 	message('loading..')
 	load('noodles.C.Rda')
@@ -40,7 +40,7 @@ if(!all.the.all.loaded)
 	load('../../CpGIs/CpGIs.DM.indices.Rda')
 	colnames(norm.read.stats.frame)<-c('norm.700.reads.min','norm.700.reads.25q','norm.700.reads.med','norm.700.reads.75q','norm.700.reads.max')
 	colnames(tumor.read.stats.frame)<-c('tumor.700.reads.min','tumor.700.reads.25q','tumor.700.reads.med','tumor.700.reads.75q','tumor.700.reads.max')
-	all.the.all.loaded<-TRUE
+	all.for.visible.dasha.report.loaded<-TRUE
 }
 
 
