@@ -25,13 +25,6 @@ if (!suppressWarnings(require('Matrix')))
 	library("Matrix")
 }
 
-if (!suppressWarnings(require('caTools')))
-{
-	source("http://bioconductor.org/biocLite.R")
-	biocLite("caTools")
-	library("caTools")
-}
-
 if(!('all.the.all.loaded' %in% ls()) || is.na(all.the.all.loaded)) all.the.all.loaded<-FALSE
 #for quick-develop
 if(!all.the.all.loaded)
@@ -39,7 +32,7 @@ if(!all.the.all.loaded)
 	message('loading..')
 	load('noodles.C.Rda')
 	load('noodles.C.fisher.results.Rda')
-	load('reads/noodles.C.7.spaghetti.normals.read.coverage.Rda')
+	load('reads/noodles.C.7.spaghetti.normals.read.quantiles.Rda')
 	load('reads/noodles.C.7.spaghetti.tumors.read.quantiles.Rda')
 	load('xeno.C.methylation.Rda')
 	load('../../CytoBands/cytobands.DM.Rda')
@@ -127,18 +120,10 @@ generate.noodles.C.report<-function(report.set,#indices
 	
 	message('Normal read stats')
 
-	#spaghetti.size.in.noodles<-7
-	
-	#spaghetti.C.normals.read.coverage<-
-	#	spaghetti.size.in.noodles*
-	#	caTools::runmean(noodles.C.normals.read.coverage,spaghetti.size.in.noodles,alg='fast')
-	#running mean*window.size is running sum
-	#S4Vectors::runmean tries to shade the caTools::runmean
-	norm.read.stats.frame<-t(apply(noodles.C.7.spaghetti.normals.read.coverage[report.set,],1,quantile))
 
 	colnames(norm.read.stats.frame)<-c('norm.700.reads.min','norm.700.reads.25q','norm.700.reads.med','norm.700.reads.75q','norm.700.reads.max')
 
-	report.frame<-cbind(report.frame,norm.read.stats.frame)
+	report.frame<-cbind(report.frame,norm.read.stats.frame[report.set])
 	
 	message('Tumor read stats')
 	colnames(tumor.read.stats.frame)<-c('tumor.700.reads.min','tumor.700.reads.25q','tumor.700.reads.med','tumor.700.reads.75q','tumor.700.reads.max')
