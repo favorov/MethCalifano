@@ -28,6 +28,8 @@ The DM CpG islands coords and the methylation status description; cytoband infor
 We show Fisher's p-values for each island as well as OR and the CI for OR.
 We also show all the HGNC's genes TSS that ovelap the island +- 7000 bp.
 
+The last 10 columns are min,25%,median,75% and max quantiles for read counts in 700 bp area (+-300) of the read, for normal and for tumor samples.
+
 ### The same table for FDR<0.1
 
 <a href=./noodles.C.annotation.fdr.html>Here is the table in html format</a>
