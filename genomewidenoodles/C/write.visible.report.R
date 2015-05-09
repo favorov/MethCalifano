@@ -38,6 +38,8 @@ if(!all.the.all.loaded)
 	load('../../CytoBands/cytobands.DM.Rda')
 	load('../../CpGIs/CpGIs.Rda')
 	load('../../CpGIs/CpGIs.DM.indices.Rda')
+	colnames(norm.read.stats.frame)<-c('norm.700.reads.min','norm.700.reads.25q','norm.700.reads.med','norm.700.reads.75q','norm.700.reads.max')
+	colnames(tumor.read.stats.frame)<-c('tumor.700.reads.min','tumor.700.reads.25q','tumor.700.reads.med','tumor.700.reads.75q','tumor.700.reads.max')
 	all.the.all.loaded<-TRUE
 }
 
@@ -121,12 +123,9 @@ generate.noodles.C.report<-function(report.set,#indices
 	message('Normal read stats')
 
 
-	colnames(norm.read.stats.frame)<-c('norm.700.reads.min','norm.700.reads.25q','norm.700.reads.med','norm.700.reads.75q','norm.700.reads.max')
-
 	report.frame<-cbind(report.frame,norm.read.stats.frame[report.set,])
 	
 	message('Tumor read stats')
-	colnames(tumor.read.stats.frame)<-c('tumor.700.reads.min','tumor.700.reads.25q','tumor.700.reads.med','tumor.700.reads.75q','tumor.700.reads.max')
 	
 	report.frame<-cbind(report.frame,tumor.read.stats.frame[report.set,])
 
