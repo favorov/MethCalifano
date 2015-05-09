@@ -118,11 +118,11 @@ generate.noodles.C.report<-function(report.set,#indices
 	report.frame<-cbind(report.frame,elementMetadata(ovelapped.genes)[,c('overlapped.TSS','overlapped.pos','ovrl.dir')])
 
 	message('done')
-
 	
 	message('Normal read stats')
 
-
+	message('done')
+	
 	report.frame<-cbind(report.frame,data.frame(norm.read.stats.frame[report.set,]))
 	
 	message('Tumor read stats')
