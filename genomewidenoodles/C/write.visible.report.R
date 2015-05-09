@@ -140,7 +140,7 @@ generate.noodles.C.report<-function(report.set,#indices
 	{
 		if(file.exists(htmlfilename)) {file.remove(htmlfilename)}
 
-		print(xtable(report.frame,digits=c(0,0,0,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), display=c('d','s','d','d','g','f','f','f','f','f','s','s','s','s','s','d','s','d','s','s','s','d','d','d','d','d','d','d','d','d','d')), type="html", file=htmlfilename, include.rownames=FALSE)
+		print(xtable(report.frame,digits=c(0,0,0,0,8,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2), display=c('d','s','d','d','g','f','f','f','f','f','s','s','s','s','s','d','s','d','s','s','s','f','f','f','f','f','f','f','f','f','f')), type="html", file=htmlfilename, include.rownames=FALSE)
 #digits and display are to be +1 because of rows# that we do not print
 	}
 }
