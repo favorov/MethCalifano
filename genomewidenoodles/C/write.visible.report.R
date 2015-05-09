@@ -123,11 +123,11 @@ generate.noodles.C.report<-function(report.set,#indices
 	message('Normal read stats')
 
 
-	report.frame<-cbind(report.frame,norm.read.stats.frame[report.set,])
+	report.frame<-cbind(report.frame,data.frame(norm.read.stats.frame[report.set,]))
 	
 	message('Tumor read stats')
 	
-	report.frame<-cbind(report.frame,tumor.read.stats.frame[report.set,])
+	report.frame<-cbind(report.frame,data.frame(tumor.read.stats.frame[report.set,]))
 
 	message('done')
 	#prepared
