@@ -18,25 +18,36 @@ if (!suppressWarnings(require('Matrix')))
 	library("Matrix")
 }
 
-#if (!suppressWarnings(require('caTools')))
-#{
-#	source("http://bioconductor.org/biocLite.R")
-#	biocLite("caTools")
-#	library("caTools")
-#}
-
-if(!('all.the.all.loaded' %in% ls()) || is.na(all.the.all.loaded)) all.the.all.loaded<-FALSE
-#for quick-develop
-if(!all.the.all.loaded)
+if (!suppressWarnings(require('data.table')))
 {
-	message('loading..')
-	load('noodles.C.Rda')
-	load('noodles.C.fisher.results.Rda')
+	source("http://bioconductor.org/biocLite.R")
+	biocLite("data.table")
+	library("data.table")
+}
+
+if(!('all.for.huge.dasha.report.loaded' %in% ls()) || is.na(all.for.huge.dasha.report.loaded)) all.for.huge.dasha.report.loaded<-FALSE
+if(!('all.for.visible.dasha.report.loaded' %in% ls()) || is.na(all.for.visible.dasha.report.loaded)) all.for.visible.dasha.report.loaded<-FALSE
+#for quick-develop
+if(!all.for.huge.dasha.report.loaded)
+{
+	if(!all.for.visible.dasha.report.loaded)
+	{
+		message('loading..')
+		load('noodles.C.Rda')
+		load('noodles.C.fisher.results.Rda')
+		load('reads/noodles.C.7.spaghetti.normals.read.quantiles.Rda')
+		load('reads/noodles.C.7.spaghetti.tumors.read.quantiles.Rda')
+		load('xeno.C.methylation.Rda')
+		load('../../CytoBands/cytobands.DM.Rda')
+		load('../../CpGIs/CpGIs.Rda')
+		load('../../CpGIs/CpGIs.DM.indices.Rda')
+		colnames(norm.read.stats.frame)<-c('norm.700.reads.min','norm.700.reads.25q','norm.700.reads.med','norm.700.reads.75q','norm.700.reads.max')
+		colnames(tumor.read.stats.frame)<-c('tumor.700.reads.min','tumor.700.reads.25q','tumor.700.reads.med','tumor.700.reads.75q','tumor.700.reads.max')
+		all.for.visible.dasha.report.loaded<-TRUE
+	}
+	message('loading reads..')
 	load('reads/noodles.C.7.spaghetti.normals.read.coverage.Rda')
-	load('../../CytoBands/cytobands.DM.Rda')
-	load('../../CpGIs/CpGIs.Rda')
-	load('../../CpGIs/CpGIs.DM.indices.Rda')
-	all.the.all.loaded<-TRUE
+	load('reads/noodles.C.7.spaghetti.tumors.read.coverage.Rda')
 }
 
 rows.no<-dim(fisher.noodles.C.result)[1]
@@ -44,8 +55,8 @@ report.interval<-1:rows.no
 
 
 huge.loaded<-FALSE
-if(file.exists('huge.Rda'))
-	if ('report.frame' %in% load('huge.Rda'))
+if(file.exists('huge.report.frame.Rda'))
+	if ('report.frame' %in% load('huge.report.frame.Rda'))
 		if (class(report.frame)=='data.frame')
 			huge.loaded<-TRUE
 
@@ -115,24 +126,33 @@ if(!huge.loaded)
 
 	message('Normal read stats')
 	
-	#spaghetti.size.in.noodles<-7
+	report.frame<-cbind(report.frame,data.frame(norm.read.stats.frame[report.interval,]))
 	
-	#spaghetti.C.normals.read.coverage<-
-	#	spaghetti.size.in.noodles*
-	#	caTools::runmean(noodles.C.normals.read.coverage,spaghetti.size.in.noodles,alg='fast')
-	#running mean*window.size is running sum
-	#S4Vectors::runmean tries to shade the caTools::runmean
-
-	norm.read.stats.frame<-t(apply(noodles.C.7.spaghetti.normals.read.coverage[report.interval,],1,quantile))
-
-	colnames(norm.read.stats.frame)<-c('norm.700.reads.min','norm.700.reads.25q','norm.700.reads.med','norm.700.reads.75q','norm.700.reads.max')
-
-	report.frame<-cbind(report.frame,norm.read.stats.frame)
+	message('done')
+	
+	message('Tumor read stats')
+	
+	report.frame<-cbind(report.frame,data.frame(tumor.read.stats.frame[report.interval,]))
 
 	message('done')
+
+	message('Xeno and cell lines')
+
+	xeno<-data.frame(matrix(ncol=4,if(xeno.C.methylation[report.interval,]>0,1,0))
+
+	colnames(xeno)<-colnames(xeno.C.methylation)
+
+	report.frame<-cbind(report.frame,xeno)
+
+	message('done')
+
 	#prepared
 
-	save(file='huge.Rda',list=c('report.frame'))
+	report.frame<-data.frame(report.frame)
+
+	save(file='huge.report.frame.Rda',list=c('report.frame'))
+	
+	message('report frame prepared')
 }
 
 message('writing')
@@ -153,13 +173,18 @@ for(fragment in 1:fragments.to.out)
 	colnames(meth.framere)<-colnames(noodles.C.methylation)
 	meth.framere[noodles.C.methylation[fragment.range,]>0]=1
 	report.framere<-cbind(report.framere,meth.framere)
-	readmat<-as.matrix(noodles.C.7.spaghetti.normals.read.coverage[fragment.range,])
-	colnames(readmat)<-
+	readnormat<-as.matrix(noodles.C.7.spaghetti.normals.read.coverage[fragment.range,])
+	colnames(readnormat)<-
 		paste(colnames(noodles.C.7.spaghetti.normals.read.coverage),'.700.reads',sep='')
-	report.framere<-cbind(report.framere,readmat)
+	report.framere<-cbind(report.framere,readnormat)
+	readtummat<-as.matrix(noodles.C.7.spaghetti.tumors.read.coverage[fragment.range,])
+	colnames(readtummat)<-
+		paste(colnames(noodles.C.7.spaghetti.tumors.read.coverage),'.700.reads',sep='')
+	report.framere<-cbind(report.framere,readtummat)
 	colnames(report.framere)<-gsub(' ','',colnames(report.framere))
 	write.table(report.framere,file=tsvfilename,sep='\t',quote=FALSE,row.names=TRUE,append=(fragment!=1),col.names=(fragment==1))
 	#header for first fragment
 	#append for others
 }
+message('done')
 
