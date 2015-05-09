@@ -138,7 +138,7 @@ if(!huge.loaded)
 
 	message('Xeno and cell lines')
 
-	xeno<-data.frame(matrix(ncol=4,if(xeno.C.methylation[report.interval,]>0,1,0)))
+	xeno<-data.frame(matrix(ncol=4,ifelse(xeno.C.methylation[report.interval,]>0,1,0)))
 
 	colnames(xeno)<-colnames(xeno.C.methylation)
 
