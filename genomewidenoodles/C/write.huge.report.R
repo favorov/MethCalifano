@@ -71,6 +71,7 @@ for(fragment in 1:fragments.to.out)
 	report.framere<-cbind(report.framere,readtummat)
 	colnames(report.framere)<-gsub(' ','',colnames(report.framere))
 	write.table(report.framere,file=tsvfilename,sep='\t',quote=FALSE,row.names=TRUE,append=(fragment!=1),col.names=(fragment==1))
+	rm(list=c('report.framere'))
 	#header for first fragment
 	#append for others
 }
