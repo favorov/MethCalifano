@@ -46,7 +46,7 @@ report.interval<-1:rows.no
 message('writing')
 
 tsvfilename="noodles.C.complete.annotaion.tsv"
-fragments.to.out<-50
+fragments.to.out<-100
 step<-rows.no %/% fragments.to.out + ifelse(rows.no %% fragments.to.out > 0,1,0) #if remainder is zero, / is ok 
 
 for(fragment in 1:fragments.to.out)
