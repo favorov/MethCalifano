@@ -56,7 +56,7 @@ for(fragment in 1:fragments.to.out)
 	fragment.end <- min(fragment.start+step-1,rows.no)
 	fragment.range<-fragment.start:fragment.end
 	report.framere<-huge.report.frame[fragment.range,]
-	rownames(report.framere)=rownames(report.frame)[fragment.range]
+	rownames(report.framere)=rownames(huge.report.frame)[fragment.range]
 	meth.framere<-matrix(0,nrow=fragment.end-fragment.start+1,ncol=dim(noodles.C.methylation)[2])
 	colnames(meth.framere)<-colnames(noodles.C.methylation)
 	meth.framere[noodles.C.methylation[fragment.range,]>0]=1
