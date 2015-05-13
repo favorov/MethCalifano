@@ -37,6 +37,7 @@ if(!all.for.huge.dasha.report.loaded)
 	load('reads/noodles.C.7.spaghetti.normals.read.coverage.Rda')
 	message('loading tumor reads')
 	load('reads/noodles.C.7.spaghetti.tumors.read.coverage.Rda')
+	all.for.huge.dasha.report.loaded=TRUE
 }
 
 rows.no<-dim(noodles.C.methylation)[1]
@@ -71,7 +72,7 @@ for(fragment in 1:fragments.to.out)
 	report.framere<-cbind(report.framere,readtummat)
 	colnames(report.framere)<-gsub(' ','',colnames(report.framere))
 	write.table(report.framere,file=tsvfilename,sep='\t',quote=FALSE,row.names=TRUE,append=(fragment!=1),col.names=(fragment==1))
-	rm(list=c('report.framere'))
+	rm(list=c('report.framere','meth.framere','readtummat','readnormat'))
 	#header for first fragment
 	#append for others
 }
