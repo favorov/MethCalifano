@@ -60,19 +60,24 @@ for(fragment in 1:fragments.to.out)
 	rownames(report.framere)=rownames(huge.report.frame)[fragment.range]
 	meth.framere<-matrix(0,nrow=fragment.end-fragment.start+1,ncol=dim(noodles.C.methylation)[2])
 	colnames(meth.framere)<-colnames(noodles.C.methylation)
-	meth.framere[noodles.C.methylation[fragment.range,]>0]=1
+	unroll.meth.framere<-matrix(noodles.C.methylation[fragment.range,])
+	meth.framere[unroll.meth.framere>0]=1
+	rm(list=c('unroll.meth.framere'))
 	report.framere<-cbind(report.framere,meth.framere)
+	rm(list=c('meth.framere'))
 	readnormat<-as.matrix(noodles.C.7.spaghetti.normals.read.coverage[fragment.range,])
 	colnames(readnormat)<-
 		paste(colnames(noodles.C.7.spaghetti.normals.read.coverage),'.700.reads',sep='')
 	report.framere<-cbind(report.framere,readnormat)
+	rm(list=c('readnormat'))
 	readtummat<-as.matrix(noodles.C.7.spaghetti.tumors.read.coverage[fragment.range,])
 	colnames(readtummat)<-
 		paste(colnames(noodles.C.7.spaghetti.tumors.read.coverage),'.700.reads',sep='')
 	report.framere<-cbind(report.framere,readtummat)
+	rm(list=c('readtummat'))
 	colnames(report.framere)<-gsub(' ','',colnames(report.framere))
 	write.table(report.framere,file=tsvfilename,sep='\t',quote=FALSE,row.names=TRUE,append=(fragment!=1),col.names=(fragment==1))
-	rm(list=c('report.framere','meth.framere','readtummat','readnormat'))
+	rm(list=c('report.framere'))
 	#header for first fragment
 	#append for others
 }
