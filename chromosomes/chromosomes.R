@@ -28,7 +28,7 @@ if (!chromosomes.meth.coverage.loaded)
 	#bedfiles are ready
 	chrinfo<-nucl.chromosomes.hg19()
 	chrranges<-GRanges(seqinfo=chrinfo,ranges=IRanges(start=rep(1,24),end=seqlengths(chrinfo)),seqnames=seqnames(chrinfo))
-	chrom.meth.cover<-as.matrix(CountCoverageOfNoodles(chrranges,bedfilenames,DNAids))
+	chrom.meth.cover<-as.matrix(count.coverage.of.noodles(chrranges,bedfilenames,DNAids))
 	rownames(chrom.meth.cover)<-seqnames(chrinfo)
 	chrom.meth.cover.rel<-apply(chrom.meth.cover,2,function(cov) cov/seqlengths(chrinfo))
 	save(file='chromosomes.meth.coverage.Rda',list=c('chrom.meth.cover','chrom.meth.cover.rel','chrranges','Clinical','clinFile','clinFileName','bedsinfolder','bed.used','tumors','normals','contrast','DNAids'))
