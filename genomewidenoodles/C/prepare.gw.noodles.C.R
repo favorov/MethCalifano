@@ -42,7 +42,7 @@ if(!noodles.C.loaded)
 	#beds and contrast is ready
 	#it is folder with bed files
 
-	noodles.C.methylation<-CountCoverageOfNoodles(noodles.C,bedfilenames,DNAids)
+	noodles.C.methylation<-count.coverage.of.noodles(noodles.C,bedfilenames,DNAids)
 	save(file='noodles.C.Rda',list=c('noodles.C','noodles.C.methylation','DNAids','bedfilenames','contrast','noodle.length'))
 	
 	#
